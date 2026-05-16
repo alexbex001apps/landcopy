@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dunamixfy — Generador de Contenido IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f8f7f3;
+  --surface:#ffffff;
+  --surface2:#f0ede5;
+  --border:#e0dbd0;
+  --dark:#0e0d0a;
+  --dark2:#1a1915;
+  --accent:#e8420a;
+  --accent2:#ff5520;
+  --gold:#c8a84a;
+  --text:#0e0d0a;
+  --muted:#7a7060;
+  --success:#1a7a3a;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;}
+
+/* ── HEADER ── */
+.header{background:var(--dark);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;}
+.logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;}
+.logo span{color:var(--accent);}
+.header-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#555;background:rgba(255,255,255,0.06);padding:4px 12px;border:1px solid rgba(255,255,255,0.1);}
+
+/* ── LAYOUT ── */
+.container{display:grid;grid-template-columns:420px 1fr;min-height:calc(100vh - 64px);}
+
+/* ── LEFT PANEL — FORM ── */
+.left-panel{background:var(--surface);border-right:1px solid var(--border);padding:32px;overflow-y:auto;max-height:calc(100vh - 64px);}
+.panel-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--dark);margin-bottom:4px;}
+.panel-sub{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.5;}
+
+.field{margin-bottom:20px;}
+.field label{display:block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.field input,.field select,.field textarea{width:100%;background:var(--surface2);border:1px solid var(--border);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color 0.2s;border-radius:4px;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);}
+.field textarea{resize:vertical;min-height:80px;}
+.field select{appearance:none;cursor:pointer;}
+
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+.country-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.country-btn{padding:8px 12px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);transition:all 0.2s;border-radius:4px;text-align:center;}
+.country-btn.active{background:var(--dark);border-color:var(--dark);color:#fff;}
+.country-btn:hover:not(.active){border-color:var(--accent);color:var(--accent);}
+
+.tone-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.tone-btn{padding:8px 10px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:11px;color:var(--muted);transition:all 0.2s;border-radius:4px;text-align:center;}
+.tone-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+.generate-btn{width:100%;padding:16px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;cursor:pointer;transition:all 0.2s;letter-spacing:-0.3px;margin-top:8px;border-radius:4px;display:flex;align-items:center;justify-content:center;gap:10px;}
+.generate-btn:hover{background:var(--accent2);transform:translateY(-1px);}
+.generate-btn:disabled{background:#ccc;cursor:not-allowed;transform:none;}
+.generate-btn .btn-icon{font-size:20px;}
+
+.divider{border:none;border-top:1px solid var(--border);margin:24px 0;}
+
+.output-select{display:flex;flex-direction:column;gap:8px;}
+.output-check{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.output-check input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;}
+.output-check span{font-size:13px;color:var(--text);}
+
+/* ── RIGHT PANEL — OUTPUT ── */
+.right-panel{padding:32px;overflow-y:auto;max-height:calc(100vh - 64px);background:var(--bg);}
+
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;}
+.empty-icon{font-size:64px;margin-bottom:16px;opacity:0.3;}
+.empty-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--muted);margin-bottom:8px;}
+.empty-sub{font-size:13px;color:var(--muted);max-width:300px;line-height:1.6;}
+
+/* ── OUTPUT TABS ── */
+.output-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.output-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--dark);}
+.copy-all-btn{padding:8px 16px;background:var(--dark);border:none;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#fff;cursor:pointer;border-radius:4px;}
+
+.tabs{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);padding:4px;border-radius:6px;margin-bottom:20px;}
+.tab{flex:1;padding:8px 12px;text-align:center;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:4px;color:var(--muted);transition:all 0.2s;}
+.tab.active{background:var(--dark);color:#fff;}
+
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* ── OUTPUT CARDS ── */
+.output-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px;}
+.output-card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface2);}
+.output-card-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.copy-btn{padding:4px 12px;background:transparent;border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-radius:3px;transition:all 0.2s;}
+.copy-btn:hover{background:var(--dark);border-color:var(--dark);color:#fff;}
+.copy-btn.copied{background:var(--success);border-color:var(--success);color:#fff;}
+.output-card-body{padding:18px;}
+.output-text{font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;word-wrap:break-word;}
+
+/* ── LANDING PREVIEW ── */
+.landing-preview{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.landing-preview-bar{background:var(--dark);padding:8px 14px;display:flex;align-items:center;gap:6px;}
+.lp-dot{width:10px;height:10px;border-radius:50%;}
+.landing-content{padding:0;font-size:13px;line-height:1.6;}
+
+/* ── LOADING ── */
+.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:16px;}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.loading-steps{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+.loading-step{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;opacity:0.4;transition:opacity 0.3s;}
+.loading-step.active{opacity:1;color:var(--accent);}
+.loading-step.done{opacity:0.7;color:var(--success);}
+
+/* ── COUNTRY FLAG ── */
+.flag{font-size:16px;}
+
+/* ── STATS BAR ── */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:20px;}
+.stat-item{background:var(--surface);padding:12px;text-align:center;}
+.stat-num{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--accent);}
+.stat-label{font-size:10px;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace;letter-spacing:1px;}
+
+/* ── RESPONSIVE NOTE ── */
+.wix-note{background:linear-gradient(135deg,#fff8f0,#fff);border:1px solid #ffd4b8;border-left:3px solid var(--accent);padding:12px 16px;border-radius:4px;margin-bottom:20px;}
+.wix-note-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:4px;}
+.wix-note-text{font-size:12px;color:var(--muted);line-height:1.5;}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">Dunamix<span>fy</span> <span style="color:#555;font-weight:400;font-size:14px;">· Generador IA</span></div>
+  <div class="header-tag">Sistema de contenido · v1.0</div>
+</div>
+
+<div class="container">
+
+  <!-- ── LEFT PANEL ── -->
+  <div class="left-panel">
+    <div class="panel-title">Genera en segundos.</div>
+    <div class="panel-sub">Completa los datos del producto y la IA genera landing page, mensajes de WhatsApp, copy para redes y más — listo para publicar.</div>
+
+    <!-- Producto -->
+    <div class="field">
+      <label>Nombre del producto</label>
+      <input type="text" id="product-name" placeholder="Ej: Masajeador eléctrico cervical" />
+    </div>
+
+    <div class="field">
+      <label>¿Qué problema resuelve?</label>
+      <textarea id="product-problem" placeholder="Ej: Alivia el dolor de cuello y espalda alta en personas que trabajan muchas horas frente al computador"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Beneficio principal</label>
+      <input type="text" id="product-benefit" placeholder="Ej: Alivio en 10 minutos, sin pastillas, sin médico" />
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Precio</label>
+        <input type="text" id="product-price" placeholder="Ej: 45.000" />
+      </div>
+      <div class="field">
+        <label>Categoría</label>
+        <select id="product-category">
+          <option value="salud">Salud y bienestar</option>
+          <option value="hogar">Hogar</option>
+          <option value="tecnologia">Tecnología</option>
+          <option value="belleza">Belleza</option>
+          <option value="deporte">Deporte</option>
+          <option value="cocina">Cocina</option>
+          <option value="moda">Moda</option>
+          <option value="ninos">Niños</option>
+          <option value="mascotas">Mascotas</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- País -->
+    <div class="field">
+      <label>País objetivo</label>
+      <div class="country-grid">
+        <div class="country-btn active" onclick="selectCountry(this,'colombia')">🇨🇴 Colombia</div>
+        <div class="country-btn" onclick="selectCountry(this,'costarica')">🇨🇷 Costa Rica</div>
+        <div class="country-btn" onclick="selectCountry(this,'mexico')">🇲🇽 México</div>
+        <div class="country-btn" onclick="selectCountry(this,'venezuela')">🇻🇪 Venezuela</div>
+        <div class="country-btn" onclick="selectCountry(this,'ecuador')">🇪🇨 Ecuador</div>
+        <div class="country-btn" onclick="selectCountry(this,'general')">🌎 General</div>
+      </div>
+    </div>
+
+    <!-- Tono -->
+    <div class="field">
+      <label>Tono de comunicación</label>
+      <div class="tone-grid">
+        <div class="tone-btn active" onclick="selectTone(this,'urgente')">🔥 Urgente</div>
+        <div class="tone-btn" onclick="selectTone(this,'emocional')">❤️ Emocional</div>
+        <div class="tone-btn" onclick="selectTone(this,'racional')">🧠 Racional</div>
+        <div class="tone-btn" onclick="selectTone(this,'casual')">😎 Casual</div>
+        <div class="tone-btn" onclick="selectTone(this,'confianza')">🤝 Confianza</div>
+        <div class="tone-btn" onclick="selectTone(this,'premium')">✨ Premium</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Qué generar -->
+    <div class="field">
+      <label>Qué generar</label>
+      <div class="output-select">
+        <label class="output-check"><input type="checkbox" id="gen-landing" checked><span>Landing page completa</span></label>
+        <label class="output-check"><input type="checkbox" id="gen-whatsapp" checked><span>Mensaje WhatsApp (3 versiones)</span></label>
+        <label class="output-check"><input type="checkbox" id="gen-social" checked><span>Copy redes sociales</span></label>
+        <label class="output-check"><input type="checkbox" id="gen-email"><span>Email de seguimiento</span></label>
+        <label class="output-check"><input type="checkbox" id="gen-objeciones"><span>Manejo de objeciones</span></label>
+      </div>
+    </div>
+
+    <button class="generate-btn" id="gen-btn" onclick="generateContent()">
+      <span class="btn-icon">⚡</span>
+      Generar todo ahora
+    </button>
+
+    <div style="margin-top:12px;font-size:11px;color:var(--muted);text-align:center;">Generado con IA · Backend seguro · Dunamixfy</div>
+  </div>
+
+  <!-- ── RIGHT PANEL ── -->
+  <div class="right-panel" id="right-panel">
+
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">⚡</div>
+      <div class="empty-title">Listo para generar</div>
+      <div class="empty-sub">Completa los datos del producto y presiona "Generar todo ahora".<br><br>En segundos tendrás landing page, WhatsApp y copy para redes.</div>
+    </div>
+
+    <div id="loading-state" style="display:none;">
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <div class="loading-text">Generando contenido...</div>
+        <div class="loading-steps">
+          <div class="loading-step active" id="step-1">⚡ Analizando producto y mercado</div>
+          <div class="loading-step" id="step-2">🎯 Identificando puntos de dolor</div>
+          <div class="loading-step" id="step-3">✍️ Escribiendo copy persuasivo</div>
+          <div class="loading-step" id="step-4">📱 Adaptando para cada canal</div>
+          <div class="loading-step" id="step-5">✅ Finalizando contenido</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="output-state" style="display:none;">
+
+      <div class="output-header">
+        <div class="output-title" id="output-product-name">Contenido generado</div>
+        <button class="copy-all-btn" onclick="copyAll()">📋 Copiar todo</button>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat-item"><div class="stat-num" id="stat-words">0</div><div class="stat-label">Palabras</div></div>
+        <div class="stat-item"><div class="stat-num" id="stat-chars">0</div><div class="stat-label">Caracteres</div></div>
+        <div class="stat-item"><div class="stat-num" id="stat-pieces">0</div><div class="stat-label">Piezas</div></div>
+        <div class="stat-item"><div class="stat-num" id="stat-country">COL</div><div class="stat-label">País</div></div>
+      </div>
+
+      <div class="wix-note">
+        <div class="wix-note-title">💡 Cómo usar en Wix</div>
+        <div class="wix-note-text">Copia el contenido de la landing y pégalo en una nueva página Wix. Los mensajes de WhatsApp van directo al botón de WhatsApp Business. El copy de redes va a tus publicaciones.</div>
+      </div>
+
+      <div class="tabs" id="output-tabs">
+        <div class="tab active" onclick="showTab('landing')">Landing</div>
+        <div class="tab" onclick="showTab('ads')">Meta Ads</div>
+        <div class="tab" onclick="showTab('imagenes')">Imágenes</div>
+        <div class="tab" onclick="showTab('whatsapp')">WhatsApp</div>
+        <div class="tab" onclick="showTab('social')">Redes</div>
+        <div class="tab" onclick="showTab('extras')">Extras</div>
+      </div>
+
+      <!-- LANDING TAB -->
+      <div class="tab-content active" id="tab-landing">
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">🏠 Hero — Titular principal</span>
+            <button class="copy-btn" onclick="copySection('landing-hero')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="landing-hero"></div></div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">😰 El problema — Sección dolor</span>
+            <button class="copy-btn" onclick="copySection('landing-problem')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="landing-problem"></div></div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">✅ La solución — Beneficios</span>
+            <button class="copy-btn" onclick="copySection('landing-solution')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="landing-solution"></div></div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">⭐ Testimonios sugeridos</span>
+            <button class="copy-btn" onclick="copySection('landing-testimonials')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="landing-testimonials"></div></div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">🚀 CTA — Llamado a la acción</span>
+            <button class="copy-btn" onclick="copySection('landing-cta')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="landing-cta"></div></div>
+        </div>
+      </div>
+
+      <!-- META ADS TAB -->
+      <div class="tab-content" id="tab-ads">
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">🎯 Meta Ads — Campaña completa</span>
+            <button class="copy-btn" onclick="copySection('meta-campaign')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="meta-campaign"></div></div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">📢 Meta Ads — 5 anuncios diferentes</span>
+            <button class="copy-btn" onclick="copySection('meta-ads')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="meta-ads"></div></div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">🧲 Hooks para anuncios</span>
+            <button class="copy-btn" onclick="copySection('ad-hooks')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="ad-hooks"></div></div>
+        </div>
+      </div>
+
+      <!-- IMAGES TAB -->
+      <div class="tab-content" id="tab-imagenes">
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">🖼️ Prompts para imágenes publicitarias</span>
+            <button class="copy-btn" onclick="copySection('image-prompts')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="image-prompts"></div></div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">✍️ Texto sobre imagen</span>
+            <button class="copy-btn" onclick="copySection('image-overlay')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="image-overlay"></div></div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">🎬 Ideas de creativos UGC</span>
+            <button class="copy-btn" onclick="copySection('ugc-ideas')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="ugc-ideas"></div></div>
+        </div>
+      </div>
+
+      <!-- WHATSAPP TAB -->
+      <div class="tab-content" id="tab-whatsapp">
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">💬 WhatsApp — Mensaje frío (primer contacto)</span>
+            <button class="copy-btn" onclick="copySection('wa-cold')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="wa-cold"></div></div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">💬 WhatsApp — Seguimiento (no respondió)</span>
+            <button class="copy-btn" onclick="copySection('wa-followup')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="wa-followup"></div></div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">💬 WhatsApp — Cierre de venta</span>
+            <button class="copy-btn" onclick="copySection('wa-close')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="wa-close"></div></div>
+        </div>
+      </div>
+
+      <!-- SOCIAL TAB -->
+      <div class="tab-content" id="tab-social">
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">📸 Instagram / Facebook — Post principal</span>
+            <button class="copy-btn" onclick="copySection('social-post')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="social-post"></div></div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">🎬 TikTok — Guión de video corto</span>
+            <button class="copy-btn" onclick="copySection('social-tiktok')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="social-tiktok"></div></div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">#️⃣ Hashtags por país</span>
+            <button class="copy-btn" onclick="copySection('social-hashtags')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="social-hashtags"></div></div>
+        </div>
+      </div>
+
+      <!-- EXTRAS TAB -->
+      <div class="tab-content" id="tab-extras">
+        <div class="output-card" id="card-email" style="display:none;">
+          <div class="output-card-header">
+            <span class="output-card-title">📧 Email de seguimiento</span>
+            <button class="copy-btn" onclick="copySection('extra-email')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="extra-email"></div></div>
+        </div>
+        <div class="output-card" id="card-objeciones" style="display:none;">
+          <div class="output-card-header">
+            <span class="output-card-title">🛡️ Manejo de objeciones</span>
+            <button class="copy-btn" onclick="copySection('extra-objeciones')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="extra-objeciones"></div></div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">📦 Descripción para tienda online</span>
+            <button class="copy-btn" onclick="copySection('extra-desc')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="extra-desc"></div></div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-header">
+            <span class="output-card-title">🔑 Palabras clave SEO</span>
+            <button class="copy-btn" onclick="copySection('extra-seo')">Copiar</button>
+          </div>
+          <div class="output-card-body"><div class="output-text" id="extra-seo"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedCountry = 'colombia';
+let selectedTone = 'urgente';
+let allGeneratedContent = {};
+
+const countryData = {
+  colombia: { code: 'COL', currency: 'COP', flag: '🇨🇴', modismo: 'colombiano', expresiones: 'parcero, bacano, qué pena, listo' },
+  costarica: { code: 'CRC', currency: 'CRC', flag: '🇨🇷', modismo: 'costarricense', expresiones: 'tuanis, mae, diay, qué chiva' },
+  mexico: { code: 'MEX', currency: 'MXN', flag: '🇲🇽', modismo: 'mexicano', expresiones: 'órale, chido, cuate, qué padre' },
+  venezuela: { code: 'VEN', currency: 'USD', flag: '🇻🇪', modismo: 'venezolano', expresiones: 'chamo, pana, chévere, arrecho' },
+  ecuador: { code: 'ECU', currency: 'USD', flag: '🇪🇨', modismo: 'ecuatoriano', expresiones: 'causa, chévere, ñaño, bacán' },
+  general: { code: 'LAT', currency: 'USD', flag: '🌎', modismo: 'latinoamericano neutro', expresiones: 'amigo, genial, increíble' }
+};
+
+function selectCountry(el, country) {
+  document.querySelectorAll('.country-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedCountry = country;
+}
+
+function selectTone(el, tone) {
+  document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedTone = tone;
+}
+
+function showTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('active');
+  document.getElementById(`tab-${tab}`).classList.add('active');
+}
+
+async function generateContent() {
+  const name = document.getElementById('product-name').value.trim();
+  const problem = document.getElementById('product-problem').value.trim();
+  const benefit = document.getElementById('product-benefit').value.trim();
+  const price = document.getElementById('product-price').value.trim();
+  const category = document.getElementById('product-category').value;
+
+  if (!name) { alert('Por favor ingresa el nombre del producto'); return; }
+
+  const country = countryData[selectedCountry];
+  const genEmail = document.getElementById('gen-email').checked;
+  const genObjeciones = document.getElementById('gen-objeciones').checked;
+
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('loading-state').style.display = 'flex';
+  document.getElementById('output-state').style.display = 'none';
+  document.getElementById('gen-btn').disabled = true;
+
+  const steps = ['step-1','step-2','step-3','step-4','step-5'];
+  let stepIdx = 0;
+  const stepInterval = setInterval(() => {
+    if (stepIdx > 0) {
+      document.getElementById(steps[stepIdx-1]).classList.remove('active');
+      document.getElementById(steps[stepIdx-1]).classList.add('done');
+    }
+    if (stepIdx < steps.length) {
+      document.getElementById(steps[stepIdx]).classList.add('active');
+      stepIdx++;
+    } else {
+      clearInterval(stepInterval);
+    }
+  }, 650);
+
+  try {
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        problem,
+        benefit,
+        price,
+        category,
+        country: selectedCountry,
+        tone: selectedTone,
+        outputs: {
+          landing: document.getElementById('gen-landing').checked,
+          whatsapp: document.getElementById('gen-whatsapp').checked,
+          social: document.getElementById('gen-social').checked,
+          email: genEmail,
+          objeciones: genObjeciones
+        }
+      })
+    });
+
+    clearInterval(stepInterval);
+    steps.forEach(s => {
+      document.getElementById(s).classList.remove('active');
+      document.getElementById(s).classList.add('done');
+    });
+
+    const parsed = await response.json();
+    if (!response.ok) throw new Error(parsed.error || 'Error al generar contenido');
+
+    allGeneratedContent = parsed;
+
+    document.getElementById('landing-hero').textContent = parsed.landing_hero || '';
+    document.getElementById('landing-problem').textContent = parsed.landing_problem || '';
+    document.getElementById('landing-solution').textContent = parsed.landing_solution || '';
+    document.getElementById('landing-testimonials').textContent = parsed.landing_testimonials || '';
+    document.getElementById('landing-cta').textContent = parsed.landing_cta || '';
+    document.getElementById('wa-cold').textContent = parsed.wa_cold || '';
+    document.getElementById('wa-followup').textContent = parsed.wa_followup || '';
+    document.getElementById('wa-close').textContent = parsed.wa_close || '';
+    document.getElementById('social-post').textContent = parsed.social_post || '';
+    document.getElementById('social-tiktok').textContent = parsed.social_tiktok || '';
+    document.getElementById('social-hashtags').textContent = parsed.social_hashtags || '';
+    document.getElementById('meta-campaign').textContent = parsed.meta_campaign || '';
+    document.getElementById('meta-ads').textContent = parsed.meta_ads || '';
+    document.getElementById('ad-hooks').textContent = parsed.ad_hooks || '';
+    document.getElementById('image-prompts').textContent = parsed.image_prompts || '';
+    document.getElementById('image-overlay').textContent = parsed.image_overlay || '';
+    document.getElementById('ugc-ideas').textContent = parsed.ugc_ideas || '';
+    document.getElementById('meta-campaign').textContent = parsed.meta_campaign || '';
+    document.getElementById('meta-ads').textContent = parsed.meta_ads || '';
+    document.getElementById('ad-hooks').textContent = parsed.ad_hooks || '';
+    document.getElementById('image-prompts').textContent = parsed.image_prompts || '';
+    document.getElementById('image-overlay').textContent = parsed.image_overlay || '';
+    document.getElementById('ugc-ideas').textContent = parsed.ugc_ideas || '';
+    document.getElementById('extra-email').textContent = parsed.extra_email || '';
+    document.getElementById('extra-objeciones').textContent = parsed.extra_objeciones || '';
+    document.getElementById('extra-desc').textContent = parsed.extra_desc || '';
+    document.getElementById('extra-seo').textContent = parsed.extra_seo || '';
+
+    document.getElementById('card-email').style.display = genEmail ? 'block' : 'none';
+    document.getElementById('card-objeciones').style.display = genObjeciones ? 'block' : 'none';
+
+    const allText = Object.values(parsed).join(' ');
+    document.getElementById('stat-words').textContent = allText.split(/\s+/).filter(Boolean).length;
+    document.getElementById('stat-chars').textContent = allText.length;
+    document.getElementById('stat-pieces').textContent = Object.keys(parsed).length;
+    document.getElementById('stat-country').textContent = country.code;
+    document.getElementById('output-product-name').textContent = name;
+
+    setTimeout(() => {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('output-state').style.display = 'block';
+      document.getElementById('gen-btn').disabled = false;
+      steps.forEach(s => document.getElementById(s).classList.remove('done','active'));
+    }, 400);
+
+  } catch(err) {
+    clearInterval(stepInterval);
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('empty-state').style.display = 'flex';
+    document.getElementById('empty-state').innerHTML = `<div class="empty-icon">⚠️</div><div class="empty-title">Error al generar</div><div class="empty-sub">${err.message}<br><br>Revisa la API Key y vuelve a intentar.</div>`;
+    document.getElementById('gen-btn').disabled = false;
+    steps.forEach(s => document.getElementById(s).classList.remove('done','active'));
+  }
+}
+
+function copySection(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '✓ Copiado';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function copyAll() {
+  const allText = Object.entries(allGeneratedContent)
+    .map(([k, v]) => `=== ${k.toUpperCase()} ===\n${v}`)
+    .join('\n\n');
+  navigator.clipboard.writeText(allText).then(() => {
+    const btn = event.target;
+    btn.textContent = '✓ Todo copiado';
+    setTimeout(() => { btn.textContent = '📋 Copiar todo'; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
