@@ -481,7 +481,7 @@ function selectTone(el, tone) {
   document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   selectedTone = tone;
-}
+
 
 function showTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -497,31 +497,14 @@ async function generateContent() {
   const price = document.getElementById('product-price').value.trim();
   const category = document.getElementById('product-category').value;
 
-  if (!name) { alert('Por favor ingresa el nombre del producto'); return; }
+  if (!name) {
+    alert('Por favor ingresa el nombre del producto');
+    return;
+  }
 
-  const country = countryData[selectedCountry];
-  const genEmail = document.getElementById('gen-email').checked;
-  const genObjeciones = document.getElementById('gen-objeciones').checked;
-
-  document.getElementById('empty-state').style.display = 'none';
-  document.getElementById('loading-state').style.display = 'flex';
-  document.getElementById('output-state').style.display = 'none';
-  document.getElementById('gen-btn').disabled = true;
-
-  const steps = ['step-1','step-2','step-3','step-4','step-5'];
-  let stepIdx = 0;
-  const stepInterval = setInterval(() => {
-    if (stepIdx > 0) {
-      document.getElementById(steps[stepIdx-1]).classList.remove('active');
-      document.getElementById(steps[stepIdx-1]).classList.add('done');
-    }
-    if (stepIdx < steps.length) {
-      document.getElementById(steps[stepIdx]).classList.add('active');
-      stepIdx++;
-    } else {
-      clearInterval(stepInterval);
-    }
-  }, 650);
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.innerHTML = 'Generando estrategia IA...';
 
   try {
     const response = await fetch('/api/generate', {
@@ -534,103 +517,53 @@ async function generateContent() {
         price,
         category,
         country: selectedCountry,
-        tone: selectedTone,
-        outputs: {
-          landing: document.getElementById('gen-landing').checked,
-          whatsapp: document.getElementById('gen-whatsapp').checked,
-          social: document.getElementById('gen-social').checked,
-          email: genEmail,
-          objeciones: genObjeciones
-        }
+        tone: selectedTone
       })
     });
 
-    clearInterval(stepInterval);
-    steps.forEach(s => {
-      document.getElementById(s).classList.remove('active');
-      document.getElementById(s).classList.add('done');
-    });
+    const data = await response.json();
 
-    const parsed = await response.json();
-    if (!response.ok) throw new Error(parsed.error || 'Error al generar contenido');
+    if (!response.ok || data.error) {
+      throw new Error(data.error || 'Error al generar contenido');
+    }
 
-    allGeneratedContent = parsed;
-
-    document.getElementById('landing-hero').textContent = parsed.landing_hero || '';
-    document.getElementById('landing-problem').textContent = parsed.landing_problem || '';
-    document.getElementById('landing-solution').textContent = parsed.landing_solution || '';
-    document.getElementById('landing-testimonials').textContent = parsed.landing_testimonials || '';
-    document.getElementById('landing-cta').textContent = parsed.landing_cta || '';
-    document.getElementById('wa-cold').textContent = parsed.wa_cold || '';
-    document.getElementById('wa-followup').textContent = parsed.wa_followup || '';
-    document.getElementById('wa-close').textContent = parsed.wa_close || '';
-    document.getElementById('social-post').textContent = parsed.social_post || '';
-    document.getElementById('social-tiktok').textContent = parsed.social_tiktok || '';
-    document.getElementById('social-hashtags').textContent = parsed.social_hashtags || '';
-    document.getElementById('meta-campaign').textContent = parsed.meta_campaign || '';
-    document.getElementById('meta-ads').textContent = parsed.meta_ads || '';
-    document.getElementById('ad-hooks').textContent = parsed.ad_hooks || '';
-    document.getElementById('image-prompts').textContent = parsed.image_prompts || '';
-    document.getElementById('image-overlay').textContent = parsed.image_overlay || '';
-    document.getElementById('ugc-ideas').textContent = parsed.ugc_ideas || '';
-    document.getElementById('meta-campaign').textContent = parsed.meta_campaign || '';
-    document.getElementById('meta-ads').textContent = parsed.meta_ads || '';
-    document.getElementById('ad-hooks').textContent = parsed.ad_hooks || '';
-    document.getElementById('image-prompts').textContent = parsed.image_prompts || '';
-    document.getElementById('image-overlay').textContent = parsed.image_overlay || '';
-    document.getElementById('ugc-ideas').textContent = parsed.ugc_ideas || '';
-    document.getElementById('extra-email').textContent = parsed.extra_email || '';
-    document.getElementById('extra-objeciones').textContent = parsed.extra_objeciones || '';
-    document.getElementById('extra-desc').textContent = parsed.extra_desc || '';
-    document.getElementById('extra-seo').textContent = parsed.extra_seo || '';
-
-    document.getElementById('card-email').style.display = genEmail ? 'block' : 'none';
-    document.getElementById('card-objeciones').style.display = genObjeciones ? 'block' : 'none';
-
-    const allText = Object.values(parsed).join(' ');
-    document.getElementById('stat-words').textContent = allText.split(/\s+/).filter(Boolean).length;
-    document.getElementById('stat-chars').textContent = allText.length;
-    document.getElementById('stat-pieces').textContent = Object.keys(parsed).length;
-    document.getElementById('stat-country').textContent = country.code;
-    document.getElementById('output-product-name').textContent = name;
-
-    setTimeout(() => {
-      document.getElementById('loading-state').style.display = 'none';
-      document.getElementById('output-state').style.display = 'block';
-      document.getElementById('gen-btn').disabled = false;
-      steps.forEach(s => document.getElementById(s).classList.remove('done','active'));
-    }, 400);
-
-  } catch(err) {
-    clearInterval(stepInterval);
+    document.getElementById('empty-state').style.display = 'none';
     document.getElementById('loading-state').style.display = 'none';
-    document.getElementById('empty-state').style.display = 'flex';
-    document.getElementById('empty-state').innerHTML = `<div class="empty-icon">⚠️</div><div class="empty-title">Error al generar</div><div class="empty-sub">${err.message}<br><br>Revisa la API Key y vuelve a intentar.</div>`;
-    document.getElementById('gen-btn').disabled = false;
-    steps.forEach(s => document.getElementById(s).classList.remove('done','active'));
+    document.getElementById('output-state').style.display = 'block';
+
+    document.getElementById('landing-hero').textContent = data.landing_hero || '';
+    document.getElementById('landing-problem').textContent = data.landing_problem || '';
+    document.getElementById('landing-solution').textContent = data.landing_solution || '';
+    document.getElementById('landing-testimonials').textContent = data.landing_testimonials || '';
+    document.getElementById('landing-cta').textContent = data.landing_cta || '';
+
+    document.getElementById('wa-cold').textContent = data.wa_cold || '';
+    document.getElementById('wa-followup').textContent = data.wa_followup || '';
+    document.getElementById('wa-close').textContent = data.wa_close || '';
+
+    document.getElementById('social-post').textContent = data.social_post || '';
+    document.getElementById('social-tiktok').textContent = data.social_tiktok || '';
+    document.getElementById('social-hashtags').textContent = data.social_hashtags || '';
+
+    document.getElementById('extra-email').textContent = data.extra_email || '';
+    document.getElementById('extra-objeciones').textContent = data.extra_objeciones || '';
+    document.getElementById('extra-desc').textContent = data.extra_desc || '';
+    document.getElementById('extra-seo').textContent = data.extra_seo || '';
+
+    document.getElementById('meta-campaign').textContent = data.meta_campaign || '';
+    document.getElementById('meta-ads').textContent = data.meta_ads || '';
+    document.getElementById('ad-hooks').textContent = data.ad_hooks || '';
+
+    document.getElementById('image-prompts').textContent = data.image_prompts || '';
+    document.getElementById('image-overlay').textContent = data.image_overlay || '';
+    document.getElementById('ugc-ideas').textContent = data.ugc_ideas || '';
+
+    btn.innerHTML = 'Generar todo ahora';
+    btn.disabled = false;
+
+  } catch (error) {
+    alert(error.message);
+    btn.innerHTML = 'Generar todo ahora';
+    btn.disabled = false;
   }
 }
-
-function copySection(id) {
-  const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = event.target;
-    btn.textContent = '✓ Copiado';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
-  });
-}
-
-function copyAll() {
-  const allText = Object.entries(allGeneratedContent)
-    .map(([k, v]) => `=== ${k.toUpperCase()} ===\n${v}`)
-    .join('\n\n');
-  navigator.clipboard.writeText(allText).then(() => {
-    const btn = event.target;
-    btn.textContent = '✓ Todo copiado';
-    setTimeout(() => { btn.textContent = '📋 Copiar todo'; }, 2000);
-  });
-}
-</script>
-</body>
-</html>
