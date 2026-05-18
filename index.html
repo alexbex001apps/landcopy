@@ -576,11 +576,11 @@ async function generateContent() {
 
     allGeneratedContent = parsed;
 
-    document.getElementById('landing-hero').textContent = parsed.landing_hero || '';
-    document.getElementById('landing-problem').textContent = parsed.landing_problem || '';
-    document.getElementById('landing-solution').textContent = parsed.landing_solution || '';
-    document.getElementById('landing-testimonials').textContent = parsed.landing_testimonials || '';
-    document.getElementById('landing-cta').textContent = parsed.landing_cta || '';
+    document.getElementById('landing-hero').textContent = formatOutput(parsed.landing_hero);
+    document.getElementById('landing-problem').textContent = formatOutput(parsed.landing_problem);
+    document.getElementById('landing-solution').textContent = formatOutput(parsed.landing_solution);
+    document.getElementById('landing-testimonials').textContent = formatOutput(parsed.landing_testimonials);
+    document.getElementById('landing-cta').textContent = formatOutput(parsed.landing_cta);
     document.getElementById('wa-cold').textContent = parsed.wa_cold || '';
     document.getElementById('wa-followup').textContent = parsed.wa_followup || '';
     document.getElementById('wa-close').textContent = parsed.wa_close || '';
