@@ -88,7 +88,20 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .tab-content.active{display:block;}
 
 /* ── OUTPUT CARDS ── */
-.output-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px;}
+.output-card{
+background:#ffffff;
+border:1px solid rgba(0,0,0,0.06);
+border-radius:18px;
+overflow:hidden;
+margin-bottom:24px;
+box-shadow:0 10px 30px rgba(0,0,0,0.06);
+transition:all .25s ease;
+}
+
+.output-card:hover{
+transform:translateY(-4px);
+box-shadow:0 18px 40px rgba(0,0,0,0.10);
+}
 .output-card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface2);}
 .output-card-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
 .copy-btn{padding:4px 12px;background:transparent;border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-radius:3px;transition:all 0.2s;}
