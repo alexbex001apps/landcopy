@@ -579,7 +579,10 @@ async function generateContent() {
     document.getElementById('image-prompts').textContent = parsed.image_prompts || '';
     document.getElementById('image-overlay').textContent = parsed.image_overlay || '';
     document.getElementById('ugc-ideas').textContent = parsed.ugc_ideas || '';
-    document.getElementById('extra-email').textContent = parsed.extra_email || '';
+  document.getElementById('extra-email').textContent =
+typeof parsed.extra_email === 'object'
+? JSON.stringify(parsed.extra_email, null, 2)
+: parsed.extra_email || '';
     document.getElementById('extra-objeciones').textContent = parsed.extra_objeciones || '';
     document.getElementById('extra-desc').textContent = parsed.extra_desc || '';
     document.getElementById('extra-seo').textContent = parsed.extra_seo || '';
