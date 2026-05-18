@@ -55,7 +55,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .tone-btn{padding:8px 10px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:11px;color:var(--muted);transition:all 0.2s;border-radius:4px;text-align:center;}
 .tone-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
 
-.generate-btn{width:100%;padding:16px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;cursor:pointer;transition:all 0.2s;letter-spacing:-0.3px;margin-top:8px;border-radius:4px;display:flex;align-items:center;justify-content:center;gap:10px;}
+.generate-btn{width:auto;
+max-width:420px;
+margin:0 auto;padding:16px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;cursor:pointer;transition:all 0.2s;letter-spacing:-0.3px;margin-top:8px;border-radius:4px;display:flex;align-items:center;justify-content:center;gap:10px;}
 .generate-btn:hover{background:var(--accent2);transform:translateY(-1px);}
 .generate-btn:disabled{background:#ccc;cursor:not-allowed;transform:none;}
 .generate-btn .btn-icon{font-size:20px;}
