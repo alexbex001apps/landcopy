@@ -489,7 +489,27 @@ function showTab(tab) {
   document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('active');
   document.getElementById(`tab-${tab}`).classList.add('active');
 }
+function formatOutput(data) {
+  if (!data) return '';
 
+  if (typeof data === 'string') {
+    return data;
+  }
+
+  if (Array.isArray(data)) {
+    return data.map(item => formatOutput(item)).join('\n\n');
+  }
+
+  if (typeof data === 'object') {
+    return Object.entries(data)
+      .map(([key, value]) => {
+        return key + ': ' + formatOutput(value);
+      })
+      .join('\n\n');
+  }
+
+  return String(data);
+}
 async function generateContent() {
   const name = document.getElementById('product-name').value.trim();
   const problem = document.getElementById('product-problem').value.trim();
