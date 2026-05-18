@@ -58,6 +58,16 @@ Tono: ${tono}
 RESPONDE SOLO EN JSON VÁLIDO.
 No uses markdown.
 No uses explicación fuera del JSON.
+SECCIONES ACTIVADAS POR EL USUARIO:
+${enabledOutputs}
+REGLA OBLIGATORIA:
+Genera contenido SOLO para las secciones incluidas en SECCIONES ACTIVADAS.
+
+Para cualquier sección NO incluida:
+- devuelve "" en las claves correspondientes
+- no generes texto
+- no inventes contenido
+- no rellenes campos automáticamente
 
 Usa exactamente estas claves:
 
