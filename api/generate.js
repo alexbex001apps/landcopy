@@ -18,6 +18,7 @@ export default async function handler(req, res) {
     const categoria = body.category || body.categoria || "General";
     const pais = body.country || body.pais || "Latinoamérica";
     const tono = body.tone || body.tono || "persuasivo, profesional y vendedor";
+    const enabledOutputs = body.enabled_outputs || body.enabledOutputs || "landing,whatsapp,social,email,objeciones,meta,images,extras,hooks";
 
     const prompt = `
 Eres un estratega senior de marketing, copywriter de respuesta directa, experto en ecommerce, Meta Ads, WhatsApp Business, landing pages, contenido UGC y ventas digitales.
@@ -81,7 +82,8 @@ Usa exactamente estas claves:
   "ad_hooks": "",
   "image_prompts": "",
   "image_overlay": "",
-  "ugc_ideas": ""
+  "ugc_ideas": "",
+"enabled_outputs": ""
 }
 
 INSTRUCCIONES:
