@@ -55,9 +55,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .tone-btn{padding:8px 10px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:11px;color:var(--muted);transition:all 0.2s;border-radius:4px;text-align:center;}
 .tone-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
 
-.generate-btn{width:auto;
-max-width:420px;
-margin:0 auto;padding:16px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;cursor:pointer;transition:all 0.2s;letter-spacing:-0.3px;margin-top:8px;border-radius:4px;display:flex;align-items:center;justify-content:center;gap:10px;}
+.generate-btn{width:100%;padding:16px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;cursor:pointer;transition:all 0.2s;letter-spacing:-0.3px;margin-top:8px;border-radius:4px;display:flex;align-items:center;justify-content:center;gap:10px;}
 .generate-btn:hover{background:var(--accent2);transform:translateY(-1px);}
 .generate-btn:disabled{background:#ccc;cursor:not-allowed;transform:none;}
 .generate-btn .btn-icon{font-size:20px;}
@@ -72,20 +70,7 @@ margin:0 auto;padding:16px;background:var(--accent);border:none;font-family:'Syn
 /* ── RIGHT PANEL — OUTPUT ── */
 .right-panel{padding:32px;overflow-y:auto;background:var(--bg);}
 
-.empty-state{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-min-height:80px;
-text-align:center;
-}
-background:linear-gradient(135deg,#ffffff,#f8f7f3);
-border:1px solid rgba(0,0,0,0.06);
-border-radius:24px;
-padding:40px;
-box-shadow:0 14px 40px rgba(0,0,0,0.06);
-}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80px;text-align:center;}
 .empty-icon{font-size:64px;margin-bottom:16px;opacity:0.3;}
 .empty-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--muted);margin-bottom:8px;}
 .empty-sub{font-size:13px;color:var(--muted);max-width:300px;line-height:1.6;}
@@ -103,60 +88,12 @@ box-shadow:0 14px 40px rgba(0,0,0,0.06);
 .tab-content.active{display:block;}
 
 /* ── OUTPUT CARDS ── */
-.output-card{
-background:#ffffff;
-border:1px solid rgba(0,0,0,0.06);
-border-radius:18px;
-overflow:hidden;
-margin-bottom:24px;
-box-shadow:0 10px 30px rgba(0,0,0,0.06);
-transition:all .25s ease;
-}
-
-.output-card:hover{
-transform:translateY(-4px);
-box-shadow:0 18px 40px rgba(0,0,0,0.10);
-}
-.output-card-header{
-background:linear-gradient(135deg,#fff,#f8f7f3);
-padding:18px 22px;
-border-bottom:1px solid rgba(0,0,0,0.06);
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:12px;
-}
-
-.output-card-title{
-font-family:'Syne',sans-serif;
-font-size:15px;
-font-weight:700;
-letter-spacing:-0.3px;
-color:#0e0d0a;
-}
-
-.copy-btn{
-padding:8px 14px;
-background:#ffffff;
-border:1px solid rgba(0,0,0,0.08);
-border-radius:12px;
-font-family:'DM Mono',monospace;
-font-size:11px;
-cursor:pointer;
-transition:all .2s ease;
-}
-
-.copy-btn:hover{
-background:#0e0d0a;
-color:#fff;
-transform:translateY(-1px);
-}
-
-.copy-btn.copied{
-background:#16a34a;
-color:#fff;
-border-color:#16a34a;
-}
+.output-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px;}
+.output-card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface2);}
+.output-card-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.copy-btn{padding:4px 12px;background:transparent;border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-radius:3px;transition:all 0.2s;}
+.copy-btn:hover{background:var(--dark);border-color:var(--dark);color:#fff;}
+.copy-btn.copied{background:var(--success);border-color:var(--success);color:#fff;}
 .output-card-body{padding:18px;}
 .output-text{font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;word-wrap:break-word;}
 
@@ -371,35 +308,23 @@ width:auto;
 
  </div>
       </div>
-    <button class="generate-btn" id="gen-btn" onclick="generateContent()">
-  <span class="btn-icon">⚡</span>
-  Generar todo ahora
-</button>
     </div>
 
-  
+    <button class="generate-btn" id="gen-btn" onclick="generateContent()">
+      <span class="btn-icon">⚡</span>
+      Generar todo ahora
+    </button>
 
     <div style="margin-top:12px;font-size:11px;color:var(--muted);text-align:center;">Generado con IA · Backend seguro · Dunamixfy</div>
   </div>
 
   <!-- ── RIGHT PANEL ── -->
-<div class="empty-state" id="empty-state">
-  <div class="empty-icon">⚡</div>
+  <div class="right-panel" id="right-panel">
 
-  <div class="empty-title">
-    Listo para generar
-  </div>
-
-  <div class="empty-sub">
-    Completa los datos del producto y presiona
-    "Generar todo ahora".
-    <br><br>
-    En segundos tendrás landing page, WhatsApp,
-    copy para redes y más.
-  </div>
-
-
-</div>
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">⚡</div>
+      <div class="empty-title">Listo para generar</div>
+      <div class="empty-sub">Completa los datos del producto y presiona "Generar todo ahora".<br><br>En segundos tendrás landing page, WhatsApp y copy para redes.</div>
     </div>
 
     <div id="loading-state" style="display:none;">
