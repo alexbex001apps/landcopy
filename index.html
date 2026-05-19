@@ -88,7 +88,20 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .tab-content.active{display:block;}
 
 /* ── OUTPUT CARDS ── */
-.output-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px;}
+.output-card{
+background:#ffffff;
+border:1px solid rgba(0,0,0,0.06);
+border-radius:18px;
+overflow:hidden;
+margin-bottom:24px;
+box-shadow:0 10px 30px rgba(0,0,0,0.06);
+transition:all .25s ease;
+}
+
+.output-card:hover{
+transform:translateY(-4px);
+box-shadow:0 18px 40px rgba(0,0,0,0.10);
+}
 .output-card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface2);}
 .output-card-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
 .copy-btn{padding:4px 12px;background:transparent;border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-radius:3px;transition:all 0.2s;}
@@ -316,7 +329,7 @@ width:auto;
     </button>
 
     <div style="margin-top:12px;font-size:11px;color:var(--muted);text-align:center;">Generado con IA · Backend seguro · Dunamixfy</div>
-  
+  </div>
 
   <!-- ── RIGHT PANEL ── -->
   <div class="right-panel" id="right-panel">
@@ -325,7 +338,7 @@ width:auto;
       <div class="empty-icon">⚡</div>
       <div class="empty-title">Listo para generar</div>
       <div class="empty-sub">Completa los datos del producto y presiona "Generar todo ahora".<br><br>En segundos tendrás landing page, WhatsApp y copy para redes.</div>
-    
+    </div>
 
     <div id="loading-state" style="display:none;">
       <div class="loading-state">
@@ -353,12 +366,12 @@ width:auto;
         <div class="stat-item"><div class="stat-num" id="stat-chars">0</div><div class="stat-label">Caracteres</div></div>
         <div class="stat-item"><div class="stat-num" id="stat-pieces">0</div><div class="stat-label">Piezas</div></div>
         <div class="stat-item"><div class="stat-num" id="stat-country">COL</div><div class="stat-label">País</div></div>
-    
+      </div>
 
       <div class="wix-note">
         <div class="wix-note-title">💡 Cómo usar en Wix</div>
         <div class="wix-note-text">Copia el contenido de la landing y pégalo en una nueva página Wix. Los mensajes de WhatsApp van directo al botón de WhatsApp Business. El copy de redes va a tus publicaciones.</div>
-      
+      </div>
 
       <div class="tabs" id="output-tabs">
         <div class="tab active" onclick="showTab('landing')">Landing</div>
@@ -377,19 +390,19 @@ width:auto;
             <button class="copy-btn" onclick="copySection('landing-hero')">Copiar</button>
           </div>
           <div class="output-card-body"><div class="output-text" id="landing-hero"></div></div>
-      
+        </div>
         <div class="output-card">
           <div class="output-card-header">
             <span class="output-card-title">😰 El problema — Sección dolor</span>
             <button class="copy-btn" onclick="copySection('landing-problem')">Copiar</button>
           </div>
           <div class="output-card-body"><div class="output-text" id="landing-problem"></div></div>
-        
+        </div>
         <div class="output-card">
           <div class="output-card-header">
             <span class="output-card-title">✅ La solución — Beneficios</span>
             <button class="copy-btn" onclick="copySection('landing-solution')">Copiar</button>
-          </div
+          </div>
           <div class="output-card-body"><div class="output-text" id="landing-solution"></div></div>
         </div>
         <div class="output-card">
