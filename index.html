@@ -1708,7 +1708,62 @@ function vsParseTime(str) {
      VIDEO STUDIO
 ══════════════════════════════════════ -->
 <div id="video-studio">
-...
+<div class="vs-topbar">
+  <div class="vs-title">🎬 Video Studio</div>
+  <button class="vs-close" onclick="closeStudio()">Cerrar</button>
+</div>
+
+<div class="vs-layout">
+
+  <div class="vs-sidebar">
+
+    <div class="vs-group">
+      <label>Título del video</label>
+      <input type="text" id="vs-title-input" placeholder="Ej: 3 errores que destruyen tus ventas">
+    </div>
+
+    <div class="vs-group">
+      <label>Hook</label>
+      <textarea id="vs-hook" placeholder="Frase inicial impactante"></textarea>
+    </div>
+
+    <div class="vs-group">
+      <label>CTA</label>
+      <textarea id="vs-cta" placeholder="Llamado a la acción"></textarea>
+    </div>
+
+    <div class="vs-group">
+      <label>Duración</label>
+      <select id="vs-duration">
+        <option>15s</option>
+        <option>30s</option>
+        <option>60s</option>
+      </select>
+    </div>
+
+    <button class="vs-generate-btn" onclick="generateVideoScript()">
+      Generar Guión
+    </button>
+
+  </div>
+
+  <div class="vs-preview">
+
+    <div class="vs-phone">
+
+      <div class="vs-screen">
+
+        <div class="vs-caption" id="vs-caption">
+          Tu guión aparecerá aquí...
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 </div>
 </body>
 </html>
