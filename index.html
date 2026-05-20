@@ -28,7 +28,27 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;}
 .logo span{color:var(--accent);}
 .header-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#555;background:rgba(255,255,255,0.06);padding:4px 12px;border:1px solid rgba(255,255,255,0.1);}
+.vs-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(232,66,10,0.12);
+  border: 1px solid rgba(232,66,10,0.3);
+  color: #e8420a;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
 
+.vs-trigger:hover {
+  background: #e8420a;
+  color: #fff;
+}
 /* ── LAYOUT ── */
 .container{display:grid;grid-template-columns:420px 1fr;min-height:calc(100vh - 64px);}
 
