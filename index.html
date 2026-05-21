@@ -1163,27 +1163,6 @@ document.addEventListener('DOMContentLoaded',()=>{vsRenderClips();vsUpdateArchCo
   <button class="bnav-btn" onclick="goToStudio('archive')" id="bnav-archive">3·Archivo</button>
 </div>
 
-
-<script>
-// DIAGNÓSTICO - se ejecuta al cargar
-window.addEventListener('load', function() {
-  const results = [];
-  const fns = ['goTo','goToStudio','vsLoadVideo','vsTogglePlay','vsCut','vsSave',
-    'vsShowEditor','vsShowArchive','vsNewVideo','openStudio','closeStudio',
-    'edInit','edRenderClips','edAddClipToTrack','edTogglePlay','edAddText','edExport',
-    'edSetAspect','edRightTab','edAddTrack','generateContent','selChip','showTab'];
-  
-  fns.forEach(fn => {
-    const exists = typeof window[fn] === 'function';
-    results.push((exists ? '✅' : '❌') + ' ' + fn);
-  });
-  
-  console.log('=== DIAGNÓSTICO DUNAMIXFY ===');
-  results.forEach(r => console.log(r));
-  console.log('=============================');
-});
-</script>
-
 </body>
 </html>
 
@@ -1514,10 +1493,14 @@ function edInit() {
 // Cargar clips del archivo de vsClips
 function edRenderClips() {
   const scroll = document.getElementById('ed-clips-scroll');
-  const clips = JSON.parse(localStorage.getItem('vs_clips') || '[]');
+  const savedClips = JSON.parse(localStorage.getItem('vs_clips') || '[]');
   
-  // También incluir videos subidos directamente
-  const allClips = [...clips, ...edState.clips.filter(c => c.isLocal)];
+  // Combinar clips del archivo + clips subidos directamente en esta sesión
+  const localClips = edState.localClips || [];
+  const allClips = [...savedClips, ...localClips];
+  
+  // Actualizar edState.clips con todos
+  edState.clips = allClips;
   
   if (allClips.length === 0) {
     scroll.innerHTML = '<div style="text-align:center;padding:16px;font-size:10px;color:rgba(0,212,255,0.3);">Sube un video o corta clips en el Video Studio</div>';
@@ -1601,8 +1584,17 @@ function edLoadNewClip(event) {
   tempVideo.onloadedmetadata = () => {
     newClip.duration = vsTime(tempVideo.duration);
     newClip.durationSecs = tempVideo.duration;
-    edState.clips.push(newClip);
+    // Agregar a edState.clips locales
+    edState.localClips = edState.localClips || [];
+    edState.localClips.push(newClip);
     edRenderClips();
+    // Mostrar confirmación
+    const scroll = document.getElementById('ed-clips-scroll');
+    const notice = document.createElement('div');
+    notice.style.cssText = 'background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);border-radius:4px;padding:6px 10px;font-size:10px;color:#00ff88;text-align:center;margin-bottom:6px;';
+    notice.textContent = '✓ "' + newClip.name + '" cargado — presiona + para agregar al timeline';
+    scroll.insertBefore(notice, scroll.firstChild);
+    setTimeout(() => notice.remove(), 4000);
   };
 }
 
@@ -1707,7 +1699,11 @@ function edAddClipToTrack(clipIndex, trackId) {
   edRenderTracks();
   edUpdateTotalDuration();
   edShowPreview();
-  document.getElementById('ed-preview-empty').style.display = 'none';
+  const empty = document.getElementById('ed-preview-empty');
+  if(empty) empty.style.display = 'none';
+  // Mostrar el canvas
+  const canvas = document.getElementById('ed-canvas');
+  if(canvas) canvas.style.display = 'block';
 }
 
 function edMoveClipBetweenTracks(clipUid, fromTrackId, toTrackId) {
@@ -1909,21 +1905,37 @@ function edDrawCurrentFrame() {
 }
 
 function edShowPreview() {
-  // Buscar primer clip con video
+  // Buscar primer clip con video en el timeline
   for (const track of edState.tracks) {
     for (const clip of track.clips) {
-      if (clip.fileUrl || clip.file) {
+      const url = clip.fileUrl || (clip.file ? URL.createObjectURL(clip.file) : null);
+      if (url) {
         let hidden = document.getElementById('ed-preview-video-hidden');
         if (!hidden) {
           hidden = document.createElement('video');
           hidden.id = 'ed-preview-video-hidden';
-          hidden.style.display = 'none';
+          hidden.style.cssText = 'position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;';
           document.body.appendChild(hidden);
         }
-        hidden.src = clip.fileUrl || URL.createObjectURL(clip.file);
-        hidden.onloadeddata = () => edDrawCurrentFrame();
+        if (hidden.src !== url) {
+          hidden.src = url;
+          hidden.load();
+        }
+        hidden.onloadeddata = () => {
+          edDrawCurrentFrame();
+        };
+        hidden.onerror = (e) => console.error('Error cargando video:', e);
         return;
       }
+    }
+  }
+  // Si no hay video, buscar en clips disponibles con video
+  for (const clip of edState.clips) {
+    const url = clip.fileUrl || (clip.file ? URL.createObjectURL(clip.file) : null);
+    if (url) {
+      // Agregar automáticamente al primer track
+      edAddClipToTrack(edState.clips.indexOf(clip), edState.tracks[0].id);
+      return;
     }
   }
 }
