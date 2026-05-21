@@ -1163,1011 +1163,901 @@ document.addEventListener('DOMContentLoaded',()=>{vsRenderClips();vsUpdateArchCo
   <button class="bnav-btn" onclick="goToStudio('archive')" id="bnav-archive">3·Archivo</button>
 </div>
 
-</body>
-</html>
 
-<!-- EDITOR AVANZADO - Inyectado como página separada -->
+<!-- ══════════════════════════════════════
+     CSS EDITOR AVANZADO
+══════════════════════════════════════ -->
 <style>
-/* ══ EDITOR AVANZADO ══ */
-#page-editor{background:#060504;overflow:hidden;}
-.ed-wrap{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+#page-editor { background:#060504; }
+.edwrap { display:flex; flex-direction:column; height:100vh; overflow:hidden; }
 
-/* Header editor */
-.ed-topbar{background:#0a0806;border-bottom:1px solid #2a2420;height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0;}
-.ed-back{display:flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid rgba(0,212,255,0.3);background:transparent;color:#00d4ff;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;text-shadow:0 0 6px rgba(0,212,255,0.6);}
-.ed-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#00d4ff;text-shadow:0 0 10px rgba(0,212,255,0.7);}
-.ed-tools{display:flex;gap:6px;}
-.ed-tool{padding:4px 10px;border:1px solid #2a2420;background:transparent;color:rgba(0,212,255,0.5);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all 0.2s;}
-.ed-tool:hover{border-color:rgba(0,212,255,0.4);color:#00d4ff;}
-.ed-tool.on{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.4);color:#00d4ff;text-shadow:0 0 5px rgba(0,212,255,0.5);}
-.ed-export-btn{padding:5px 14px;background:rgba(255,85,32,0.15);border:1px solid rgba(255,85,32,0.5);color:#ff5520;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;text-shadow:0 0 6px rgba(255,85,32,0.6);margin-left:8px;}
-.ed-export-btn:hover{background:rgba(255,85,32,0.3);box-shadow:0 0 12px rgba(255,85,32,0.3);}
+/* Topbar */
+.edtop { background:#0e0c0a; border-bottom:1px solid #2a2420; height:48px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; flex-shrink:0; }
+.edback { display:flex;align-items:center;gap:6px;padding:4px 12px;border:1px solid rgba(0,212,255,0.3);background:transparent;color:#00d4ff;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;text-shadow:0 0 6px rgba(0,212,255,0.5); }
+.edtitle { font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#00d4ff;text-shadow:0 0 10px rgba(0,212,255,0.6); }
+.edtools { display:flex;gap:5px;align-items:center; }
+.edtool { padding:4px 12px;border:1px solid #2a2420;background:transparent;color:rgba(0,212,255,0.4);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all 0.2s; }
+.edtool.on { background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.35);color:#00d4ff; }
+.edexport { padding:5px 16px;background:rgba(255,85,32,0.15);border:1px solid rgba(255,85,32,0.45);color:#ff5520;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;margin-left:8px;text-shadow:0 0 5px rgba(255,85,32,0.5); }
 
-/* Body: izquierda + centro + derecha */
-.ed-body{display:grid;grid-template-columns:220px 1fr 220px;flex:1;min-height:0;overflow:hidden;}
+/* Body 3 columnas */
+.edbody { display:grid;grid-template-columns:210px 1fr 230px;flex:1;min-height:0;overflow:hidden; }
 
-/* Panel izquierdo — clips */
-.ed-left{background:#0e0c0a;border-right:1px solid #2a2420;display:flex;flex-direction:column;overflow:hidden;}
-.ed-left-title{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.5);padding:10px 14px;border-bottom:1px solid #2a2420;display:flex;align-items:center;justify-content:space-between;}
-.ed-add-clip{font-size:14px;cursor:pointer;color:#ff5520;text-shadow:0 0 5px rgba(255,85,32,0.5);}
-.ed-clips-scroll{flex:1;overflow-y:auto;padding:8px;}
-.ed-clip-card{background:#181410;border:1px solid #2a2420;border-radius:6px;padding:8px;margin-bottom:6px;cursor:grab;transition:all 0.2s;position:relative;}
-.ed-clip-card:hover{border-color:rgba(0,212,255,0.3);box-shadow:0 0 8px rgba(0,212,255,0.1);}
-.ed-clip-card:active{cursor:grabbing;}
-.ed-clip-thumb{height:60px;background:linear-gradient(135deg,#1a1410,#0a0806);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:6px;position:relative;}
-.ed-clip-dur{position:absolute;bottom:3px;right:4px;background:rgba(0,0,0,0.8);font-family:'DM Mono',monospace;font-size:7px;color:#ffe600;text-shadow:0 0 4px rgba(255,230,0,0.5);padding:1px 4px;border-radius:2px;}
-.ed-clip-name{font-size:10px;color:#fff;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.ed-clip-tag{font-family:'DM Mono',monospace;font-size:7px;color:#ff5520;text-shadow:0 0 3px rgba(255,85,32,0.4);margin-top:2px;}
-.ed-clip-add-btn{position:absolute;top:6px;right:6px;width:20px;height:20px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#00d4ff;cursor:pointer;}
-.ed-clip-add-btn:hover{background:rgba(0,212,255,0.25);}
-.ed-upload-area{margin:8px;padding:14px;border:1px dashed rgba(0,212,255,0.2);border-radius:6px;text-align:center;cursor:pointer;transition:all 0.2s;}
-.ed-upload-area:hover{border-color:rgba(0,212,255,0.5);}
-.ed-upload-area-txt{font-size:10px;color:rgba(0,212,255,0.4);line-height:1.5;}
+/* Panel izq */
+.edleft { background:#0e0c0a;border-right:1px solid #2a2420;display:flex;flex-direction:column;overflow:hidden; }
+.edleft-title { font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.4);padding:10px 12px;border-bottom:1px solid #2a2420;display:flex;align-items:center;justify-content:space-between; }
+.edplus-btn { font-size:18px;color:#ff5520;cursor:pointer;text-shadow:0 0 5px rgba(255,85,32,0.5);line-height:1; }
+.ednotice { display:none;margin:4px 8px;padding:5px 8px;border-radius:3px;font-family:'DM Mono',monospace;font-size:8px;text-align:center;border:1px solid; }
+.edupload { margin:8px;border:1px dashed rgba(0,212,255,0.2);border-radius:6px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.2s; }
+.edupload:hover { border-color:rgba(0,212,255,0.5);background:rgba(0,212,255,0.02); }
+.edupload-icon { font-size:20px;opacity:0.2;margin-bottom:4px; }
+.edupload-txt { font-size:9px;color:rgba(0,212,255,0.35);line-height:1.5;margin-bottom:6px; }
+.edupload-btn { padding:4px 12px;background:rgba(255,85,32,0.1);border:1px solid rgba(255,85,32,0.3);color:#ff5520;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;border-radius:2px; }
+.edclips { flex:1;overflow-y:auto;padding:6px; }
+.edclip { background:#181410;border:1px solid #2a2420;border-radius:5px;padding:8px;margin-bottom:6px;transition:border-color 0.2s; }
+.edclip.ready { border-color:rgba(0,255,136,0.25); }
+.edclip-thumb { height:46px;background:#0a0806;border-radius:3px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:5px;font-size:16px; }
+.edclip-dur { position:absolute;bottom:2px;right:3px;font-family:'DM Mono',monospace;font-size:7px;color:#ffe600; }
+.edclip-badge { position:absolute;top:2px;left:2px;background:rgba(0,255,136,0.2);border:1px solid rgba(0,255,136,0.4);border-radius:2px;padding:1px 4px;font-size:6px;color:#00ff88;font-family:'DM Mono',monospace; }
+.edclip-name { font-size:10px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px; }
+.edclip-tag { font-size:7px;color:#ff5520;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.edclip-actions { display:flex;gap:4px; }
+.edclip-load { flex:1;padding:3px;background:rgba(255,230,0,0.06);border:1px solid rgba(255,230,0,0.25);border-radius:2px;font-size:7px;color:#ffe600;cursor:pointer;font-family:'DM Mono',monospace;text-align:center; }
+.edclip-loaded { flex:1;padding:3px;background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:2px;font-size:7px;color:#00ff88;text-align:center;font-family:'DM Mono',monospace; }
+.edclip-add { padding:3px 10px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:2px;font-size:14px;color:#00d4ff;cursor:pointer;font-weight:bold; }
+.edclip-empty { text-align:center;padding:20px 10px;font-size:10px;color:rgba(0,212,255,0.25);line-height:1.8; }
 
-/* Panel central — preview */
-.ed-center{display:flex;flex-direction:column;overflow:hidden;}
-.ed-preview{flex:1;background:#000;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-.ed-canvas{max-width:100%;max-height:100%;display:block;}
-.ed-preview-empty{text-align:center;color:rgba(0,212,255,0.2);}
-.ed-preview-empty div:first-child{font-size:40px;margin-bottom:8px;}
-.ed-preview-empty div:last-child{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;}
-.ed-playbar{background:#0e0c0a;border-top:1px solid #2a2420;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.ed-playbtn{padding:5px 14px;border:1px solid rgba(255,85,32,0.4);background:rgba(255,85,32,0.1);color:#ff5520;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;border-radius:2px;text-shadow:0 0 5px rgba(255,85,32,0.5);}
-.ed-time{font-family:'DM Mono',monospace;font-size:10px;color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.5);}
-.ed-progress{flex:1;height:4px;background:#2a2420;border-radius:2px;cursor:pointer;}
-.ed-progress-fill{height:100%;background:#ff5520;border-radius:2px;box-shadow:0 0 6px rgba(255,85,32,0.5);transition:width 0.1s;}
-.ed-aspect-btns{display:flex;gap:4px;}
-.ed-aspect-btn{padding:3px 8px;border:1px solid #2a2420;background:transparent;color:rgba(0,212,255,0.4);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;border-radius:2px;}
-.ed-aspect-btn.on{border-color:rgba(0,212,255,0.4);color:#00d4ff;text-shadow:0 0 4px rgba(0,212,255,0.5);}
+/* Centro */
+.edcenter { display:flex;flex-direction:column;overflow:hidden;min-height:0; }
+.edpreview { flex:1;background:#000;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden; }
+.edcanvas { display:block;max-width:100%;max-height:100%; }
+.edpreview-empty { position:absolute;text-align:center;color:rgba(0,212,255,0.15);pointer-events:none; }
+.edpreview-empty div:first-child { font-size:36px;margin-bottom:6px;opacity:0.3; }
+.edpreview-empty div:last-child { font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px; }
 
-/* Timeline multicapa */
-.ed-timeline{background:#0a0806;border-top:1px solid #2a2420;height:180px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;}
-.ed-tl-header{display:flex;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid #2a2420;flex-shrink:0;}
-.ed-tl-title{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.5);}
-.ed-tl-add-track{padding:2px 8px;border:1px solid rgba(255,230,0,0.2);background:transparent;color:rgba(255,230,0,0.5);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;border-radius:2px;}
-.ed-tracks{flex:1;overflow-y:auto;overflow-x:auto;}
-.ed-track{display:flex;align-items:center;border-bottom:1px solid #1a1810;min-height:36px;}
-.ed-track-label{width:80px;flex-shrink:0;padding:0 8px;font-family:'DM Mono',monospace;font-size:7px;color:rgba(0,212,255,0.5);text-shadow:0 0 3px rgba(0,212,255,0.3);letter-spacing:1px;text-transform:uppercase;border-right:1px solid #2a2420;}
-.ed-track-area{flex:1;position:relative;height:36px;background:repeating-linear-gradient(90deg,#1a1810 0px,#1a1810 59px,#2a2420 59px,#2a2420 60px);}
-.ed-track-clip{position:absolute;top:3px;height:30px;border-radius:3px;cursor:grab;display:flex;align-items:center;padding:0 6px;overflow:hidden;border:1px solid transparent;transition:border-color 0.2s;user-select:none;}
-.ed-track-clip:hover{border-color:rgba(255,255,255,0.3);}
-.ed-track-clip.selected{border-color:#ff2255;box-shadow:0 0 6px rgba(255,34,85,0.5);}
-.ed-track-clip-name{font-family:'DM Mono',monospace;font-size:7px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 0 3px rgba(255,255,255,0.5);}
-.ed-track-clip-del{position:absolute;right:2px;top:2px;width:14px;height:14px;background:rgba(255,34,85,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;cursor:pointer;opacity:0;}
-.ed-track-clip:hover .ed-track-clip-del{opacity:1;}
-.ed-playhead-line{position:absolute;top:0;bottom:0;width:2px;background:#ff5520;box-shadow:0 0 6px rgba(255,85,32,0.8);pointer-events:none;z-index:10;}
+/* Playbar */
+.edplaybar { background:#0e0c0a;border-top:1px solid #2a2420;padding:8px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0; }
+.edplaybtn { padding:5px 14px;border:1px solid rgba(255,85,32,0.35);background:rgba(255,85,32,0.1);color:#ff5520;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;border-radius:2px;text-shadow:0 0 5px rgba(255,85,32,0.4); }
+.edtime { font-family:'DM Mono',monospace;font-size:10px;color:#ffe600;text-shadow:0 0 4px rgba(255,230,0,0.4);white-space:nowrap; }
+.edprog { flex:1;height:4px;background:#2a2420;border-radius:2px;cursor:pointer;position:relative; }
+.edprog-fill { height:100%;width:0%;background:#ff5520;border-radius:2px;box-shadow:0 0 6px rgba(255,85,32,0.4);transition:width 0.1s; }
+.edaspect { display:flex;gap:3px; }
+.edaspect-btn { padding:3px 8px;border:1px solid #2a2420;background:transparent;color:rgba(0,212,255,0.35);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;border-radius:2px;transition:all 0.2s; }
+.edaspect-btn.on { border-color:rgba(0,212,255,0.4);color:#00d4ff;text-shadow:0 0 4px rgba(0,212,255,0.4); }
 
-/* Panel derecho — propiedades */
-.ed-right{background:#0e0c0a;border-left:1px solid #2a2420;display:flex;flex-direction:column;overflow:hidden;}
-.ed-right-tabs{display:flex;border-bottom:1px solid #2a2420;}
-.ed-right-tab{flex:1;padding:8px;text-align:center;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:rgba(0,212,255,0.4);border-bottom:2px solid transparent;transition:all 0.2s;}
-.ed-right-tab.on{color:#00d4ff;text-shadow:0 0 6px rgba(0,212,255,0.6);border-bottom-color:#00d4ff;}
-.ed-right-content{flex:1;overflow-y:auto;padding:12px;}
-.ed-prop-section{margin-bottom:16px;}
-.ed-prop-title{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.5);margin-bottom:8px;}
-.ed-prop-field{margin-bottom:8px;}
-.ed-prop-field label{display:block;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,212,255,0.5);margin-bottom:4px;}
-.ed-prop-field input,.ed-prop-field select,.ed-prop-field textarea{width:100%;background:#181410;border:1px solid #2a2420;padding:6px 8px;font-family:'DM Sans',sans-serif;font-size:11px;color:#00d4ff;border-radius:3px;outline:none;}
-.ed-prop-field input:focus,.ed-prop-field select:focus{border-color:rgba(0,212,255,0.4);}
-.ed-prop-field textarea{min-height:60px;resize:vertical;}
-.ed-color-row{display:flex;gap:6px;flex-wrap:wrap;}
-.ed-color-opt{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.2s;}
-.ed-color-opt.on{border-color:#fff;box-shadow:0 0 6px rgba(255,255,255,0.5);}
-.ed-pos-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;}
-.ed-pos-btn{padding:5px;border:1px solid #2a2420;background:transparent;color:rgba(0,212,255,0.4);font-size:10px;cursor:pointer;border-radius:2px;text-align:center;}
-.ed-pos-btn.on{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.4);color:#00d4ff;}
-.ed-add-text-btn{width:100%;padding:8px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:#00d4ff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border-radius:3px;text-shadow:0 0 5px rgba(0,212,255,0.5);margin-top:4px;}
-.ed-add-text-btn:hover{background:rgba(0,212,255,0.2);}
-.ed-text-layer-item{background:#181410;border:1px solid #2a2420;border-radius:4px;padding:7px;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between;}
-.ed-tli-text{font-size:11px;color:#fff;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.ed-tli-del{color:#ff2255;cursor:pointer;font-size:12px;flex-shrink:0;margin-left:6px;}
+/* Timeline */
+.edtl { background:#080604;border-top:1px solid #2a2420;height:165px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden; }
+.edtl-header { display:flex;align-items:center;gap:8px;padding:5px 10px;border-bottom:1px solid #1a1510;flex-shrink:0; }
+.edtl-title { font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#ffe600;text-shadow:0 0 4px rgba(255,230,0,0.4); }
+.edtl-add { padding:2px 8px;border:1px solid rgba(255,230,0,0.2);background:transparent;color:rgba(255,230,0,0.45);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;border-radius:2px; }
+.edtl-hint { font-family:'DM Mono',monospace;font-size:7px;color:rgba(255,255,255,0.1);margin-left:auto; }
+.edtracks { flex:1;overflow-y:auto;overflow-x:hidden; }
+.edtrack { display:flex;align-items:center;border-bottom:1px solid #111009;min-height:38px; }
+.edtrack-lbl { width:76px;flex-shrink:0;padding:0 8px;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;border-right:1px solid #2a2420; }
+.edtrack-area { flex:1;position:relative;height:38px;background:repeating-linear-gradient(90deg,#0c0a08 0px,#0c0a08 59px,#141210 59px,#141210 60px);overflow:hidden; }
+.edtrack-clip { position:absolute;top:3px;height:32px;border-radius:3px;display:flex;align-items:center;padding:0 6px 0 4px;overflow:hidden;cursor:grab;user-select:none; }
+.edtrack-clip-name { font-family:'DM Mono',monospace;font-size:7px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;opacity:0.8; }
+.edtrack-clip-del { width:14px;height:14px;background:rgba(255,34,85,0.35);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;cursor:pointer;flex-shrink:0;opacity:0;transition:opacity 0.2s; }
+.edtrack-clip:hover .edtrack-clip-del { opacity:1; }
 
-/* Processing overlay editor */
-.ed-processing{display:none;position:fixed;inset:0;background:rgba(6,5,4,0.92);z-index:99999;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
-.ed-processing.on{display:flex;}
-.ed-proc-spin{width:40px;height:40px;border:3px solid #2a2420;border-top-color:#ff5520;border-radius:50%;animation:spin 0.7s linear infinite;}
-.ed-proc-msg{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#ff2255;text-shadow:0 0 10px rgba(255,34,85,0.8);}
-.ed-proc-sub{font-size:11px;color:rgba(255,255,255,0.3);}
+/* Panel derecho */
+.edright { background:#0e0c0a;border-left:1px solid #2a2420;display:flex;flex-direction:column;overflow:hidden; }
+.edright-tabs { display:flex;border-bottom:1px solid #2a2420; }
+.edrtab { flex:1;padding:8px;text-align:center;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:rgba(0,212,255,0.3);border-bottom:2px solid transparent;transition:all 0.2s; }
+.edrtab.on { color:#00d4ff;text-shadow:0 0 6px rgba(0,212,255,0.5);border-bottom-color:#00d4ff; }
+.edright-content { flex:1;overflow-y:auto;padding:12px; }
+.edprop-title { font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#ffe600;text-shadow:0 0 4px rgba(255,230,0,0.4);margin-bottom:10px; }
+.edprop { margin-bottom:10px; }
+.edprop label { display:block;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,212,255,0.45);margin-bottom:4px; }
+.edprop textarea, .edprop select { width:100%;background:#181410;border:1px solid #2a2420;padding:6px 8px;font-family:'DM Sans',sans-serif;font-size:11px;color:#00d4ff;border-radius:3px;outline:none;resize:none; }
+.edprop textarea { min-height:52px; }
+.edprop input[type=range] { width:100%;accent-color:#ffe600; }
+.edsize-val { font-family:'DM Mono',monospace;font-size:9px;color:#ffe600;text-shadow:0 0 4px rgba(255,230,0,0.5); }
+.edcolors { display:flex;gap:5px;flex-wrap:wrap; }
+.edcolor { width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.2s; }
+.edcolor.on { border-color:#fff;box-shadow:0 0 6px rgba(255,255,255,0.4); }
+.edpos-grid { display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px; }
+.edpos-btn { padding:5px;border:1px solid #2a2420;background:transparent;color:rgba(0,212,255,0.3);font-size:10px;cursor:pointer;border-radius:2px;text-align:center;transition:all 0.2s; }
+.edpos-btn.on { background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.4);color:#00d4ff; }
+.edadd-txt-btn { width:100%;padding:8px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);color:#00d4ff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border-radius:3px;margin-top:4px;text-shadow:0 0 4px rgba(0,212,255,0.4);transition:all 0.2s; }
+.edadd-txt-btn:hover { background:rgba(0,212,255,0.15); }
+.edtxt-item { background:#181410;border:1px solid #2a2420;border-radius:3px;padding:5px 8px;margin-bottom:4px;display:flex;align-items:center;gap:6px; }
+.edtxt-dot { width:9px;height:9px;border-radius:50%;flex-shrink:0; }
+.edtxt-text { font-size:10px;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+.edtxt-del { color:#ff2255;cursor:pointer;font-size:12px;flex-shrink:0;opacity:0.6;transition:opacity 0.2s; }
+.edtxt-del:hover { opacity:1; }
+.edtxt-empty { font-size:10px;color:rgba(0,212,255,0.2);text-align:center;padding:8px; }
+.edaudio-load { width:100%;padding:7px;background:rgba(255,230,0,0.06);border:1px solid rgba(255,230,0,0.2);color:#ffe600;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;border-radius:3px;text-shadow:0 0 4px rgba(255,230,0,0.4); }
+.edaudio-info { display:none;margin-top:8px;padding:6px 8px;background:#181410;border:1px solid #2a2420;border-radius:3px;font-size:10px;color:#ffe600; }
+
+/* Processing overlay */
+.edproc { display:none;position:fixed;inset:0;background:rgba(6,5,4,0.92);z-index:99999;flex-direction:column;align-items:center;justify-content:center;gap:16px; }
+.edproc.on { display:flex; }
+.edproc-spin { width:38px;height:38px;border:3px solid #2a2420;border-top-color:#ff5520;border-radius:50%;animation:spin 0.7s linear infinite; }
+.edproc-msg { font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#ff2255;text-shadow:0 0 10px rgba(255,34,85,0.7); }
 </style>
 
-<!-- ══ PAGE: EDITOR AVANZADO ══ -->
+<!-- ══════════════════════════════════════
+     PAGE: EDITOR AVANZADO
+══════════════════════════════════════ -->
 <div class="page" id="page-editor">
-  <div class="ed-wrap">
+<div class="edwrap">
 
-    <!-- Topbar -->
-    <div class="ed-topbar">
-      <button class="ed-back" onclick="goTo('page-studio')">← Video Studio</button>
-      <div class="ed-title">🎬 Editor Avanzado</div>
-      <div class="ed-tools">
-        <button class="ed-tool on" id="ed-tool-text" onclick="edSetTool('text')">T Texto</button>
-        <button class="ed-tool" id="ed-tool-clip" onclick="edSetTool('clip')">✂ Clip</button>
-        <button class="ed-tool" id="ed-tool-audio" onclick="edSetTool('audio')">♪ Audio</button>
-        <button class="ed-export-btn" onclick="edExport()">⚡ Exportar MP4</button>
+  <div class="edtop">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="edback" onclick="goTo('page-studio')">← Video Studio</button>
+      <button onclick="edLimpiar()" style="padding:4px 10px;border:1px solid rgba(255,34,85,0.3);background:rgba(255,34,85,0.08);color:#ff2255;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;" title="Limpiar timeline y empezar con otro video">✕ Limpiar todo</button>
+    </div>
+    <div class="edtitle">🎬 Editor Avanzado</div>
+    <div class="edtools">
+      <button class="edtool on" id="edtool-text" onclick="edSetTool('text')">T Texto</button>
+      <button class="edtool" id="edtool-clip" onclick="edSetTool('clip')">✂ Clip</button>
+      <button class="edtool" id="edtool-audio" onclick="edSetTool('audio')">♪ Audio</button>
+      <button class="edexport" onclick="edExport()">⚡ Exportar MP4</button>
+    </div>
+  </div>
+
+  <div class="edbody">
+
+    <!-- IZQUIERDA -->
+    <div class="edleft">
+      <div class="edleft-title">
+        <span>Mis Clips</span>
+        <span class="edplus-btn" onclick="document.getElementById('ed-file-new').click()" title="Subir video nuevo">＋</span>
+      </div>
+      <input type="file" id="ed-file-new" accept="video/*" style="display:none;" onchange="edSubirVideo(event)">
+      
+      <div class="ednotice" id="ed-notice"></div>
+      
+      <div class="edupload" onclick="document.getElementById('ed-file-new').click()">
+        <div class="edupload-icon">🎬</div>
+        <div class="edupload-txt">Haz clic aquí o en ＋<br>para subir un video nuevo</div>
+      </div>
+      
+      <div class="edclips" id="ed-clips-panel">
+        <div class="edclip-empty">Sube un video con el botón de arriba</div>
       </div>
     </div>
 
-    <!-- Body -->
-    <div class="ed-body" style="flex:1;min-height:0;">
-
-      <!-- Izquierda: clips disponibles -->
-      <div class="ed-left">
-        <div class="ed-left-title">
-          <span>Mis Clips</span>
-          <span class="ed-add-clip" onclick="document.getElementById('ed-file-input').click()" title="Subir video nuevo" style="cursor:pointer;">＋</span>
-        </div>
-        <input type="file" id="ed-file-input" accept="video/*" style="display:none;" onchange="edLoadNewClip(event)">
-        <div class="ed-upload-area" id="ed-upload-area">
-          <div style="font-size:24px;opacity:0.3;margin-bottom:4px;">🎬</div>
-          <div class="ed-upload-area-txt">Haz clic para subir un video nuevo</div>
-          <button onclick="document.getElementById('ed-file-input').click()" 
-            style="margin-top:8px;padding:6px 14px;background:rgba(255,85,32,0.15);border:1px solid rgba(255,85,32,0.4);color:#ff5520;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;">
-            📁 Subir video
-          </button>
-        </div>
-        <div class="ed-clips-scroll" id="ed-clips-scroll">
-          <!-- Se llena dinámicamente -->
+    <!-- CENTRO -->
+    <div class="edcenter">
+      <div class="edpreview" id="ed-preview-wrap">
+        <canvas id="ed-canvas" class="edcanvas"></canvas>
+        <div class="edpreview-empty" id="ed-preview-empty">
+          <div>🎬</div>
+          <div>Agrega clips al timeline</div>
         </div>
       </div>
 
-      <!-- Centro: preview + playbar + timeline -->
-      <div class="ed-center">
-
-        <!-- Preview -->
-        <div class="ed-preview" id="ed-preview">
-          <canvas id="ed-canvas" class="ed-canvas"></canvas>
-          <div class="ed-preview-empty" id="ed-preview-empty">
-            <div>🎬</div>
-            <div>Arrastra clips al timeline</div>
-          </div>
+      <div class="edplaybar">
+        <button class="edplaybtn" id="ed-playbtn" onclick="edPlay()">▶ Play</button>
+        <span class="edtime" id="ed-time">0:00 / 0:00</span>
+        <div class="edprog" id="ed-prog" onclick="edSeek(event)">
+          <div class="edprog-fill" id="ed-prog-fill"></div>
         </div>
-
-        <!-- Playbar -->
-        <div class="ed-playbar">
-          <button class="ed-playbtn" id="ed-playbtn" onclick="edTogglePlay()">▶ Play</button>
-          <span class="ed-time" id="ed-time">0:00 / 0:00</span>
-          <div class="ed-progress" id="ed-progress" onclick="edSeekProgress(event)">
-            <div class="ed-progress-fill" id="ed-progress-fill" style="width:0%"></div>
-          </div>
-          <div class="ed-aspect-btns">
-            <button class="ed-aspect-btn on" onclick="edSetAspect('16:9',this)">16:9</button>
-            <button class="ed-aspect-btn" onclick="edSetAspect('9:16',this)">9:16</button>
-            <button class="ed-aspect-btn" onclick="edSetAspect('1:1',this)">1:1</button>
-          </div>
+        <div class="edaspect">
+          <button class="edaspect-btn on" onclick="edAspecto('16:9',this)">16:9</button>
+          <button class="edaspect-btn" onclick="edAspecto('9:16',this)">9:16</button>
+          <button class="edaspect-btn" onclick="edAspecto('1:1',this)">1:1</button>
         </div>
-
-        <!-- Timeline multicapa -->
-        <div class="ed-timeline">
-          <div class="ed-tl-header">
-            <span class="ed-tl-title">Timeline</span>
-            <button class="ed-tl-add-track" onclick="edAddTrack()">+ Pista</button>
-            <span style="font-family:'DM Mono',monospace;font-size:7px;color:rgba(255,255,255,0.2);margin-left:auto;">Arrastra clips desde el panel izquierdo</span>
-          </div>
-          <div class="ed-tracks" id="ed-tracks">
-            <!-- Pistas generadas dinámicamente -->
-          </div>
-        </div>
-
       </div>
 
-      <!-- Derecha: propiedades -->
-      <div class="ed-right">
-        <div class="ed-right-tabs">
-          <div class="ed-right-tab on" onclick="edRightTab('text',this)">Texto</div>
-          <div class="ed-right-tab" onclick="edRightTab('clip',this)">Clip</div>
-          <div class="ed-right-tab" onclick="edRightTab('audio',this)">Audio</div>
+      <div class="edtl">
+        <div class="edtl-header">
+          <span class="edtl-title">Timeline</span>
+          <button class="edtl-add" onclick="edNuevaPista()">+ Pista</button>
+          <span class="edtl-hint">Arrastra clips o presiona + en cada clip</span>
         </div>
-
-        <!-- Panel texto -->
-        <div class="ed-right-content" id="ed-panel-text">
-          <div class="ed-prop-section">
-            <div class="ed-prop-title">Agregar texto</div>
-            <div class="ed-prop-field">
-              <label>Texto</label>
-              <textarea id="ed-txt-content" placeholder="Ej: ¡Envío gratis hoy!"></textarea>
-            </div>
-            <div class="ed-prop-field">
-              <label>Tamaño</label>
-              <input type="range" id="ed-txt-size" min="12" max="80" value="32" oninput="edPreviewText()">
-              <span id="ed-txt-size-val" style="font-family:'DM Mono',monospace;font-size:9px;color:#ffe600;">32px</span>
-            </div>
-            <div class="ed-prop-field">
-              <label>Color</label>
-              <div class="ed-color-row">
-                <div class="ed-color-opt on" style="background:#fff;" onclick="edSetTextColor('#fff',this)"></div>
-                <div class="ed-color-opt" style="background:#ff5520;" onclick="edSetTextColor('#ff5520',this)"></div>
-                <div class="ed-color-opt" style="background:#ffe600;" onclick="edSetTextColor('#ffe600',this)"></div>
-                <div class="ed-color-opt" style="background:#00d4ff;" onclick="edSetTextColor('#00d4ff',this)"></div>
-                <div class="ed-color-opt" style="background:#ff2255;" onclick="edSetTextColor('#ff2255',this)"></div>
-                <div class="ed-color-opt" style="background:#00ff88;" onclick="edSetTextColor('#00ff88',this)"></div>
-              </div>
-            </div>
-            <div class="ed-prop-field">
-              <label>Posición</label>
-              <div class="ed-pos-grid">
-                <div class="ed-pos-btn" onclick="edSetTextPos('top-left',this)">↖</div>
-                <div class="ed-pos-btn on" onclick="edSetTextPos('top',this)">↑</div>
-                <div class="ed-pos-btn" onclick="edSetTextPos('top-right',this)">↗</div>
-                <div class="ed-pos-btn" onclick="edSetTextPos('left',this)">←</div>
-                <div class="ed-pos-btn" onclick="edSetTextPos('center',this)">●</div>
-                <div class="ed-pos-btn" onclick="edSetTextPos('right',this)">→</div>
-                <div class="ed-pos-btn" onclick="edSetTextPos('bottom-left',this)">↙</div>
-                <div class="ed-pos-btn" onclick="edSetTextPos('bottom',this)">↓</div>
-                <div class="ed-pos-btn" onclick="edSetTextPos('bottom-right',this)">↘</div>
-              </div>
-            </div>
-            <div class="ed-prop-field">
-              <label>Fondo del texto</label>
-              <select id="ed-txt-bg">
-                <option value="none">Sin fondo</option>
-                <option value="dark">Fondo oscuro</option>
-                <option value="black">Fondo negro</option>
-                <option value="orange">Fondo naranja</option>
-              </select>
-            </div>
-            <button class="ed-add-text-btn" onclick="edAddText()">+ Agregar al video</button>
-          </div>
-
-          <div class="ed-prop-section">
-            <div class="ed-prop-title">Textos en el video</div>
-            <div id="ed-text-layers-list">
-              <div style="font-size:10px;color:rgba(0,212,255,0.3);text-align:center;padding:8px;">Ningún texto agregado aún</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Panel clip -->
-        <div class="ed-right-content" id="ed-panel-clip" style="display:none;">
-          <div class="ed-prop-section">
-            <div class="ed-prop-title">Clip seleccionado</div>
-            <div id="ed-clip-props">
-              <div style="font-size:10px;color:rgba(0,212,255,0.3);text-align:center;padding:16px;">Selecciona un clip en el timeline</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Panel audio -->
-        <div class="ed-right-content" id="ed-panel-audio" style="display:none;">
-          <div class="ed-prop-section">
-            <div class="ed-prop-title">Música de fondo</div>
-            <div class="ed-prop-field">
-              <label>Subir audio</label>
-              <button style="width:100%;padding:7px;background:rgba(255,230,0,0.08);border:1px solid rgba(255,230,0,0.2);color:#ffe600;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;border-radius:3px;" onclick="document.getElementById('ed-audio-input').click()">📁 Seleccionar MP3</button>
-              <input type="file" id="ed-audio-input" accept="audio/*" style="display:none;" onchange="edLoadAudio(event)">
-            </div>
-            <div class="ed-prop-field" id="ed-audio-info" style="display:none;">
-              <label>Archivo cargado</label>
-              <div style="font-size:10px;color:#ffe600;background:#181410;padding:6px;border-radius:3px;" id="ed-audio-name"></div>
-            </div>
-            <div class="ed-prop-field">
-              <label>Volumen del audio original</label>
-              <input type="range" id="ed-vol-original" min="0" max="100" value="100">
-            </div>
-            <div class="ed-prop-field">
-              <label>Volumen de la música</label>
-              <input type="range" id="ed-vol-music" min="0" max="100" value="50">
-            </div>
-          </div>
-        </div>
+        <div class="edtracks" id="ed-tracks"></div>
       </div>
     </div>
 
+    <!-- DERECHA -->
+    <div class="edright">
+      <div class="edright-tabs">
+        <div class="edrtab on" id="edrtab-text" onclick="edTab('text',this)">Texto</div>
+        <div class="edrtab" id="edrtab-clip" onclick="edTab('clip',this)">Clip</div>
+        <div class="edrtab" id="edrtab-audio" onclick="edTab('audio',this)">Audio</div>
+      </div>
+
+      <!-- Panel texto -->
+      <div class="edright-content" id="edpanel-text">
+        <div class="edprop-title">Agregar texto</div>
+        <div class="edprop">
+          <label>Texto</label>
+          <textarea id="ed-txt" placeholder="Ej: ¡Envío gratis hoy!"></textarea>
+        </div>
+        <div class="edprop">
+          <label>Tamaño — <span class="edsize-val" id="ed-size-val">32px</span></label>
+          <input type="range" id="ed-size" min="12" max="80" value="32" oninput="document.getElementById('ed-size-val').textContent=this.value+'px'">
+        </div>
+        <div class="edprop">
+          <label>Color</label>
+          <div class="edcolors">
+            <div class="edcolor on" style="background:#fff" onclick="edColor('#fff',this)"></div>
+            <div class="edcolor" style="background:#ff5520" onclick="edColor('#ff5520',this)"></div>
+            <div class="edcolor" style="background:#ffe600" onclick="edColor('#ffe600',this)"></div>
+            <div class="edcolor" style="background:#00d4ff" onclick="edColor('#00d4ff',this)"></div>
+            <div class="edcolor" style="background:#ff2255" onclick="edColor('#ff2255',this)"></div>
+            <div class="edcolor" style="background:#00ff88" onclick="edColor('#00ff88',this)"></div>
+          </div>
+        </div>
+        <div class="edprop">
+          <label>Posición</label>
+          <div class="edpos-grid">
+            <div class="edpos-btn" onclick="edPos('top-left',this)">↖</div>
+            <div class="edpos-btn on" onclick="edPos('top',this)">↑</div>
+            <div class="edpos-btn" onclick="edPos('top-right',this)">↗</div>
+            <div class="edpos-btn" onclick="edPos('left',this)">←</div>
+            <div class="edpos-btn" onclick="edPos('center',this)">●</div>
+            <div class="edpos-btn" onclick="edPos('right',this)">→</div>
+            <div class="edpos-btn" onclick="edPos('bottom-left',this)">↙</div>
+            <div class="edpos-btn" onclick="edPos('bottom',this)">↓</div>
+            <div class="edpos-btn" onclick="edPos('bottom-right',this)">↘</div>
+          </div>
+        </div>
+        <div class="edprop">
+          <label>Fondo del texto</label>
+          <select id="ed-fondo">
+            <option value="none">Sin fondo</option>
+            <option value="dark">Fondo oscuro</option>
+            <option value="black">Fondo negro</option>
+            <option value="orange">Fondo naranja</option>
+          </select>
+        </div>
+        <button class="edadd-txt-btn" onclick="edAddTexto()">+ Agregar al video</button>
+        
+        <div style="margin-top:14px;">
+          <div class="edprop-title">Textos en el video</div>
+          <div id="ed-textos-lista"><div class="edtxt-empty">Sin textos aún</div></div>
+        </div>
+      </div>
+
+      <!-- Panel clip -->
+      <div class="edright-content" id="edpanel-clip" style="display:none;">
+        <div class="edprop-title">Clip seleccionado</div>
+        <div id="ed-clip-info" style="font-size:11px;color:rgba(0,212,255,0.4);padding:8px 0;">Haz clic en un clip del timeline</div>
+      </div>
+
+      <!-- Panel audio -->
+      <div class="edright-content" id="edpanel-audio" style="display:none;">
+        <div class="edprop-title">Música de fondo</div>
+        <button class="edaudio-load" onclick="document.getElementById('ed-audio-file').click()">📁 Seleccionar MP3 / Audio</button>
+        <input type="file" id="ed-audio-file" accept="audio/*" style="display:none;" onchange="edCargarAudio(event)">
+        <div class="edaudio-info" id="ed-audio-info"></div>
+        <div class="edprop" style="margin-top:12px;">
+          <label>Volumen del video</label>
+          <input type="range" id="ed-vol-vid" min="0" max="100" value="100">
+        </div>
+        <div class="edprop">
+          <label>Volumen de la música</label>
+          <input type="range" id="ed-vol-mus" min="0" max="100" value="50">
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Processing overlay -->
-  <div class="ed-processing" id="ed-processing">
-    <div class="ed-proc-spin"></div>
-    <div class="ed-proc-msg" id="ed-proc-msg">Exportando...</div>
-    <div class="ed-proc-sub" id="ed-proc-sub"></div>
-  </div>
+</div>
+
+<!-- Overlay procesando -->
+<div class="edproc" id="ed-proc">
+  <div class="edproc-spin"></div>
+  <div class="edproc-msg" id="ed-proc-msg">Procesando...</div>
+</div>
 </div>
 
 <script>
-// ══ EDITOR AVANZADO ══════════════════════════════
+// ══ EDITOR AVANZADO ══════════════════════════
 
-// Estado global del editor
-const edState = {
-  clips: [],          // clips disponibles en panel izquierdo
-  tracks: [],         // pistas del timeline
-  textLayers: [],     // capas de texto
-  aspect: '16:9',
-  currentTool: 'text',
-  textColor: '#fff',
-  textPos: 'top',
-  playing: false,
-  currentTime: 0,
-  totalDuration: 0,
-  audioFile: null,
-  selectedClipId: null,
-  animFrame: null,
-  trackCount: 2,
-};
+// Estado
+let edCL = [];          // clips disponibles
+let edTR = [];          // tracks del timeline
+let edTX = [];          // capas de texto
+let edVidEl = null;     // video element oculto
+let edPlaying = false;
+let edAspRatio = '16:9';
+let edTxtColor = '#fff';
+let edTxtPos = 'top';
+let edAspW = 16, edAspH = 9;
+let edAnimId = null;
 
-// Inicializar editor cuando se abre
+// ── INIT ──────────────────────────────────────
 function edInit() {
+  edCL = [];
+  edTX = [];
+  edPlaying = false;
+  if (edVidEl) { try { edVidEl.pause(); edVidEl.src = ''; } catch(e){} }
+  
+  // Cargar clips guardados del Video Studio
+  const saved = JSON.parse(localStorage.getItem('vs_clips') || '[]');
+  edCL = saved.map((c,i) => ({
+    idx: i,
+    nombre: c.name || 'Clip '+(i+1),
+    dur: c.duration || '--',
+    durSecs: 0,
+    landing: c.landing || '',
+    uso: c.use || '',
+    url: null,
+    file: null,
+    guardado: true
+  }));
+  
+  // Tracks iniciales
+  edTR = [
+    {id:1, label:'VIDEO 1', color:'#ff5520', clips:[]},
+    {id:2, label:'VIDEO 2', color:'#00d4ff', clips:[]}
+  ];
+  
+  const btn = document.getElementById('ed-playbtn');
+  if (btn) btn.textContent = '▶ Play';
+  
   edRenderClips();
-  edInitTracks();
+  edRenderTracks();
   edResizeCanvas();
   edDrawEmpty();
+  edRenderTextos();
 }
 
-// Cargar clips del archivo de vsClips
+// ── CLIPS PANEL ───────────────────────────────
 function edRenderClips() {
-  const scroll = document.getElementById('ed-clips-scroll');
-  const savedClips = JSON.parse(localStorage.getItem('vs_clips') || '[]');
-  
-  // Combinar clips del archivo + clips subidos directamente en esta sesión
-  const localClips = edState.localClips || [];
-  const allClips = [...savedClips, ...localClips];
-  
-  // Actualizar edState.clips con todos
-  edState.clips = allClips;
-  
-  if (allClips.length === 0) {
-    scroll.innerHTML = '<div style="text-align:center;padding:16px;font-size:10px;color:rgba(0,212,255,0.3);">Sube un video o corta clips en el Video Studio</div>';
+  const panel = document.getElementById('ed-clips-panel');
+  if (!panel) return;
+  if (edCL.length === 0) {
+    panel.innerHTML = '<div class="edclip-empty">Sube un video con el botón ＋ de arriba</div>';
     return;
   }
-
-  scroll.innerHTML = allClips.map((clip, i) => `
-    <div class="ed-clip-card" draggable="true" 
-      ondragstart="edDragStart(event, ${i})"
-      id="ed-clip-src-${i}">
-      <div class="ed-clip-thumb" style="${clip.fileUrl || clip.file ? '' : 'border:1px dashed rgba(255,230,0,0.3);'}">
-        🎬
-        <div class="ed-clip-dur">${clip.duration || '?'}</div>
-        ${!(clip.fileUrl || clip.file) ? '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(255,230,0,0.15);font-family:DM Mono,monospace;font-size:6px;color:#ffe600;text-align:center;padding:2px;">Sin video · clic para cargar</div>' : ''}
+  panel.innerHTML = edCL.map((c,i) => `
+    <div class="edclip ${c.url ? 'ready' : ''}" draggable="true" ondragstart="edDragPanel(event,${i})">
+      <div class="edclip-thumb">
+        ${c.url ? '▶' : '🎬'}
+        <div class="edclip-dur">${c.dur}</div>
+        ${c.url ? '<div class="edclip-badge">✓</div>' : ''}
       </div>
-      <div class="ed-clip-name">${clip.name || clip.filename || 'Clip'}</div>
-      <div class="ed-clip-tag">${clip.landing || ''} ${clip.use ? '· '+clip.use : ''}</div>
-      <div style="display:flex;gap:4px;margin-top:4px;">
-        ${!(clip.fileUrl || clip.file) ? `<div onclick="edLoadVideoForClip(${i})" title="Cargar video" style="flex:1;padding:3px;background:rgba(255,230,0,0.08);border:1px solid rgba(255,230,0,0.25);border-radius:2px;font-family:'DM Mono',monospace;font-size:7px;color:#ffe600;cursor:pointer;text-align:center;">📁 Cargar</div>` : '<div style="flex:1;padding:3px;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.25);border-radius:2px;font-family:DM Mono,monospace;font-size:7px;color:#00ff88;text-align:center;">✓ Listo</div>'}
-        <div class="ed-clip-add-btn" onclick="edAddClipToTrack(${i})" title="Agregar al timeline" style="flex:0 0 auto;">+</div>
+      <div class="edclip-name" title="${c.nombre}">${c.nombre}</div>
+      <div class="edclip-tag">${c.landing}${c.uso ? ' · '+c.uso : ''}</div>
+      <div class="edclip-actions">
+        ${c.guardado && !c.url
+          ? `<div class="edclip-load" onclick="edCargarVideo(${i})">📁 Cargar video</div>`
+          : c.url
+            ? `<div class="edclip-loaded">✓ Listo</div>`
+            : `<div class="edclip-loaded">✓</div>`
+        }
+        <div class="edclip-add" onclick="edAddATimeline(${i})" title="Agregar al timeline">+</div>
       </div>
     </div>
   `).join('');
-
-  // Guardar referencia
-  edState.clips = allClips;
 }
 
-// Cargar video para un clip existente del archivo
-function edLoadVideoForClip(clipIndex) {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'video/*';
-  input.onchange = (e) => {
+// Subir video nuevo
+function edSubirVideo(event) {
+  const file = event.target.files[0];
+  event.target.value = '';
+  if (!file) return;
+  
+  const url = URL.createObjectURL(file);
+  const clip = {
+    idx: edCL.length,
+    nombre: file.name.replace(/\.[^.]+$/,'').substring(0,28),
+    dur: '...',
+    durSecs: 0,
+    landing: '',
+    uso: '',
+    url,
+    file,
+    guardado: false
+  };
+  edCL.unshift(clip);
+  edRenderClips();
+  edAviso('✓ "'+clip.nombre+'" cargado — presiona + para agregar al timeline', true);
+  
+  const v = document.createElement('video');
+  v.src = url;
+  v.onloadedmetadata = () => {
+    clip.dur = edFT(v.duration);
+    clip.durSecs = v.duration;
+    edRenderClips();
+  };
+}
+
+// Cargar video para clip del archivo
+function edCargarVideo(i) {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'video/*';
+  inp.onchange = e => {
     const file = e.target.files[0];
-    if (!file) return;
+    if (!file || !edCL[i]) return;
     const url = URL.createObjectURL(file);
-    edState.clips[clipIndex].fileUrl = url;
-    edState.clips[clipIndex].file = file;
-    // Obtener duración real
-    const tempVid = document.createElement('video');
-    tempVid.src = url;
-    tempVid.onloadedmetadata = () => {
-      edState.clips[clipIndex].durationSecs = tempVid.duration;
-      edState.clips[clipIndex].duration = vsTime(tempVid.duration);
-      // Actualizar clips en el timeline que usen este clipIndex
-      edState.tracks.forEach(t => {
-        t.clips.forEach(c => {
-          if (c.clipIndex === clipIndex) {
-            c.fileUrl = url;
-            c.file = file;
-            c.durationSecs = tempVid.duration;
-          }
-        });
-      });
+    edCL[i].url = url;
+    edCL[i].file = file;
+    const v = document.createElement('video');
+    v.src = url;
+    v.onloadedmetadata = () => {
+      edCL[i].dur = edFT(v.duration);
+      edCL[i].durSecs = v.duration;
       edRenderClips();
-      edRenderTracks();
-      edShowPreview();
+      // Actualizar clips en tracks
+      edTR.forEach(t => t.clips.forEach(c => {
+        if (c.clipIdx === i) { c.url = url; c.durSecs = v.duration; }
+      }));
+      edAviso('✓ Video cargado para "'+edCL[i].nombre+'"', true);
     };
   };
-  input.click();
+  inp.click();
 }
 
-// Cargar nuevo video
-function edLoadNewClip(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const url = URL.createObjectURL(file);
-  const newClip = {
-    name: file.name.replace(/\.[^.]+$/, ''),
-    filename: file.name,
-    duration: '--:--',
-    isLocal: true,
-    fileUrl: url,
-    file: file
-  };
-  
-  // Obtener duración
-  const tempVideo = document.createElement('video');
-  tempVideo.src = url;
-  tempVideo.onloadedmetadata = () => {
-    newClip.duration = vsTime(tempVideo.duration);
-    newClip.durationSecs = tempVideo.duration;
-    // Agregar a edState.clips locales
-    edState.localClips = edState.localClips || [];
-    edState.localClips.push(newClip);
-    edRenderClips();
-    // Mostrar confirmación
-    const scroll = document.getElementById('ed-clips-scroll');
-    const notice = document.createElement('div');
-    notice.style.cssText = 'background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);border-radius:4px;padding:6px 10px;font-size:10px;color:#00ff88;text-align:center;margin-bottom:6px;';
-    notice.textContent = '✓ "' + newClip.name + '" cargado — presiona + para agregar al timeline';
-    scroll.insertBefore(notice, scroll.firstChild);
-    setTimeout(() => notice.remove(), 4000);
-  };
+function edAviso(msg, ok) {
+  const n = document.getElementById('ed-notice');
+  if (!n) return;
+  n.textContent = msg;
+  n.style.display = 'block';
+  n.style.background = ok ? 'rgba(0,255,136,0.08)' : 'rgba(255,34,85,0.08)';
+  n.style.borderColor = ok ? 'rgba(0,255,136,0.3)' : 'rgba(255,34,85,0.3)';
+  n.style.color = ok ? '#00ff88' : '#ff2255';
+  setTimeout(() => { n.style.display = 'none'; }, 4000);
 }
 
-// Inicializar pistas del timeline
-function edInitTracks() {
-  edState.tracks = [
-    { id: 1, label: 'Video 1', color: '#ff5520', clips: [] },
-    { id: 2, label: 'Video 2', color: '#00d4ff', clips: [] },
-  ];
-  edRenderTracks();
-}
-
-function edAddTrack() {
-  edState.trackCount++;
-  edState.tracks.push({
-    id: edState.trackCount,
-    label: 'Pista ' + edState.trackCount,
-    color: ['#ff5520','#00d4ff','#ffe600','#ff2255','#00ff88'][edState.trackCount % 5],
-    clips: []
-  });
-  edRenderTracks();
-}
-
+// ── TIMELINE ──────────────────────────────────
 function edRenderTracks() {
   const container = document.getElementById('ed-tracks');
-  container.innerHTML = edState.tracks.map(track => `
-    <div class="ed-track" 
-      ondragover="event.preventDefault()"
-      ondrop="edDropToTrack(event, ${track.id})">
-      <div class="ed-track-label" style="color:${track.color};text-shadow:0 0 4px ${track.color}40;">${track.label}</div>
-      <div class="ed-track-area" id="ed-track-area-${track.id}">
-        ${track.clips.map(clip => `
-          <div class="ed-track-clip ${edState.selectedClipId === clip.uid ? 'selected' : ''}"
-            id="ed-track-clip-${clip.uid}"
-            style="left:${clip.startPx}px;width:${clip.widthPx}px;background:${track.color}33;border-color:${track.color}66;"
-            onclick="edSelectClip(${clip.uid})"
+  if (!container) return;
+  container.innerHTML = edTR.map(t => `
+    <div class="edtrack">
+      <div class="edtrack-lbl" style="color:${t.color};text-shadow:0 0 4px ${t.color}55;">${t.label}</div>
+      <div class="edtrack-area"
+        ondragover="event.preventDefault()"
+        ondrop="edDropTrack(event,${t.id})">
+        ${t.clips.map(c => `
+          <div class="edtrack-clip"
+            style="left:${c.px}px;width:${c.wpx}px;background:${t.color}22;border:1px solid ${t.color}55;"
             draggable="true"
-            ondragstart="edDragTrackClip(event, ${clip.uid}, ${track.id})">
-            <div class="ed-track-clip-name">${clip.name}</div>
-            <div class="ed-track-clip-del" onclick="event.stopPropagation();edRemoveClipFromTrack(${clip.uid},${track.id})">✕</div>
+            ondragstart="edDragTrack(event,${c.uid},${t.id})"
+            onclick="edSelClip(${c.uid},${t.id})">
+            <div class="edtrack-clip-name">${c.nombre}</div>
+            <div class="edtrack-clip-del" onclick="event.stopPropagation();edQuitarClip(${c.uid},${t.id})">✕</div>
           </div>
         `).join('')}
-        <div class="ed-playhead-line" style="left:${edState.currentTime * 60}px;"></div>
       </div>
     </div>
   `).join('');
-  edUpdateTotalDuration();
 }
 
-// Drag and drop
-function edDragStart(event, clipIndex) {
-  event.dataTransfer.setData('clipIndex', clipIndex);
-  event.dataTransfer.setData('source', 'library');
-}
-
-function edDragTrackClip(event, clipUid, trackId) {
-  event.dataTransfer.setData('clipUid', clipUid);
-  event.dataTransfer.setData('trackId', trackId);
-  event.dataTransfer.setData('source', 'track');
-}
-
-function edDropToTrack(event, trackId) {
-  event.preventDefault();
-  const source = event.dataTransfer.getData('source');
-  
-  if (source === 'library') {
-    const clipIndex = parseInt(event.dataTransfer.getData('clipIndex'));
-    edAddClipToTrack(clipIndex, trackId);
-  } else if (source === 'track') {
-    const clipUid = parseInt(event.dataTransfer.getData('clipUid'));
-    const fromTrackId = parseInt(event.dataTransfer.getData('trackId'));
-    edMoveClipBetweenTracks(clipUid, fromTrackId, trackId);
-  }
-}
-
-function edAddClipToTrack(clipIndex, trackId) {
-  const clip = edState.clips[clipIndex];
+function edAddATimeline(i) {
+  const clip = edCL[i];
   if (!clip) return;
-  
-  // Buscar la pista (primera si no se especifica)
-  const track = edState.tracks.find(t => t.id === (trackId || edState.tracks[0].id));
-  if (!track) return;
-  
-  // Calcular posición (después del último clip en esta pista)
-  const lastClip = track.clips[track.clips.length - 1];
-  const startPx = lastClip ? lastClip.startPx + lastClip.widthPx + 4 : 0;
-  const durationSecs = clip.durationSecs || 5;
-  const widthPx = Math.max(durationSecs * 60, 80);
-  
-  const newClip = {
-    uid: Date.now() + Math.random(),
-    name: clip.name || clip.filename || 'Clip',
-    clipIndex,
-    startPx,
-    widthPx,
-    durationSecs,
-    fileUrl: clip.fileUrl || clip.cloudUrl || null,
-    file: clip.file || null,
-  };
-  
-  track.clips.push(newClip);
-  edRenderTracks();
-  edUpdateTotalDuration();
-  edShowPreview();
-  const empty = document.getElementById('ed-preview-empty');
-  if(empty) empty.style.display = 'none';
-  // Mostrar el canvas
-  const canvas = document.getElementById('ed-canvas');
-  if(canvas) canvas.style.display = 'block';
-}
-
-function edMoveClipBetweenTracks(clipUid, fromTrackId, toTrackId) {
-  const fromTrack = edState.tracks.find(t => t.id === fromTrackId);
-  const toTrack = edState.tracks.find(t => t.id === toTrackId);
-  if (!fromTrack || !toTrack) return;
-  
-  const clipIndex = fromTrack.clips.findIndex(c => c.uid === clipUid);
-  if (clipIndex === -1) return;
-  
-  const [clip] = fromTrack.clips.splice(clipIndex, 1);
-  toTrack.clips.push(clip);
-  edRenderTracks();
-}
-
-function edRemoveClipFromTrack(clipUid, trackId) {
-  const track = edState.tracks.find(t => t.id === trackId);
-  if (!track) return;
-  track.clips = track.clips.filter(c => c.uid !== clipUid);
-  edRenderTracks();
-  edUpdateTotalDuration();
-}
-
-function edSelectClip(uid) {
-  edState.selectedClipId = uid;
-  edRenderTracks();
-  
-  // Mostrar propiedades del clip
-  let foundClip = null;
-  edState.tracks.forEach(t => {
-    const c = t.clips.find(c => c.uid === uid);
-    if (c) foundClip = c;
+  const track = edTR[0];
+  const last = track.clips[track.clips.length-1];
+  const px = last ? last.px + last.wpx + 4 : 4;
+  const secs = clip.durSecs || 5;
+  track.clips.push({
+    uid: Date.now(),
+    clipIdx: i,
+    nombre: clip.nombre,
+    px,
+    wpx: Math.max(Math.round(secs*40), 60),
+    durSecs: secs,
+    url: clip.url,
+    file: clip.file
   });
+  edRenderTracks();
+  edActualizarVideo();
+  const empty = document.getElementById('ed-preview-empty');
+  if (empty) empty.style.display = 'none';
+}
+
+function edNuevaPista() {
+  const cols = ['#ff5520','#00d4ff','#ffe600','#ff2255','#00ff88'];
+  const n = edTR.length + 1;
+  edTR.push({id:n, label:'PISTA '+n, color:cols[n%cols.length], clips:[]});
+  edRenderTracks();
+}
+
+function edQuitarClip(uid, tid) {
+  const t = edTR.find(x => x.id === tid);
+  if (!t) return;
+  t.clips = t.clips.filter(c => c.uid !== uid);
+  edRenderTracks();
+  edActualizarVideo();
+}
+
+function edSelClip(uid, tid) {
+  const t = edTR.find(x => x.id === tid);
+  if (!t) return;
+  const c = t.clips.find(x => x.uid === uid);
+  if (!c) return;
+  const info = document.getElementById('ed-clip-info');
+  if (info) {
+    info.innerHTML = `
+      <div style="background:#181410;border:1px solid #2a2420;border-radius:4px;padding:8px;font-size:10px;color:#fff;">
+        <div style="color:#ffe600;font-family:'DM Mono',monospace;font-size:8px;margin-bottom:4px;">CLIP SELECCIONADO</div>
+        <div style="margin-bottom:4px;">${c.nombre}</div>
+        <div style="color:#00d4ff;font-size:9px;">${edFT(c.durSecs)}</div>
+        <div style="margin-top:8px;font-size:9px;color:rgba(255,255,255,0.4);">
+          ${c.url ? '✓ Video cargado' : '⚠️ Sin video — carga el video en el panel izquierdo'}
+        </div>
+      </div>`;
+  }
+  edTab('clip', document.getElementById('edrtab-clip'));
+}
+
+// Drag desde panel izquierdo
+function edDragPanel(event, i) {
+  event.dataTransfer.setData('tipo','panel');
+  event.dataTransfer.setData('idx', i);
+}
+
+// Drag desde timeline
+function edDragTrack(event, uid, tid) {
+  event.dataTransfer.setData('tipo','track');
+  event.dataTransfer.setData('uid', uid);
+  event.dataTransfer.setData('tid', tid);
+}
+
+// Drop en track
+function edDropTrack(event, tid) {
+  event.preventDefault();
+  const tipo = event.dataTransfer.getData('tipo');
+  const toTrack = edTR.find(t => t.id === tid);
+  if (!toTrack) return;
   
-  if (foundClip) {
-    document.getElementById('ed-clip-props').innerHTML = `
-      <div class="ed-prop-field"><label>Nombre</label><div style="font-size:11px;color:#fff;padding:5px;background:#181410;border-radius:3px;">${foundClip.name}</div></div>
-      <div class="ed-prop-field"><label>Duración</label><div style="font-size:11px;color:#ffe600;padding:5px;background:#181410;border-radius:3px;">${vsTime(foundClip.durationSecs || 0)}</div></div>
-    `;
+  if (tipo === 'panel') {
+    const i = parseInt(event.dataTransfer.getData('idx'));
+    edAddATimeline(i); // simplificado: agrega al track 0 por ahora
+  } else if (tipo === 'track') {
+    const uid = parseInt(event.dataTransfer.getData('uid'));
+    const fromId = parseInt(event.dataTransfer.getData('tid'));
+    if (fromId === tid) return;
+    const fromTrack = edTR.find(t => t.id === fromId);
+    if (!fromTrack) return;
+    const idx = fromTrack.clips.findIndex(c => c.uid === uid);
+    if (idx === -1) return;
+    const [clip] = fromTrack.clips.splice(idx, 1);
+    toTrack.clips.push(clip);
+    edRenderTracks();
   }
 }
 
-// Texto
-let edTextColor = '#fff';
-let edTextPos = 'top';
-
-function edSetTextColor(color, el) {
-  edTextColor = color;
-  document.querySelectorAll('.ed-color-opt').forEach(e => e.classList.remove('on'));
-  el.classList.add('on');
-}
-
-function edSetTextPos(pos, el) {
-  edTextPos = pos;
-  document.querySelectorAll('.ed-pos-btn').forEach(e => e.classList.remove('on'));
-  el.classList.add('on');
-}
-
-function edAddText() {
-  const content = document.getElementById('ed-txt-content').value.trim();
-  if (!content) { alert('Escribe el texto primero'); return; }
-  
-  const size = document.getElementById('ed-txt-size').value;
-  const bg = document.getElementById('ed-txt-bg').value;
-  
-  const layer = {
-    id: Date.now(),
-    text: content,
-    size: parseInt(size),
-    color: edTextColor,
-    position: edTextPos,
-    bg
-  };
-  
-  edState.textLayers.push(layer);
-  edRenderTextLayers();
-  edDrawCurrentFrame();
-  document.getElementById('ed-txt-content').value = '';
-}
-
-function edRenderTextLayers() {
-  const list = document.getElementById('ed-text-layers-list');
-  if (edState.textLayers.length === 0) {
-    list.innerHTML = '<div style="font-size:10px;color:rgba(0,212,255,0.3);text-align:center;padding:8px;">Ningún texto agregado aún</div>';
-    return;
-  }
-  list.innerHTML = edState.textLayers.map(layer => `
-    <div class="ed-tli">
-      <div class="ed-tli-text">${layer.text}</div>
-      <div class="ed-tli-del" onclick="edRemoveText(${layer.id})">✕</div>
-    </div>
-  `).join('');
-}
-
-function edRemoveText(id) {
-  edState.textLayers = edState.textLayers.filter(l => l.id !== id);
-  edRenderTextLayers();
-  edDrawCurrentFrame();
-}
-
-function edPreviewText() {
-  const val = document.getElementById('ed-txt-size').value;
-  document.getElementById('ed-txt-size-val').textContent = val + 'px';
-}
-
-// Canvas y preview
+// ── CANVAS / PREVIEW ──────────────────────────
 function edResizeCanvas() {
   const canvas = document.getElementById('ed-canvas');
-  const preview = document.getElementById('ed-preview');
-  const aspect = edState.aspect;
-  
-  const maxW = preview.clientWidth - 32;
-  const maxH = preview.clientHeight - 32;
-  
+  const wrap = document.getElementById('ed-preview-wrap');
+  if (!canvas || !wrap) return;
+  const mw = wrap.clientWidth - 24, mh = wrap.clientHeight - 24;
   let w, h;
-  if (aspect === '16:9') { w = maxW; h = w * 9/16; if(h > maxH){h=maxH;w=h*16/9;} }
-  else if (aspect === '9:16') { h = maxH; w = h * 9/16; if(w > maxW){w=maxW;h=w*16/9;} }
-  else { w = Math.min(maxW, maxH); h = w; }
-  
-  canvas.width = Math.round(w);
-  canvas.height = Math.round(h);
-  canvas.style.width = Math.round(w) + 'px';
-  canvas.style.height = Math.round(h) + 'px';
+  if (edAspRatio === '16:9') { w=mw; h=Math.round(w*9/16); if(h>mh){h=mh;w=Math.round(h*16/9);} }
+  else if (edAspRatio === '9:16') { h=mh; w=Math.round(h*9/16); if(w>mw){w=mw;h=Math.round(w*16/9);} }
+  else { w=h=Math.min(mw,mh); }
+  canvas.width=w; canvas.height=h;
+  canvas.style.width=w+'px'; canvas.style.height=h+'px';
 }
 
 function edDrawEmpty() {
   const canvas = document.getElementById('ed-canvas');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle = '#0a0806';
+  ctx.fillStyle = '#060402';
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  // Guía visual
-  ctx.strokeStyle = 'rgba(0,212,255,0.1)';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([8,8]);
-  ctx.strokeRect(20,20,canvas.width-40,canvas.height-40);
+  ctx.strokeStyle = 'rgba(0,212,255,0.07)';
+  ctx.setLineDash([5,5]);
+  ctx.strokeRect(10,10,canvas.width-20,canvas.height-20);
   ctx.setLineDash([]);
-  ctx.fillStyle = 'rgba(0,212,255,0.2)';
-  ctx.font = 'bold 14px DM Mono, monospace';
-  ctx.textAlign = 'center';
-  ctx.fillText('Carga los videos de tus clips', canvas.width/2, canvas.height/2 - 20);
-  ctx.font = '11px DM Mono, monospace';
-  ctx.fillStyle = 'rgba(0,212,255,0.12)';
-  ctx.fillText('Haz clic en "Cargar" en cada clip del panel izquierdo', canvas.width/2, canvas.height/2 + 10);
+  ctx.fillStyle='rgba(0,212,255,0.1)';
+  ctx.font='bold 11px monospace';
+  ctx.textAlign='center';
+  ctx.fillText('Agrega clips al timeline', canvas.width/2, canvas.height/2);
 }
 
-function edDrawCurrentFrame() {
+function edDrawFrame() {
   const canvas = document.getElementById('ed-canvas');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  
-  // Fondo
   ctx.fillStyle = '#000';
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  
-  // Dibujar video actual si hay
-  const vid = document.getElementById('ed-preview-video-hidden');
-  if (vid && !vid.paused && !vid.ended) {
-    ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
-  } else if (vid && vid.readyState >= 2) {
-    ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+  if (edVidEl && edVidEl.readyState >= 2) {
+    try { ctx.drawImage(edVidEl, 0, 0, canvas.width, canvas.height); } catch(e){}
   }
-  
-  // Dibujar capas de texto
-  edState.textLayers.forEach(layer => {
-    const fs = layer.size;
-    ctx.font = `bold ${fs}px Syne, sans-serif`;
+  // Textos
+  edTX.forEach(t => {
+    const fs = t.size || 32;
+    ctx.font = `bold ${fs}px sans-serif`;
+    let x = canvas.width/2, y = fs+12;
     ctx.textAlign = 'center';
-    
-    // Posición
-    let x = canvas.width / 2;
-    let y;
-    const pad = fs + 16;
-    
-    if (layer.position.includes('top')) y = pad;
-    else if (layer.position.includes('bottom')) y = canvas.height - 16;
-    else y = canvas.height / 2;
-    
-    if (layer.position.includes('left')) { x = 16; ctx.textAlign = 'left'; }
-    else if (layer.position.includes('right')) { x = canvas.width - 16; ctx.textAlign = 'right'; }
-    
-    // Fondo del texto
-    if (layer.bg !== 'none') {
-      const metrics = ctx.measureText(layer.text);
-      const tw = metrics.width;
-      const th = fs;
-      const bx = ctx.textAlign === 'left' ? x - 8 : ctx.textAlign === 'right' ? x - tw - 8 : x - tw/2 - 8;
-      const by = y - th - 4;
-      ctx.fillStyle = layer.bg === 'dark' ? 'rgba(0,0,0,0.6)' : layer.bg === 'black' ? 'rgba(0,0,0,0.9)' : 'rgba(232,66,10,0.85)';
-      ctx.fillRect(bx, by, tw + 16, th + 12);
+    if (t.pos.includes('bottom')) y = canvas.height - 12;
+    if (t.pos === 'center' || t.pos === 'left' || t.pos === 'right') y = canvas.height/2 + fs/2;
+    if (t.pos.includes('left')) { x=12; ctx.textAlign='left'; }
+    if (t.pos.includes('right')) { x=canvas.width-12; ctx.textAlign='right'; }
+    const m = ctx.measureText(t.texto);
+    const tw = m.width;
+    if (t.fondo !== 'none') {
+      const bx = ctx.textAlign==='left'?x-5:ctx.textAlign==='right'?x-tw-5:x-tw/2-5;
+      ctx.fillStyle = t.fondo==='orange'?'rgba(232,66,10,0.85)':t.fondo==='black'?'rgba(0,0,0,0.9)':'rgba(0,0,0,0.55)';
+      ctx.fillRect(bx, y-fs-2, tw+10, fs+10);
     }
-    
-    // Texto
-    ctx.fillStyle = layer.color;
-    ctx.shadowColor = layer.color;
-    ctx.shadowBlur = 8;
-    ctx.fillText(layer.text, x, y);
+    ctx.shadowColor = t.color; ctx.shadowBlur = 5;
+    ctx.fillStyle = t.color;
+    ctx.fillText(t.texto, x, y);
     ctx.shadowBlur = 0;
   });
 }
 
-function edShowPreview() {
-  // Buscar primer clip con video en el timeline
-  for (const track of edState.tracks) {
-    for (const clip of track.clips) {
-      const url = clip.fileUrl || (clip.file ? URL.createObjectURL(clip.file) : null);
-      if (url) {
-        let hidden = document.getElementById('ed-preview-video-hidden');
-        if (!hidden) {
-          hidden = document.createElement('video');
-          hidden.id = 'ed-preview-video-hidden';
-          hidden.style.cssText = 'position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;';
-          document.body.appendChild(hidden);
+function edActualizarVideo() {
+  // Buscar primer clip con video en tracks
+  for (const t of edTR) {
+    for (const c of t.clips) {
+      if (c.url) {
+        if (!edVidEl) {
+          edVidEl = document.createElement('video');
+          edVidEl.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;';
+          document.body.appendChild(edVidEl);
         }
-        if (hidden.src !== url) {
-          hidden.src = url;
-          hidden.load();
+        if (edVidEl.src !== c.url) {
+          edVidEl.src = c.url;
+          edVidEl.load();
         }
-        hidden.onloadeddata = () => {
-          edDrawCurrentFrame();
+        edVidEl.onloadeddata = () => {
+          edDrawFrame();
+          const timeEl = document.getElementById('ed-time');
+          if (timeEl && edVidEl.duration) timeEl.textContent = '0:00 / ' + edFT(edVidEl.duration);
         };
-        hidden.onerror = (e) => console.error('Error cargando video:', e);
         return;
       }
     }
   }
-  // Si no hay video, buscar en clips disponibles con video
-  for (const clip of edState.clips) {
-    const url = clip.fileUrl || (clip.file ? URL.createObjectURL(clip.file) : null);
-    if (url) {
-      // Agregar automáticamente al primer track
-      edAddClipToTrack(edState.clips.indexOf(clip), edState.tracks[0].id);
+  edDrawEmpty();
+}
+
+// ── REPRODUCCIÓN ──────────────────────────────
+function edPlay() {
+  const btn = document.getElementById('ed-playbtn');
+  if (!edVidEl || !edVidEl.src) { alert('Agrega un clip con video al timeline primero'); return; }
+  if (edVidEl.paused) {
+    edVidEl.play();
+    btn.textContent = '⏸ Pausa';
+    edPlaying = true;
+    edLoop();
+  } else {
+    edVidEl.pause();
+    btn.textContent = '▶ Play';
+    edPlaying = false;
+  }
+}
+
+function edLoop() {
+  if (!edPlaying) return;
+  edDrawFrame();
+  if (edVidEl && edVidEl.duration) {
+    const pct = (edVidEl.currentTime / edVidEl.duration) * 100;
+    const fill = document.getElementById('ed-prog-fill');
+    const time = document.getElementById('ed-time');
+    if (fill) fill.style.width = pct + '%';
+    if (time) time.textContent = edFT(edVidEl.currentTime) + ' / ' + edFT(edVidEl.duration);
+    if (edVidEl.ended) {
+      edPlaying = false;
+      document.getElementById('ed-playbtn').textContent = '▶ Play';
       return;
     }
   }
+  requestAnimationFrame(edLoop);
 }
 
-// Reproducción
-function edTogglePlay() {
-  const vid = document.getElementById('ed-preview-video-hidden');
-  const btn = document.getElementById('ed-playbtn');
-  
-  if (!vid) return;
-  
-  if (vid.paused) {
-    vid.play();
-    btn.textContent = '⏸ Pausa';
-    edState.playing = true;
-    edPlayLoop();
-  } else {
-    vid.pause();
-    btn.textContent = '▶ Play';
-    edState.playing = false;
-  }
+function edSeek(event) {
+  if (!edVidEl || !edVidEl.duration) return;
+  const rect = document.getElementById('ed-prog').getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+  edVidEl.currentTime = pct * edVidEl.duration;
+  edDrawFrame();
 }
 
-function edPlayLoop() {
-  if (!edState.playing) return;
-  edDrawCurrentFrame();
-  edUpdateProgress();
-  requestAnimationFrame(edPlayLoop);
-}
-
-function edUpdateProgress() {
-  const vid = document.getElementById('ed-preview-video-hidden');
-  if (!vid || !vid.duration) return;
-  const pct = (vid.currentTime / vid.duration) * 100;
-  document.getElementById('ed-progress-fill').style.width = pct + '%';
-  document.getElementById('ed-time').textContent = vsTime(vid.currentTime) + ' / ' + vsTime(vid.duration);
-}
-
-function edSeekProgress(event) {
-  const vid = document.getElementById('ed-preview-video-hidden');
-  if (!vid || !vid.duration) return;
-  const rect = event.target.getBoundingClientRect();
-  const pct = (event.clientX - rect.left) / rect.width;
-  vid.currentTime = pct * vid.duration;
-  edDrawCurrentFrame();
-}
-
-function edUpdateTotalDuration() {
-  let maxEnd = 0;
-  edState.tracks.forEach(t => {
-    t.clips.forEach(c => {
-      const end = c.startPx / 60 + (c.durationSecs || 0);
-      if (end > maxEnd) maxEnd = end;
-    });
-  });
-  edState.totalDuration = maxEnd;
-  document.getElementById('ed-time').textContent = '0:00 / ' + vsTime(maxEnd);
-}
-
-// Herramientas
-function edSetTool(tool) {
-  edState.currentTool = tool;
-  document.querySelectorAll('.ed-tool').forEach(b => b.classList.remove('on'));
-  document.getElementById('ed-tool-' + tool).classList.add('on');
-}
-
-function edRightTab(tab, el) {
-  document.querySelectorAll('.ed-right-tab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
-  document.getElementById('ed-panel-text').style.display = tab === 'text' ? 'block' : 'none';
-  document.getElementById('ed-panel-clip').style.display = tab === 'clip' ? 'block' : 'none';
-  document.getElementById('ed-panel-audio').style.display = tab === 'audio' ? 'block' : 'none';
-}
-
-function edSetAspect(aspect, el) {
-  edState.aspect = aspect;
-  document.querySelectorAll('.ed-aspect-btn').forEach(b => b.classList.remove('on'));
-  el.classList.add('on');
+// ── ASPECTO ───────────────────────────────────
+function edAspecto(ratio, el) {
+  edAspRatio = ratio;
+  document.querySelectorAll('.edaspect-btn').forEach(b => b.classList.remove('on'));
+  if (el) el.classList.add('on');
   edResizeCanvas();
-  edDrawCurrentFrame();
+  edDrawFrame();
 }
 
-// Audio
-function edLoadAudio(event) {
+// ── TABS DERECHA ──────────────────────────────
+function edTab(tab, el) {
+  document.querySelectorAll('.edrtab').forEach(t => t.classList.remove('on'));
+  if (el) el.classList.add('on');
+  ['text','clip','audio'].forEach(t => {
+    const p = document.getElementById('edpanel-'+t);
+    if (p) p.style.display = t === tab ? 'block' : 'none';
+  });
+}
+
+function edSetTool(tool) {
+  document.querySelectorAll('.edtool').forEach(b => b.classList.remove('on'));
+  const btn = document.getElementById('edtool-'+tool);
+  if (btn) btn.classList.add('on');
+  edTab(tool, document.getElementById('edrtab-'+tool));
+}
+
+// ── TEXTO ─────────────────────────────────────
+function edColor(color, el) {
+  edTxtColor = color;
+  document.querySelectorAll('.edcolor').forEach(e => e.classList.remove('on'));
+  if (el) el.classList.add('on');
+}
+
+function edPos(pos, el) {
+  edTxtPos = pos;
+  document.querySelectorAll('.edpos-btn').forEach(e => e.classList.remove('on'));
+  if (el) el.classList.add('on');
+}
+
+function edAddTexto() {
+  const txt = document.getElementById('ed-txt');
+  const texto = txt ? txt.value.trim() : '';
+  if (!texto) { alert('Escribe el texto primero'); return; }
+  edTX.push({
+    id: Date.now(),
+    texto,
+    size: parseInt(document.getElementById('ed-size').value || '32'),
+    color: edTxtColor,
+    pos: edTxtPos,
+    fondo: document.getElementById('ed-fondo').value || 'none'
+  });
+  if (txt) txt.value = '';
+  edRenderTextos();
+  edDrawFrame();
+}
+
+function edRenderTextos() {
+  const lista = document.getElementById('ed-textos-lista');
+  if (!lista) return;
+  if (edTX.length === 0) {
+    lista.innerHTML = '<div class="edtxt-empty">Sin textos aún</div>';
+    return;
+  }
+  lista.innerHTML = edTX.map(t => `
+    <div class="edtxt-item">
+      <div class="edtxt-dot" style="background:${t.color};box-shadow:0 0 4px ${t.color}88;"></div>
+      <div class="edtxt-text">${t.texto}</div>
+      <div class="edtxt-del" onclick="edBorrarTexto(${t.id})">✕</div>
+    </div>
+  `).join('');
+}
+
+function edBorrarTexto(id) {
+  edTX = edTX.filter(t => t.id !== id);
+  edRenderTextos();
+  edDrawFrame();
+}
+
+// ── AUDIO ─────────────────────────────────────
+function edCargarAudio(event) {
   const file = event.target.files[0];
   if (!file) return;
-  edState.audioFile = file;
-  document.getElementById('ed-audio-info').style.display = 'block';
-  document.getElementById('ed-audio-name').textContent = file.name;
+  const info = document.getElementById('ed-audio-info');
+  if (info) { info.style.display='block'; info.textContent = '🎵 '+file.name; }
 }
 
-// Exportar
+// ── EXPORTAR ──────────────────────────────────
 async function edExport() {
-  // Verificar que hay clips en el timeline
-  const hasClips = edState.tracks.some(t => t.clips.length > 0);
-  if (!hasClips) { alert('Agrega clips al timeline primero'); return; }
-
-  edShowProc('Preparando exportación...');
-
+  const tieneClips = edTR.some(t => t.clips.length > 0);
+  if (!tieneClips) { alert('Agrega clips al timeline primero'); return; }
+  
+  const clipsConVideo = edTR.flatMap(t => t.clips).filter(c => c.url || c.file);
+  if (clipsConVideo.length === 0) {
+    alert('Carga el video original de tus clips primero.\n\nEn el panel izquierdo, presiona "📁 Cargar video" en cada clip.');
+    return;
+  }
+  
+  const proc = document.getElementById('ed-proc');
+  const msg = document.getElementById('ed-proc-msg');
+  if (proc) proc.classList.add('on');
+  if (msg) msg.textContent = 'Cargando FFmpeg...';
+  
   try {
-    // Recolectar todos los videos en orden del timeline
-    const allClips = [];
-    edState.tracks[0].clips.forEach(clip => {
-      if (clip.fileUrl || clip.file) {
-        allClips.push({ url: clip.fileUrl, file: clip.file, duration: clip.durationSecs });
-      }
-    });
-
-    if (allClips.length === 0) { edHideProc(); alert('Los clips no tienen video cargado. Sube los videos originales.'); return; }
-
     if (!ffmpegLoaded) {
-      edShowProc('Cargando FFmpeg...');
       await ffmpeg.load();
       ffmpegLoaded = true;
     }
-
-    edShowProc('Procesando clips...');
-
-    // Si hay un solo clip
-    if (allClips.length === 1) {
-      const clip = allClips[0];
-      const data = clip.file ? clip.file : await fetch(clip.url).then(r => r.blob());
-      ffmpeg.FS('writeFile', 'input0.mp4', await fetchFile(data));
-
-      // Construir filtros de texto
-      let vf = '';
-      if (edState.textLayers.length > 0) {
-        vf = edState.textLayers.map(layer => {
-          const pos = edGetFFmpegPos(layer.position);
-          const color = layer.color.replace('#','');
-          return `drawtext=text='${layer.text.replace(/'/g,"\\'")}':fontsize=${layer.size}:fontcolor=${color}:${pos}:box=1:boxcolor=black@0.4:boxborderw=4`;
-        }).join(',');
-      }
-
-      edShowProc('Exportando en MP4...');
-      const filterArgs = vf ? ['-vf', vf] : [];
-      await ffmpeg.run('-i','input0.mp4',...filterArgs,'-c:v','libx264','-c:a','aac','-movflags','faststart','output.mp4');
-
-      const outData = ffmpeg.FS('readFile','output.mp4');
-      const blob = new Blob([outData.buffer], {type:'video/mp4'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'dunamixfy-editor.mp4'; a.click();
-      URL.revokeObjectURL(url);
-      ffmpeg.FS('unlink','input0.mp4');
-      ffmpeg.FS('unlink','output.mp4');
-
-    } else {
-      // Múltiples clips — concatenar
-      edShowProc('Uniendo clips...');
-      for (let i = 0; i < allClips.length; i++) {
-        const clip = allClips[i];
-        const data = clip.file ? clip.file : await fetch(clip.url).then(r => r.blob());
-        ffmpeg.FS('writeFile', `input${i}.mp4`, await fetchFile(data));
-      }
-
-      // Crear archivo de lista para concat
-      const listContent = allClips.map((_,i) => `file 'input${i}.mp4'`).join('\n');
-      ffmpeg.FS('writeFile', 'list.txt', listContent);
-
-      edShowProc('Exportando MP4 final...');
-      await ffmpeg.run('-f','concat','-safe','0','-i','list.txt','-c:v','libx264','-c:a','aac','-movflags','faststart','output.mp4');
-
-      const outData = ffmpeg.FS('readFile','output.mp4');
-      const blob = new Blob([outData.buffer], {type:'video/mp4'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'dunamixfy-editor.mp4'; a.click();
-      URL.revokeObjectURL(url);
-
-      // Limpiar
-      allClips.forEach((_,i) => ffmpeg.FS('unlink', `input${i}.mp4`));
-      ffmpeg.FS('unlink','list.txt');
-      ffmpeg.FS('unlink','output.mp4');
+    if (msg) msg.textContent = 'Procesando video...';
+    
+    const clip = clipsConVideo[0];
+    const fileData = clip.file || await fetch(clip.url).then(r => r.blob());
+    ffmpeg.FS('writeFile','input.mp4', await fetchFile(fileData));
+    
+    let vfArgs = [];
+    if (edTX.length > 0) {
+      const posMap = {
+        'top':'x=(w-tw)/2:y=20','top-left':'x=20:y=20','top-right':'x=w-tw-20:y=20',
+        'center':'x=(w-tw)/2:y=(h-th)/2','left':'x=20:y=(h-th)/2','right':'x=w-tw-20:y=(h-th)/2',
+        'bottom':'x=(w-tw)/2:y=h-th-20','bottom-left':'x=20:y=h-th-20','bottom-right':'x=w-tw-20:y=h-th-20'
+      };
+      const filtros = edTX.map(t => {
+        const pos = posMap[t.pos] || posMap['top'];
+        const col = t.color.replace('#','');
+        const safe = t.texto.replace(/'/g,"\\'").replace(/:/g,'\\:');
+        return `drawtext=text='${safe}':fontsize=${t.size}:fontcolor=${col}:${pos}:box=1:boxcolor=black@0.4:boxborderw=5`;
+      });
+      vfArgs = ['-vf', filtros.join(',')];
     }
-
-    edHideProc();
-    alert('✅ Video exportado exitosamente en MP4');
-
+    
+    if (msg) msg.textContent = 'Exportando MP4...';
+    await ffmpeg.run('-i','input.mp4',...vfArgs,'-c:v','libx264','-c:a','aac','-movflags','faststart','output.mp4');
+    
+    const data = ffmpeg.FS('readFile','output.mp4');
+    const blob = new Blob([data.buffer],{type:'video/mp4'});
+    const url = URL.createObjectURL(blob);
+    const nombre = (clipsConVideo[0].nombre||'clip').replace(/\s+/g,'-').toLowerCase();
+    const a = document.createElement('a');
+    a.href = url; a.download = nombre+'-editado.mp4'; a.click();
+    URL.revokeObjectURL(url);
+    try { ffmpeg.FS('unlink','input.mp4'); ffmpeg.FS('unlink','output.mp4'); } catch(e){}
+    if (proc) proc.classList.remove('on');
+    
   } catch(err) {
-    edHideProc();
-    alert('Error exportando: ' + err.message);
+    if (proc) proc.classList.remove('on');
+    console.error(err);
+    alert('Error al exportar: ' + err.message);
   }
 }
 
-function edGetFFmpegPos(pos) {
-  const map = {
-    'top': 'x=(w-tw)/2:y=20',
-    'top-left': 'x=20:y=20',
-    'top-right': 'x=w-tw-20:y=20',
-    'center': 'x=(w-tw)/2:y=(h-th)/2',
-    'left': 'x=20:y=(h-th)/2',
-    'right': 'x=w-tw-20:y=(h-th)/2',
-    'bottom': 'x=(w-tw)/2:y=h-th-20',
-    'bottom-left': 'x=20:y=h-th-20',
-    'bottom-right': 'x=w-tw-20:y=h-th-20'
-  };
-  return map[pos] || map['top'];
+// ── UTILIDADES ────────────────────────────────
+function edLimpiar() {
+  if (!confirm('¿Limpiar el timeline y empezar con un video nuevo?')) return;
+  // Detener reproducción
+  if (edVidEl) {
+    edVidEl.pause();
+    edVidEl.src = '';
+  }
+  edPlaying = false;
+  edTX = [];
+  // Limpiar clips de los tracks
+  edTR.forEach(t => t.clips = []);
+  // Limpiar clips locales (los subidos en esta sesión, no los del archivo)
+  edCL = edCL.filter(c => c.guardado); // mantener los del archivo, quitar los subidos
+  // Reset UI
+  const btn = document.getElementById('ed-playbtn');
+  if (btn) btn.textContent = '▶ Play';
+  const fill = document.getElementById('ed-prog-fill');
+  if (fill) fill.style.width = '0%';
+  const time = document.getElementById('ed-time');
+  if (time) time.textContent = '0:00 / 0:00';
+  const empty = document.getElementById('ed-preview-empty');
+  if (empty) empty.style.display = 'block';
+  edRenderClips();
+  edRenderTracks();
+  edRenderTextos();
+  edDrawEmpty();
+  edAviso('✓ Timeline limpiado — sube o selecciona un video nuevo', true);
 }
 
-function edShowProc(msg, sub) {
-  document.getElementById('ed-proc-msg').textContent = msg || 'Procesando...';
-  document.getElementById('ed-proc-sub').textContent = sub || '';
-  document.getElementById('ed-processing').classList.add('on');
+function edFT(s) {
+  if (!s || isNaN(s)) return '0:00';
+  return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
 }
-function edHideProc() { document.getElementById('ed-processing').classList.remove('on'); }
 
-// Editor init se llama directamente desde los botones
-
-// Agregar botón al Video Studio para abrir Editor Avanzado
+// ── INICIALIZACIÓN ────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Agregar botón en topbar del studio
-  const studioNav = document.querySelector('.vs-nav');
-  if (studioNav) {
-    const edBtn = document.createElement('button');
-    edBtn.className = 'vs-new';
-    edBtn.style.cssText = 'background:rgba(255,230,0,0.1);border-color:rgba(255,230,0,0.3);color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.5);margin-left:6px;';
-    edBtn.textContent = '✂ Editor Avanzado';
-    edBtn.onclick = () => { goTo('page-editor'); setTimeout(()=>{edInit();edRenderClips();},100); };
-    studioNav.appendChild(edBtn);
+  // Botón en Video Studio
+  const nav = document.querySelector('.vs-nav');
+  if (nav) {
+    const btn = document.createElement('button');
+    btn.className = 'vs-new';
+    btn.style.cssText = 'background:rgba(255,230,0,0.1);border-color:rgba(255,230,0,0.3);color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.4);margin-left:6px;';
+    btn.textContent = '✂ Editor Avanzado';
+    btn.onclick = () => { goTo('page-editor'); setTimeout(edInit,100); };
+    nav.appendChild(btn);
   }
-
-  // Agregar al bottom nav
+  // Bottom nav
   const bnav = document.getElementById('bottom-nav');
   if (bnav) {
     const btn = document.createElement('button');
     btn.className = 'bnav-btn';
     btn.id = 'bnav-advanced';
     btn.textContent = '✂·Editor';
-    btn.style.cssText = 'color:rgba(255,230,0,0.4);';
-    btn.onclick = () => { goTo('page-editor'); setTimeout(()=>{edInit();edRenderClips();},100); };
+    btn.style.color = 'rgba(255,230,0,0.4)';
+    btn.onclick = () => { goTo('page-editor'); setTimeout(edInit,100); };
     bnav.appendChild(btn);
   }
 });
 </script>
+
+
+</body>
+</html>
