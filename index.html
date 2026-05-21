@@ -1164,457 +1164,653 @@ document.addEventListener('DOMContentLoaded',()=>{vsRenderClips();vsUpdateArchCo
 </div>
 
 
-<!-- ══════════════════════════════════════
-     CSS EDITOR AVANZADO
-══════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════
+     EDITOR AVANZADO v2 — MARKETING STUDIO
+════════════════════════════════════════════ -->
 <style>
-#page-editor { background:#060504; }
-.edwrap { display:flex; flex-direction:column; height:100vh; overflow:hidden; }
+/* ── BASE ───────────────────────────────────── */
+#page-editor{background:#050403;}
+.mst{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
 
-/* Topbar */
-.edtop { background:#0e0c0a; border-bottom:1px solid #2a2420; height:48px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; flex-shrink:0; }
-.edback { display:flex;align-items:center;gap:6px;padding:4px 12px;border:1px solid rgba(0,212,255,0.3);background:transparent;color:#00d4ff;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;text-shadow:0 0 6px rgba(0,212,255,0.5); }
-.edtitle { font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#00d4ff;text-shadow:0 0 10px rgba(0,212,255,0.6); }
-.edtools { display:flex;gap:5px;align-items:center; }
-.edtool { padding:4px 12px;border:1px solid #2a2420;background:transparent;color:rgba(0,212,255,0.4);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all 0.2s; }
-.edtool.on { background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.35);color:#00d4ff; }
-.edexport { padding:5px 16px;background:rgba(255,85,32,0.15);border:1px solid rgba(255,85,32,0.45);color:#ff5520;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;margin-left:8px;text-shadow:0 0 5px rgba(255,85,32,0.5); }
+/* ── TOPBAR ─────────────────────────────────── */
+.mst-top{background:#0a0806;border-bottom:1px solid #252018;height:50px;display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0;}
+.mst-back{padding:4px 10px;border:1px solid rgba(0,212,255,0.3);background:transparent;color:#00d4ff;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;}
+.mst-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#00d4ff;text-shadow:0 0 10px rgba(0,212,255,0.5);margin-right:auto;}
+.mst-clear{padding:4px 10px;border:1px solid rgba(255,34,85,0.3);background:rgba(255,34,85,0.06);color:#ff2255;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;}
+.mst-export-wrap{display:flex;gap:4px;}
+.mst-exp{padding:5px 12px;border:1px solid rgba(255,85,32,0.4);background:rgba(255,85,32,0.12);color:#ff5520;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;text-shadow:0 0 4px rgba(255,85,32,0.4);}
+.mst-exp:hover{background:rgba(255,85,32,0.25);}
+.mst-exp.meta{border-color:rgba(0,212,255,0.4);background:rgba(0,212,255,0.08);color:#00d4ff;}
+.mst-exp.tiktok{border-color:rgba(255,34,85,0.4);background:rgba(255,34,85,0.08);color:#ff2255;}
+.mst-exp.whatsapp{border-color:rgba(0,255,136,0.4);background:rgba(0,255,136,0.08);color:#00ff88;}
 
-/* Body 3 columnas */
-.edbody { display:grid;grid-template-columns:210px 1fr 230px;flex:1;min-height:0;overflow:hidden; }
+/* ── BODY ───────────────────────────────────── */
+.mst-body{display:grid;grid-template-columns:240px 1fr 260px;flex:1;min-height:0;overflow:hidden;}
 
-/* Panel izq */
-.edleft { background:#0e0c0a;border-right:1px solid #2a2420;display:flex;flex-direction:column;overflow:hidden; }
-.edleft-title { font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.4);padding:10px 12px;border-bottom:1px solid #2a2420;display:flex;align-items:center;justify-content:space-between; }
-.edplus-btn { font-size:18px;color:#ff5520;cursor:pointer;text-shadow:0 0 5px rgba(255,85,32,0.5);line-height:1; }
-.ednotice { display:none;margin:4px 8px;padding:5px 8px;border-radius:3px;font-family:'DM Mono',monospace;font-size:8px;text-align:center;border:1px solid; }
-.edupload { margin:8px;border:1px dashed rgba(0,212,255,0.2);border-radius:6px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.2s; }
-.edupload:hover { border-color:rgba(0,212,255,0.5);background:rgba(0,212,255,0.02); }
-.edupload-icon { font-size:20px;opacity:0.2;margin-bottom:4px; }
-.edupload-txt { font-size:9px;color:rgba(0,212,255,0.35);line-height:1.5;margin-bottom:6px; }
-.edupload-btn { padding:4px 12px;background:rgba(255,85,32,0.1);border:1px solid rgba(255,85,32,0.3);color:#ff5520;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;border-radius:2px; }
-.edclips { flex:1;overflow-y:auto;padding:6px; }
-.edclip { background:#181410;border:1px solid #2a2420;border-radius:5px;padding:8px;margin-bottom:6px;transition:border-color 0.2s; }
-.edclip.ready { border-color:rgba(0,255,136,0.25); }
-.edclip-thumb { height:46px;background:#0a0806;border-radius:3px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:5px;font-size:16px; }
-.edclip-dur { position:absolute;bottom:2px;right:3px;font-family:'DM Mono',monospace;font-size:7px;color:#ffe600; }
-.edclip-badge { position:absolute;top:2px;left:2px;background:rgba(0,255,136,0.2);border:1px solid rgba(0,255,136,0.4);border-radius:2px;padding:1px 4px;font-size:6px;color:#00ff88;font-family:'DM Mono',monospace; }
-.edclip-name { font-size:10px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px; }
-.edclip-tag { font-size:7px;color:#ff5520;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-.edclip-actions { display:flex;gap:4px; }
-.edclip-load { flex:1;padding:3px;background:rgba(255,230,0,0.06);border:1px solid rgba(255,230,0,0.25);border-radius:2px;font-size:7px;color:#ffe600;cursor:pointer;font-family:'DM Mono',monospace;text-align:center; }
-.edclip-loaded { flex:1;padding:3px;background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:2px;font-size:7px;color:#00ff88;text-align:center;font-family:'DM Mono',monospace; }
-.edclip-add { padding:3px 10px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:2px;font-size:14px;color:#00d4ff;cursor:pointer;font-weight:bold; }
-.edclip-empty { text-align:center;padding:20px 10px;font-size:10px;color:rgba(0,212,255,0.25);line-height:1.8; }
+/* ── PANEL IZQUIERDO — BIBLIOTECA ────────────── */
+.mst-lib{background:#0a0806;border-right:1px solid #252018;display:flex;flex-direction:column;overflow:hidden;}
+.mst-lib-tabs{display:flex;border-bottom:1px solid #252018;flex-shrink:0;}
+.mst-ltab{flex:1;padding:7px;text-align:center;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:rgba(0,212,255,0.3);border-bottom:2px solid transparent;transition:all 0.2s;}
+.mst-ltab.on{color:#00d4ff;border-bottom-color:#00d4ff;}
 
-/* Centro */
-.edcenter { display:flex;flex-direction:column;overflow:hidden;min-height:0; }
-.edpreview { flex:1;background:#000;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden; }
-.edcanvas { display:block;max-width:100%;max-height:100%; }
-.edpreview-empty { position:absolute;text-align:center;color:rgba(0,212,255,0.15);pointer-events:none; }
-.edpreview-empty div:first-child { font-size:36px;margin-bottom:6px;opacity:0.3; }
-.edpreview-empty div:last-child { font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px; }
+/* Videos tab */
+.mst-lib-content{flex:1;overflow-y:auto;padding:8px;}
+.mst-upload-btn{width:100%;padding:10px;border:1px dashed rgba(0,212,255,0.2);background:transparent;border-radius:5px;cursor:pointer;text-align:center;margin-bottom:8px;transition:all 0.2s;}
+.mst-upload-btn:hover{border-color:rgba(0,212,255,0.5);background:rgba(0,212,255,0.02);}
+.mst-upload-icon{font-size:18px;opacity:0.2;display:block;margin-bottom:3px;}
+.mst-upload-txt{font-family:'DM Mono',monospace;font-size:7px;color:rgba(0,212,255,0.35);letter-spacing:1px;}
+.mst-notice{display:none;padding:5px 8px;border-radius:3px;font-family:'DM Mono',monospace;font-size:8px;text-align:center;border:1px solid;margin-bottom:6px;}
+
+/* Video card */
+.mst-vcard{background:#141210;border:1px solid #252018;border-radius:5px;padding:7px;margin-bottom:5px;cursor:pointer;transition:all 0.2s;position:relative;}
+.mst-vcard:hover{border-color:rgba(0,212,255,0.2);}
+.mst-vcard.active{border-color:rgba(0,212,255,0.5);box-shadow:0 0 8px rgba(0,212,255,0.1);}
+.mst-vthumb{height:52px;background:#0a0806;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:5px;position:relative;overflow:hidden;}
+.mst-vthumb video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.6;}
+.mst-vdur{position:absolute;bottom:2px;right:3px;font-family:'DM Mono',monospace;font-size:7px;color:#ffe600;background:rgba(0,0,0,0.7);padding:1px 3px;border-radius:2px;}
+.mst-vname{font-size:10px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
+.mst-vlanding{font-size:8px;color:#ff5520;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;}
+.mst-vactions{display:flex;gap:3px;}
+.mst-vadd{flex:1;padding:3px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);border-radius:2px;font-size:8px;color:#00d4ff;cursor:pointer;text-align:center;font-family:'DM Mono',monospace;}
+.mst-vdel{padding:3px 6px;background:rgba(255,34,85,0.06);border:1px solid rgba(255,34,85,0.2);border-radius:2px;font-size:8px;color:#ff2255;cursor:pointer;}
+.mst-vload{flex:1;padding:3px;background:rgba(255,230,0,0.06);border:1px solid rgba(255,230,0,0.2);border-radius:2px;font-size:8px;color:#ffe600;cursor:pointer;text-align:center;font-family:'DM Mono',monospace;}
+.mst-vready{flex:1;padding:3px;background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.18);border-radius:2px;font-size:8px;color:#00ff88;text-align:center;font-family:'DM Mono',monospace;}
+
+/* ── CENTRO ─────────────────────────────────── */
+.mst-center{display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+
+/* Preview */
+.mst-preview{flex:1;background:#000;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.mst-canvas{display:block;}
+.mst-empty{position:absolute;text-align:center;color:rgba(0,212,255,0.12);pointer-events:none;}
+.mst-empty-icon{font-size:32px;opacity:0.3;margin-bottom:6px;}
+.mst-empty-txt{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;}
+.mst-text-overlay-handle{position:absolute;cursor:move;user-select:none;display:flex;align-items:center;gap:4px;padding:2px 4px;border:1px solid rgba(255,255,255,0.2);border-radius:2px;}
+.mst-text-handle-del{width:14px;height:14px;background:rgba(255,34,85,0.6);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;cursor:pointer;color:#fff;flex-shrink:0;}
+
+/* Cortador */
+.mst-cutter{background:#0a0806;border-top:1px solid #252018;padding:8px 12px;flex-shrink:0;display:none;}
+.mst-cutter.on{display:block;}
+.mst-cutter-title{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:#ffe600;margin-bottom:6px;}
+.mst-cut-timeline{height:32px;background:#141210;border-radius:3px;position:relative;margin-bottom:6px;cursor:pointer;overflow:hidden;}
+.mst-cut-filled{position:absolute;top:0;bottom:0;background:rgba(255,85,32,0.2);border:1px solid rgba(255,85,32,0.4);}
+.mst-cut-handle{position:absolute;top:0;bottom:0;width:10px;background:#ff5520;cursor:ew-resize;display:flex;align-items:center;justify-content:center;}
+.mst-cut-handle::after{content:'⋮';font-size:10px;color:#fff;}
+.mst-cut-handle.end{background:#00d4ff;}
+.mst-cut-bottom{display:flex;align-items:center;gap:8px;}
+.mst-cut-time{font-family:'DM Mono',monospace;font-size:9px;color:#ffe600;}
+.mst-cut-btn{padding:4px 12px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:#00d4ff;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;border-radius:2px;}
 
 /* Playbar */
-.edplaybar { background:#0e0c0a;border-top:1px solid #2a2420;padding:8px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0; }
-.edplaybtn { padding:5px 14px;border:1px solid rgba(255,85,32,0.35);background:rgba(255,85,32,0.1);color:#ff5520;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;border-radius:2px;text-shadow:0 0 5px rgba(255,85,32,0.4); }
-.edtime { font-family:'DM Mono',monospace;font-size:10px;color:#ffe600;text-shadow:0 0 4px rgba(255,230,0,0.4);white-space:nowrap; }
-.edprog { flex:1;height:4px;background:#2a2420;border-radius:2px;cursor:pointer;position:relative; }
-.edprog-fill { height:100%;width:0%;background:#ff5520;border-radius:2px;box-shadow:0 0 6px rgba(255,85,32,0.4);transition:width 0.1s; }
-.edaspect { display:flex;gap:3px; }
-.edaspect-btn { padding:3px 8px;border:1px solid #2a2420;background:transparent;color:rgba(0,212,255,0.35);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;border-radius:2px;transition:all 0.2s; }
-.edaspect-btn.on { border-color:rgba(0,212,255,0.4);color:#00d4ff;text-shadow:0 0 4px rgba(0,212,255,0.4); }
+.mst-playbar{background:#0a0806;border-top:1px solid #252018;padding:8px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.mst-playbtn{padding:5px 14px;border:1px solid rgba(255,85,32,0.35);background:rgba(255,85,32,0.1);color:#ff5520;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;border-radius:2px;}
+.mst-time{font-family:'DM Mono',monospace;font-size:9px;color:#ffe600;white-space:nowrap;}
+.mst-prog{flex:1;height:4px;background:#252018;border-radius:2px;cursor:pointer;}
+.mst-prog-fill{height:100%;width:0%;background:#ff5520;border-radius:2px;box-shadow:0 0 5px rgba(255,85,32,0.4);}
+.mst-asp{display:flex;gap:3px;}
+.mst-asp-btn{padding:3px 7px;border:1px solid #252018;background:transparent;color:rgba(0,212,255,0.3);font-family:'DM Mono',monospace;font-size:7px;cursor:pointer;border-radius:2px;}
+.mst-asp-btn.on{border-color:rgba(0,212,255,0.4);color:#00d4ff;}
 
-/* Timeline */
-.edtl { background:#080604;border-top:1px solid #2a2420;height:165px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden; }
-.edtl-header { display:flex;align-items:center;gap:8px;padding:5px 10px;border-bottom:1px solid #1a1510;flex-shrink:0; }
-.edtl-title { font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#ffe600;text-shadow:0 0 4px rgba(255,230,0,0.4); }
-.edtl-add { padding:2px 8px;border:1px solid rgba(255,230,0,0.2);background:transparent;color:rgba(255,230,0,0.45);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;border-radius:2px; }
-.edtl-hint { font-family:'DM Mono',monospace;font-size:7px;color:rgba(255,255,255,0.1);margin-left:auto; }
-.edtracks { flex:1;overflow-y:auto;overflow-x:hidden; }
-.edtrack { display:flex;align-items:center;border-bottom:1px solid #111009;min-height:38px; }
-.edtrack-lbl { width:76px;flex-shrink:0;padding:0 8px;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;border-right:1px solid #2a2420; }
-.edtrack-area { flex:1;position:relative;height:38px;background:repeating-linear-gradient(90deg,#0c0a08 0px,#0c0a08 59px,#141210 59px,#141210 60px);overflow:hidden; }
-.edtrack-clip { position:absolute;top:3px;height:32px;border-radius:3px;display:flex;align-items:center;padding:0 6px 0 4px;overflow:hidden;cursor:grab;user-select:none; }
-.edtrack-clip-name { font-family:'DM Mono',monospace;font-size:7px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;opacity:0.8; }
-.edtrack-clip-del { width:14px;height:14px;background:rgba(255,34,85,0.35);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;cursor:pointer;flex-shrink:0;opacity:0;transition:opacity 0.2s; }
-.edtrack-clip:hover .edtrack-clip-del { opacity:1; }
+/* Timeline multicapa */
+.mst-tl{background:#070504;border-top:1px solid #252018;height:155px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;}
+.mst-tl-top{display:flex;align-items:center;gap:8px;padding:5px 10px;border-bottom:1px solid #151210;flex-shrink:0;}
+.mst-tl-title{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:3px;text-transform:uppercase;color:#ffe600;}
+.mst-tl-add{padding:2px 8px;border:1px solid rgba(255,230,0,0.2);background:transparent;color:rgba(255,230,0,0.4);font-family:'DM Mono',monospace;font-size:7px;cursor:pointer;border-radius:2px;}
+.mst-tl-hint{font-family:'DM Mono',monospace;font-size:7px;color:rgba(255,255,255,0.1);margin-left:auto;}
+.mst-tracks{flex:1;overflow-y:auto;overflow-x:auto;}
+.mst-track{display:flex;align-items:center;border-bottom:1px solid #0f0d0b;min-height:36px;}
+.mst-track-lbl{width:72px;flex-shrink:0;padding:0 6px;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;border-right:1px solid #252018;}
+.mst-track-area{flex:1;position:relative;height:36px;min-width:400px;background:repeating-linear-gradient(90deg,#0c0a08 0,#0c0a08 59px,#111009 59px,#111009 60px);overflow:hidden;}
+.mst-tclip{position:absolute;top:3px;height:30px;border-radius:3px;display:flex;align-items:center;padding:0 5px;overflow:hidden;cursor:grab;user-select:none;transition:box-shadow 0.15s;}
+.mst-tclip:hover{box-shadow:0 0 6px rgba(255,255,255,0.1);}
+.mst-tclip-name{font-family:'DM Mono',monospace;font-size:7px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;opacity:0.8;}
+.mst-tclip-del{width:13px;height:13px;background:rgba(255,34,85,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;cursor:pointer;flex-shrink:0;opacity:0;transition:opacity 0.2s;}
+.mst-tclip:hover .mst-tclip-del{opacity:1;}
 
-/* Panel derecho */
-.edright { background:#0e0c0a;border-left:1px solid #2a2420;display:flex;flex-direction:column;overflow:hidden; }
-.edright-tabs { display:flex;border-bottom:1px solid #2a2420; }
-.edrtab { flex:1;padding:8px;text-align:center;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:rgba(0,212,255,0.3);border-bottom:2px solid transparent;transition:all 0.2s; }
-.edrtab.on { color:#00d4ff;text-shadow:0 0 6px rgba(0,212,255,0.5);border-bottom-color:#00d4ff; }
-.edright-content { flex:1;overflow-y:auto;padding:12px; }
-.edprop-title { font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#ffe600;text-shadow:0 0 4px rgba(255,230,0,0.4);margin-bottom:10px; }
-.edprop { margin-bottom:10px; }
-.edprop label { display:block;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,212,255,0.45);margin-bottom:4px; }
-.edprop textarea, .edprop select { width:100%;background:#181410;border:1px solid #2a2420;padding:6px 8px;font-family:'DM Sans',sans-serif;font-size:11px;color:#00d4ff;border-radius:3px;outline:none;resize:none; }
-.edprop textarea { min-height:52px; }
-.edprop input[type=range] { width:100%;accent-color:#ffe600; }
-.edsize-val { font-family:'DM Mono',monospace;font-size:9px;color:#ffe600;text-shadow:0 0 4px rgba(255,230,0,0.5); }
-.edcolors { display:flex;gap:5px;flex-wrap:wrap; }
-.edcolor { width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.2s; }
-.edcolor.on { border-color:#fff;box-shadow:0 0 6px rgba(255,255,255,0.4); }
-.edpos-grid { display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px; }
-.edpos-btn { padding:5px;border:1px solid #2a2420;background:transparent;color:rgba(0,212,255,0.3);font-size:10px;cursor:pointer;border-radius:2px;text-align:center;transition:all 0.2s; }
-.edpos-btn.on { background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.4);color:#00d4ff; }
-.edadd-txt-btn { width:100%;padding:8px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);color:#00d4ff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border-radius:3px;margin-top:4px;text-shadow:0 0 4px rgba(0,212,255,0.4);transition:all 0.2s; }
-.edadd-txt-btn:hover { background:rgba(0,212,255,0.15); }
-.edtxt-item { background:#181410;border:1px solid #2a2420;border-radius:3px;padding:5px 8px;margin-bottom:4px;display:flex;align-items:center;gap:6px; }
-.edtxt-dot { width:9px;height:9px;border-radius:50%;flex-shrink:0; }
-.edtxt-text { font-size:10px;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
-.edtxt-del { color:#ff2255;cursor:pointer;font-size:12px;flex-shrink:0;opacity:0.6;transition:opacity 0.2s; }
-.edtxt-del:hover { opacity:1; }
-.edtxt-empty { font-size:10px;color:rgba(0,212,255,0.2);text-align:center;padding:8px; }
-.edaudio-load { width:100%;padding:7px;background:rgba(255,230,0,0.06);border:1px solid rgba(255,230,0,0.2);color:#ffe600;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;border-radius:3px;text-shadow:0 0 4px rgba(255,230,0,0.4); }
-.edaudio-info { display:none;margin-top:8px;padding:6px 8px;background:#181410;border:1px solid #2a2420;border-radius:3px;font-size:10px;color:#ffe600; }
+/* ── PANEL DERECHO ───────────────────────────── */
+.mst-right{background:#0a0806;border-left:1px solid #252018;display:flex;flex-direction:column;overflow:hidden;}
+.mst-rtabs{display:flex;border-bottom:1px solid #252018;}
+.mst-rtab{flex:1;padding:7px 4px;text-align:center;font-family:'DM Mono',monospace;font-size:6px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:rgba(0,212,255,0.3);border-bottom:2px solid transparent;transition:all 0.2s;}
+.mst-rtab.on{color:#00d4ff;border-bottom-color:#00d4ff;}
+.mst-rpanel{flex:1;overflow-y:auto;padding:11px;}
+.mst-ptitle{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:#ffe600;margin-bottom:9px;}
+.mst-pfield{margin-bottom:9px;}
+.mst-pfield label{display:block;font-family:'DM Mono',monospace;font-size:6px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,212,255,0.4);margin-bottom:4px;}
+.mst-pfield textarea,.mst-pfield select,.mst-pfield input[type=text]{width:100%;background:#141210;border:1px solid #252018;padding:5px 7px;font-size:11px;color:#00d4ff;border-radius:3px;outline:none;font-family:'DM Sans',sans-serif;}
+.mst-pfield textarea{min-height:48px;resize:none;}
+.mst-pfield select{font-size:10px;}
+.mst-range-row{display:flex;align-items:center;gap:6px;}
+.mst-range-row input{flex:1;accent-color:#ffe600;}
+.mst-range-val{font-family:'DM Mono',monospace;font-size:9px;color:#ffe600;white-space:nowrap;}
+.mst-colors{display:flex;gap:4px;flex-wrap:wrap;}
+.mst-color{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.15s;flex-shrink:0;}
+.mst-color.on{border-color:#fff;box-shadow:0 0 5px rgba(255,255,255,0.3);}
+.mst-pos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;}
+.mst-pos-btn{padding:5px;border:1px solid #252018;background:transparent;color:rgba(0,212,255,0.3);font-size:10px;cursor:pointer;border-radius:2px;text-align:center;transition:all 0.15s;}
+.mst-pos-btn.on{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.4);color:#00d4ff;}
+.mst-fonts{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px;}
+.mst-font-btn{padding:5px;border:1px solid #252018;background:transparent;color:rgba(0,212,255,0.4);font-size:10px;cursor:pointer;border-radius:2px;text-align:center;transition:all 0.15s;white-space:nowrap;overflow:hidden;}
+.mst-font-btn.on{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.35);color:#00d4ff;}
+.mst-anim-btns{display:flex;gap:4px;flex-wrap:wrap;}
+.mst-anim-btn{padding:3px 8px;border:1px solid #252018;background:transparent;color:rgba(0,212,255,0.3);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;border-radius:2px;transition:all 0.15s;}
+.mst-anim-btn.on{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.35);color:#00d4ff;}
+.mst-add-txt{width:100%;padding:8px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.22);color:#00d4ff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border-radius:3px;text-shadow:0 0 4px rgba(0,212,255,0.3);transition:all 0.2s;}
+.mst-add-txt:hover{background:rgba(0,212,255,0.15);}
+.mst-ai-btn{width:100%;padding:7px;background:rgba(255,230,0,0.06);border:1px solid rgba(255,230,0,0.2);color:#ffe600;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:3px;margin-bottom:8px;text-shadow:0 0 4px rgba(255,230,0,0.3);}
+.mst-templates{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px;}
+.mst-tpl{padding:5px;border:1px solid rgba(255,230,0,0.15);background:rgba(255,230,0,0.04);color:rgba(255,230,0,0.6);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;border-radius:2px;text-align:center;transition:all 0.15s;}
+.mst-tpl:hover{border-color:rgba(255,230,0,0.4);color:#ffe600;}
+.mst-txt-list{margin-top:10px;}
+.mst-txt-item{background:#141210;border:1px solid #252018;border-radius:3px;padding:5px 7px;margin-bottom:4px;display:flex;align-items:center;gap:5px;cursor:pointer;transition:border-color 0.15s;}
+.mst-txt-item:hover{border-color:rgba(0,212,255,0.2);}
+.mst-txt-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.mst-txt-label{font-size:9px;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.mst-txt-del{color:#ff2255;cursor:pointer;font-size:11px;opacity:0.5;transition:opacity 0.15s;}
+.mst-txt-del:hover{opacity:1;}
 
-/* Processing overlay */
-.edproc { display:none;position:fixed;inset:0;background:rgba(6,5,4,0.92);z-index:99999;flex-direction:column;align-items:center;justify-content:center;gap:16px; }
-.edproc.on { display:flex; }
-.edproc-spin { width:38px;height:38px;border:3px solid #2a2420;border-top-color:#ff5520;border-radius:50%;animation:spin 0.7s linear infinite; }
-.edproc-msg { font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#ff2255;text-shadow:0 0 10px rgba(255,34,85,0.7); }
+/* Plantillas de marketing */
+.mst-mktpl{background:#141210;border:1px solid rgba(255,230,0,0.12);border-radius:4px;padding:8px;margin-bottom:6px;cursor:pointer;transition:all 0.15s;}
+.mst-mktpl:hover{border-color:rgba(255,230,0,0.3);background:#1a1610;}
+.mst-mktpl-name{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:#ffe600;margin-bottom:3px;}
+.mst-mktpl-prev{font-size:10px;color:rgba(255,255,255,0.5);}
+
+/* Processing */
+.mst-proc{display:none;position:fixed;inset:0;background:rgba(5,4,3,0.93);z-index:99999;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.mst-proc.on{display:flex;}
+.mst-proc-spin{width:36px;height:36px;border:3px solid #252018;border-top-color:#ff5520;border-radius:50%;animation:spin 0.7s linear infinite;}
+.mst-proc-txt{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#ff2255;text-shadow:0 0 8px rgba(255,34,85,0.6);}
+
+/* AI loading */
+.mst-ai-loading{display:none;font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,230,0,0.5);text-align:center;padding:8px;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:0.4;}50%{opacity:1;}}
+.mst-ai-suggestions{margin-top:6px;}
+.mst-ai-sug{background:#141210;border:1px solid rgba(255,230,0,0.15);border-radius:3px;padding:6px 8px;margin-bottom:4px;font-size:10px;color:rgba(255,255,255,0.7);cursor:pointer;transition:all 0.15s;}
+.mst-ai-sug:hover{border-color:rgba(255,230,0,0.4);color:#fff;}
 </style>
 
-<!-- ══════════════════════════════════════
-     PAGE: EDITOR AVANZADO
-══════════════════════════════════════ -->
+<!-- HTML DEL EDITOR -->
 <div class="page" id="page-editor">
-<div class="edwrap">
+<div class="mst">
 
-  <div class="edtop">
-    <div style="display:flex;align-items:center;gap:8px;">
-      <button class="edback" onclick="goTo('page-studio')">← Video Studio</button>
-      <button onclick="edLimpiar()" style="padding:4px 10px;border:1px solid rgba(255,34,85,0.3);background:rgba(255,34,85,0.08);color:#ff2255;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;" title="Limpiar timeline y empezar con otro video">✕ Limpiar todo</button>
-    </div>
-    <div class="edtitle">🎬 Editor Avanzado</div>
-    <div class="edtools">
-      <button class="edtool on" id="edtool-text" onclick="edSetTool('text')">T Texto</button>
-      <button class="edtool" id="edtool-clip" onclick="edSetTool('clip')">✂ Clip</button>
-      <button class="edtool" id="edtool-audio" onclick="edSetTool('audio')">♪ Audio</button>
-      <button class="edexport" onclick="edExport()">⚡ Exportar MP4</button>
+  <!-- TOPBAR -->
+  <div class="mst-top">
+    <button class="mst-back" onclick="goTo('page-studio')">← Studio</button>
+    <div class="mst-title">🎬 Marketing Studio</div>
+    <button class="mst-clear" onclick="mstLimpiar()">✕ Limpiar</button>
+    <div class="mst-export-wrap">
+      <button class="mst-exp meta" onclick="mstExport('16:9')">Meta 16:9</button>
+      <button class="mst-exp tiktok" onclick="mstExport('9:16')">TikTok 9:16</button>
+      <button class="mst-exp whatsapp" onclick="mstExport('1:1')">WhatsApp 1:1</button>
     </div>
   </div>
 
-  <div class="edbody">
+  <div class="mst-body">
 
-    <!-- IZQUIERDA -->
-    <div class="edleft">
-      <div class="edleft-title">
-        <span>Mis Clips</span>
-        <span class="edplus-btn" onclick="document.getElementById('ed-file-new').click()" title="Subir video nuevo">＋</span>
+    <!-- IZQUIERDA: BIBLIOTECA -->
+    <div class="mst-lib">
+      <div class="mst-lib-tabs">
+        <div class="mst-ltab on" id="mlt-videos" onclick="mstLibTab('videos',this)">Videos</div>
+        <div class="mst-ltab" id="mlt-landing" onclick="mstLibTab('landing',this)">Por Landing</div>
       </div>
-      <input type="file" id="ed-file-new" accept="video/*" style="display:none;" onchange="edSubirVideo(event)">
-      
-      <div class="ednotice" id="ed-notice"></div>
-      
-      <div class="edupload" onclick="document.getElementById('ed-file-new').click()">
-        <div class="edupload-icon">🎬</div>
-        <div class="edupload-txt">Haz clic aquí o en ＋<br>para subir un video nuevo</div>
+
+      <div class="mst-lib-content" id="mst-lib-videos">
+        <div class="mst-notice" id="mst-notice"></div>
+        
+        <button class="mst-upload-btn" onclick="document.getElementById('mst-file-inp').click()">
+          <span class="mst-upload-icon">🎬</span>
+          <span class="mst-upload-txt">+ SUBIR VIDEO</span>
+        </button>
+        <input type="file" id="mst-file-inp" accept="video/*" style="display:none" onchange="mstSubirVideo(event)">
+        
+        <div id="mst-clips-list">
+          <div style="text-align:center;padding:20px 10px;font-size:10px;color:rgba(0,212,255,0.2);line-height:1.8;">
+            Sube un video<br>o carga uno del archivo
+          </div>
+        </div>
       </div>
-      
-      <div class="edclips" id="ed-clips-panel">
-        <div class="edclip-empty">Sube un video con el botón de arriba</div>
+
+      <div class="mst-lib-content" id="mst-lib-landing" style="display:none;">
+        <div id="mst-landing-list">
+          <div style="text-align:center;padding:20px 10px;font-size:10px;color:rgba(0,212,255,0.2);">
+            Los clips se organizan<br>por landing automáticamente
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- CENTRO -->
-    <div class="edcenter">
-      <div class="edpreview" id="ed-preview-wrap">
-        <canvas id="ed-canvas" class="edcanvas"></canvas>
-        <div class="edpreview-empty" id="ed-preview-empty">
-          <div>🎬</div>
-          <div>Agrega clips al timeline</div>
+    <div class="mst-center">
+
+      <!-- Preview con canvas para drag de textos -->
+      <div class="mst-preview" id="mst-preview-wrap">
+        <canvas id="mst-canvas" class="mst-canvas"></canvas>
+        <div id="mst-txt-handles"></div>
+        <div class="mst-empty" id="mst-empty">
+          <div class="mst-empty-icon">🎬</div>
+          <div class="mst-empty-txt">Agrega un video al timeline</div>
         </div>
       </div>
 
-      <div class="edplaybar">
-        <button class="edplaybtn" id="ed-playbtn" onclick="edPlay()">▶ Play</button>
-        <span class="edtime" id="ed-time">0:00 / 0:00</span>
-        <div class="edprog" id="ed-prog" onclick="edSeek(event)">
-          <div class="edprog-fill" id="ed-prog-fill"></div>
+      <!-- Cortador de video -->
+      <div class="mst-cutter" id="mst-cutter">
+        <div class="mst-cutter-title">✂ Cortar clip — arrastra los handles para seleccionar el fragmento</div>
+        <div class="mst-cut-timeline" id="mst-cut-tl" onclick="mstCutSeek(event)">
+          <div class="mst-cut-filled" id="mst-cut-fill"></div>
+          <div class="mst-cut-handle" id="mst-cut-s" onmousedown="mstCutDrag(event,'s')"></div>
+          <div class="mst-cut-handle end" id="mst-cut-e" onmousedown="mstCutDrag(event,'e')"></div>
         </div>
-        <div class="edaspect">
-          <button class="edaspect-btn on" onclick="edAspecto('16:9',this)">16:9</button>
-          <button class="edaspect-btn" onclick="edAspecto('9:16',this)">9:16</button>
-          <button class="edaspect-btn" onclick="edAspecto('1:1',this)">1:1</button>
+        <div class="mst-cut-bottom">
+          <span class="mst-cut-time">Inicio: <span id="mst-cut-start-lbl">0:00</span></span>
+          <span class="mst-cut-time">Fin: <span id="mst-cut-end-lbl">0:00</span></span>
+          <span class="mst-cut-time">Duración: <span id="mst-cut-dur-lbl">0:00</span></span>
+          <button class="mst-cut-btn" onclick="mstCutApply()">✓ Aplicar corte</button>
+          <button class="mst-cut-btn" style="border-color:rgba(255,34,85,0.3);color:#ff2255;" onclick="mstCutCancel()">✕ Cancelar</button>
         </div>
       </div>
 
-      <div class="edtl">
-        <div class="edtl-header">
-          <span class="edtl-title">Timeline</span>
-          <button class="edtl-add" onclick="edNuevaPista()">+ Pista</button>
-          <span class="edtl-hint">Arrastra clips o presiona + en cada clip</span>
+      <!-- Playbar -->
+      <div class="mst-playbar">
+        <button class="mst-playbtn" id="mst-playbtn" onclick="mstPlay()">▶ Play</button>
+        <button class="mst-playbtn" style="font-size:9px;padding:5px 8px;" onclick="mstCutOpen()" title="Cortar este video">✂</button>
+        <span class="mst-time" id="mst-time">0:00 / 0:00</span>
+        <div class="mst-prog" id="mst-prog" onclick="mstSeek(event)">
+          <div class="mst-prog-fill" id="mst-prog-fill"></div>
         </div>
-        <div class="edtracks" id="ed-tracks"></div>
+        <div class="mst-asp">
+          <button class="mst-asp-btn on" onclick="mstAsp('16:9',this)">16:9</button>
+          <button class="mst-asp-btn" onclick="mstAsp('9:16',this)">9:16</button>
+          <button class="mst-asp-btn" onclick="mstAsp('1:1',this)">1:1</button>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="mst-tl">
+        <div class="mst-tl-top">
+          <span class="mst-tl-title">Timeline</span>
+          <button class="mst-tl-add" onclick="mstNuevaPista()">+ Pista</button>
+          <span class="mst-tl-hint">Arrastra videos o usa el botón +</span>
+        </div>
+        <div class="mst-tracks" id="mst-tracks"></div>
       </div>
     </div>
 
-    <!-- DERECHA -->
-    <div class="edright">
-      <div class="edright-tabs">
-        <div class="edrtab on" id="edrtab-text" onclick="edTab('text',this)">Texto</div>
-        <div class="edrtab" id="edrtab-clip" onclick="edTab('clip',this)">Clip</div>
-        <div class="edrtab" id="edrtab-audio" onclick="edTab('audio',this)">Audio</div>
+    <!-- DERECHA: PROPIEDADES -->
+    <div class="mst-right">
+      <div class="mst-rtabs">
+        <div class="mst-rtab on" onclick="mstRTab('texto',this)">Texto</div>
+        <div class="mst-rtab" onclick="mstRTab('mkt',this)">Marketing</div>
+        <div class="mst-rtab" onclick="mstRTab('clip',this)">Clip</div>
       </div>
 
-      <!-- Panel texto -->
-      <div class="edright-content" id="edpanel-text">
-        <div class="edprop-title">Agregar texto</div>
-        <div class="edprop">
+      <!-- Panel: Texto -->
+      <div class="mst-rpanel" id="mst-rpanel-texto">
+        <div class="mst-ptitle">IA — Sugerir texto</div>
+        <div class="mst-pfield">
+          <label>Producto / contexto</label>
+          <input type="text" id="mst-ai-producto" placeholder="Ej: Masajeador cervical, Colombia">
+        </div>
+        <button class="mst-ai-btn" onclick="mstAISugerir()">⚡ SUGERIR TEXTOS CON IA</button>
+        <div class="mst-ai-loading" id="mst-ai-loading">Generando ideas...</div>
+        <div class="mst-ai-suggestions" id="mst-ai-sugs"></div>
+
+        <div class="mst-ptitle" style="margin-top:12px;">Crear texto</div>
+        <div class="mst-pfield">
           <label>Texto</label>
-          <textarea id="ed-txt" placeholder="Ej: ¡Envío gratis hoy!"></textarea>
+          <textarea id="mst-txt-inp" placeholder="Escribe o elige una sugerencia de IA"></textarea>
         </div>
-        <div class="edprop">
-          <label>Tamaño — <span class="edsize-val" id="ed-size-val">32px</span></label>
-          <input type="range" id="ed-size" min="12" max="80" value="32" oninput="document.getElementById('ed-size-val').textContent=this.value+'px'">
+        <div class="mst-pfield">
+          <label>Fuente</label>
+          <div class="mst-fonts" id="mst-fonts-grid"></div>
         </div>
-        <div class="edprop">
+        <div class="mst-pfield">
+          <label>Tamaño — <span id="mst-size-val" style="color:#ffe600;">32px</span></label>
+          <input type="range" id="mst-size" min="10" max="90" value="32" oninput="document.getElementById('mst-size-val').textContent=this.value+'px'">
+        </div>
+        <div class="mst-pfield">
           <label>Color</label>
-          <div class="edcolors">
-            <div class="edcolor on" style="background:#fff" onclick="edColor('#fff',this)"></div>
-            <div class="edcolor" style="background:#ff5520" onclick="edColor('#ff5520',this)"></div>
-            <div class="edcolor" style="background:#ffe600" onclick="edColor('#ffe600',this)"></div>
-            <div class="edcolor" style="background:#00d4ff" onclick="edColor('#00d4ff',this)"></div>
-            <div class="edcolor" style="background:#ff2255" onclick="edColor('#ff2255',this)"></div>
-            <div class="edcolor" style="background:#00ff88" onclick="edColor('#00ff88',this)"></div>
-          </div>
+          <div class="mst-colors" id="mst-colors-grid"></div>
         </div>
-        <div class="edprop">
-          <label>Posición</label>
-          <div class="edpos-grid">
-            <div class="edpos-btn" onclick="edPos('top-left',this)">↖</div>
-            <div class="edpos-btn on" onclick="edPos('top',this)">↑</div>
-            <div class="edpos-btn" onclick="edPos('top-right',this)">↗</div>
-            <div class="edpos-btn" onclick="edPos('left',this)">←</div>
-            <div class="edpos-btn" onclick="edPos('center',this)">●</div>
-            <div class="edpos-btn" onclick="edPos('right',this)">→</div>
-            <div class="edpos-btn" onclick="edPos('bottom-left',this)">↙</div>
-            <div class="edpos-btn" onclick="edPos('bottom',this)">↓</div>
-            <div class="edpos-btn" onclick="edPos('bottom-right',this)">↘</div>
-          </div>
+        <div class="mst-pfield">
+          <label>Posición inicial</label>
+          <div class="mst-pos-grid" id="mst-pos-grid"></div>
         </div>
-        <div class="edprop">
-          <label>Fondo del texto</label>
-          <select id="ed-fondo">
+        <div class="mst-pfield">
+          <label>Fondo</label>
+          <select id="mst-fondo">
             <option value="none">Sin fondo</option>
-            <option value="dark">Fondo oscuro</option>
-            <option value="black">Fondo negro</option>
-            <option value="orange">Fondo naranja</option>
+            <option value="dark">Negro semi-transparente</option>
+            <option value="black">Negro sólido</option>
+            <option value="orange">Naranja marca</option>
+            <option value="white">Blanco</option>
           </select>
         </div>
-        <button class="edadd-txt-btn" onclick="edAddTexto()">+ Agregar al video</button>
-        
-        <div style="margin-top:14px;">
-          <div class="edprop-title">Textos en el video</div>
-          <div id="ed-textos-lista"><div class="edtxt-empty">Sin textos aún</div></div>
+        <div class="mst-pfield">
+          <label>Animación de entrada</label>
+          <div class="mst-anim-btns" id="mst-anim-btns"></div>
+        </div>
+        <div class="mst-pfield">
+          <label>Aparece en (segundos)</label>
+          <div class="mst-range-row">
+            <input type="range" id="mst-txt-start" min="0" max="60" value="0" oninput="document.getElementById('mst-tstart-val').textContent=this.value+'s'">
+            <span class="mst-range-val" id="mst-tstart-val">0s</span>
+          </div>
+        </div>
+        <div class="mst-pfield">
+          <label>Desaparece en (segundos)</label>
+          <div class="mst-range-row">
+            <input type="range" id="mst-txt-end" min="0" max="60" value="30" oninput="document.getElementById('mst-tend-val').textContent=this.value+'s'">
+            <span class="mst-range-val" id="mst-tend-val">30s</span>
+          </div>
+        </div>
+        <button class="mst-add-txt" onclick="mstAddTexto()">+ Agregar texto al video</button>
+
+        <div class="mst-txt-list">
+          <div class="mst-ptitle" style="margin-top:12px;">Textos en el video</div>
+          <div id="mst-txt-lista"><div style="font-size:9px;color:rgba(0,212,255,0.2);text-align:center;padding:6px;">Sin textos aún</div></div>
         </div>
       </div>
 
-      <!-- Panel clip -->
-      <div class="edright-content" id="edpanel-clip" style="display:none;">
-        <div class="edprop-title">Clip seleccionado</div>
-        <div id="ed-clip-info" style="font-size:11px;color:rgba(0,212,255,0.4);padding:8px 0;">Haz clic en un clip del timeline</div>
+      <!-- Panel: Marketing templates -->
+      <div class="mst-rpanel" id="mst-rpanel-mkt" style="display:none;">
+        <div class="mst-ptitle">Plantillas rápidas</div>
+        <div id="mst-templates-list"></div>
       </div>
 
-      <!-- Panel audio -->
-      <div class="edright-content" id="edpanel-audio" style="display:none;">
-        <div class="edprop-title">Música de fondo</div>
-        <button class="edaudio-load" onclick="document.getElementById('ed-audio-file').click()">📁 Seleccionar MP3 / Audio</button>
-        <input type="file" id="ed-audio-file" accept="audio/*" style="display:none;" onchange="edCargarAudio(event)">
-        <div class="edaudio-info" id="ed-audio-info"></div>
-        <div class="edprop" style="margin-top:12px;">
-          <label>Volumen del video</label>
-          <input type="range" id="ed-vol-vid" min="0" max="100" value="100">
-        </div>
-        <div class="edprop">
-          <label>Volumen de la música</label>
-          <input type="range" id="ed-vol-mus" min="0" max="100" value="50">
-        </div>
+      <!-- Panel: Clip -->
+      <div class="mst-rpanel" id="mst-rpanel-clip" style="display:none;">
+        <div class="mst-ptitle">Clip seleccionado</div>
+        <div id="mst-clip-info" style="font-size:10px;color:rgba(0,212,255,0.3);padding:8px 0;">Haz clic en un clip del timeline</div>
       </div>
     </div>
   </div>
-
 </div>
 
-<!-- Overlay procesando -->
-<div class="edproc" id="ed-proc">
-  <div class="edproc-spin"></div>
-  <div class="edproc-msg" id="ed-proc-msg">Procesando...</div>
+<!-- Processing overlay -->
+<div class="mst-proc" id="mst-proc">
+  <div class="mst-proc-spin"></div>
+  <div class="mst-proc-txt" id="mst-proc-txt">Procesando...</div>
 </div>
 </div>
 
 <script>
-// ══ EDITOR AVANZADO ══════════════════════════
+// ══ MARKETING STUDIO ══════════════════════════
 
 // Estado
-let edCL = [];          // clips disponibles
-let edTR = [];          // tracks del timeline
-let edTX = [];          // capas de texto
-let edVidEl = null;     // video element oculto
-let edPlaying = false;
-let edAspRatio = '16:9';
-let edTxtColor = '#fff';
-let edTxtPos = 'top';
-let edAspW = 16, edAspH = 9;
-let edAnimId = null;
+let mstCL = [];       // clips en biblioteca
+let mstTR = [];       // tracks
+let mstTX = [];       // capas de texto
+let mstVid = null;    // video element activo
+let mstPlay_ = false;
+let mstAsp_ = '16:9';
+let mstTxtColor = '#ffffff';
+let mstTxtPos = 'top';
+let mstTxtFont = 'Syne';
+let mstTxtAnim = 'none';
+let mstCutStart = 0;
+let mstCutEnd = 0;
+let mstCutActive = null; // clip activo para corte
+let mstAnimId = null;
+let mstDraggingTxt = null; // texto que se arrastra
+let mstTxtOffX = 0, mstTxtOffY = 0;
+
+// Fuentes disponibles
+const MST_FONTS = ['Syne','DM Sans','DM Mono','Oswald','Bebas Neue','Montserrat','Playfair Display','Pacifico'];
+
+// Colores disponibles
+const MST_COLORS = ['#ffffff','#ff5520','#ffe600','#00d4ff','#ff2255','#00ff88','#000000','#ff9500','#c850c0','#4158d0'];
+
+// Animaciones
+const MST_ANIMS = ['none','fade','slide-up','slide-down','slide-left','zoom'];
+
+// Plantillas de marketing
+const MST_TEMPLATES = [
+  {nombre:'💰 Precio', texto:'Solo $[PRECIO]', color:'#ffe600', pos:'bottom', fondo:'dark', anim:'slide-up'},
+  {nombre:'🚀 CTA', texto:'¡Pide ahora!', color:'#ff5520', pos:'bottom', fondo:'orange', anim:'zoom'},
+  {nombre:'🛡️ Garantía', texto:'30 días de garantía', color:'#00ff88', pos:'top', fondo:'dark', anim:'fade'},
+  {nombre:'📦 Envío', texto:'Envío GRATIS hoy', color:'#ffffff', pos:'top', fondo:'black', anim:'slide-down'},
+  {nombre:'⚡ Urgencia', texto:'¡Últimas unidades!', color:'#ff2255', pos:'center', fondo:'dark', anim:'zoom'},
+  {nombre:'🌍 País', texto:'Disponible en [PAÍS]', color:'#00d4ff', pos:'bottom', fondo:'dark', anim:'fade'},
+  {nombre:'⭐ Rating', texto:'★★★★★ Miles de clientes', color:'#ffe600', pos:'top', fondo:'none', anim:'fade'},
+  {nombre:'📱 WhatsApp', texto:'Escríbenos al WhatsApp', color:'#00ff88', pos:'bottom', fondo:'black', anim:'slide-up'},
+];
 
 // ── INIT ──────────────────────────────────────
-function edInit() {
-  edCL = [];
-  edTX = [];
-  edPlaying = false;
-  if (edVidEl) { try { edVidEl.pause(); edVidEl.src = ''; } catch(e){} }
+function mstInit() {
+  mstCL = []; mstTX = []; mstPlay_ = false;
+  if (mstVid) { mstVid.pause(); mstVid.src = ''; }
   
-  // Cargar clips guardados del Video Studio
+  // Cargar del Video Studio
   const saved = JSON.parse(localStorage.getItem('vs_clips') || '[]');
-  edCL = saved.map((c,i) => ({
-    idx: i,
+  mstCL = saved.map((c,i) => ({
+    id: 'saved_'+i,
     nombre: c.name || 'Clip '+(i+1),
     dur: c.duration || '--',
     durSecs: 0,
     landing: c.landing || '',
     uso: c.use || '',
-    url: null,
-    file: null,
-    guardado: true
+    url: null, file: null,
+    delArchivo: true
   }));
   
   // Tracks iniciales
-  edTR = [
+  mstTR = [
     {id:1, label:'VIDEO 1', color:'#ff5520', clips:[]},
-    {id:2, label:'VIDEO 2', color:'#00d4ff', clips:[]}
+    {id:2, label:'VIDEO 2', color:'#00d4ff', clips:[]},
   ];
   
-  const btn = document.getElementById('ed-playbtn');
-  if (btn) btn.textContent = '▶ Play';
+  // Renderizar UI
+  mstRenderFonts();
+  mstRenderColors();
+  mstRenderPosGrid();
+  mstRenderAnims();
+  mstRenderTemplates();
+  mstRenderClips();
+  mstRenderTracks();
+  mstResizeCanvas();
+  mstDrawEmpty();
+  mstRenderTextos();
   
-  edRenderClips();
-  edRenderTracks();
-  edResizeCanvas();
-  edDrawEmpty();
-  edRenderTextos();
+  const btn = document.getElementById('mst-playbtn');
+  if (btn) btn.textContent = '▶ Play';
 }
 
-// ── CLIPS PANEL ───────────────────────────────
-function edRenderClips() {
-  const panel = document.getElementById('ed-clips-panel');
-  if (!panel) return;
-  if (edCL.length === 0) {
-    panel.innerHTML = '<div class="edclip-empty">Sube un video con el botón ＋ de arriba</div>';
-    return;
-  }
-  panel.innerHTML = edCL.map((c,i) => `
-    <div class="edclip ${c.url ? 'ready' : ''}" draggable="true" ondragstart="edDragPanel(event,${i})">
-      <div class="edclip-thumb">
-        ${c.url ? '▶' : '🎬'}
-        <div class="edclip-dur">${c.dur}</div>
-        ${c.url ? '<div class="edclip-badge">✓</div>' : ''}
-      </div>
-      <div class="edclip-name" title="${c.nombre}">${c.nombre}</div>
-      <div class="edclip-tag">${c.landing}${c.uso ? ' · '+c.uso : ''}</div>
-      <div class="edclip-actions">
-        ${c.guardado && !c.url
-          ? `<div class="edclip-load" onclick="edCargarVideo(${i})">📁 Cargar video</div>`
-          : c.url
-            ? `<div class="edclip-loaded">✓ Listo</div>`
-            : `<div class="edclip-loaded">✓</div>`
-        }
-        <div class="edclip-add" onclick="edAddATimeline(${i})" title="Agregar al timeline">+</div>
-      </div>
+// ── RENDER UI ─────────────────────────────────
+function mstRenderFonts() {
+  const grid = document.getElementById('mst-fonts-grid');
+  if (!grid) return;
+  grid.innerHTML = MST_FONTS.map(f => `
+    <div class="mst-font-btn ${f===mstTxtFont?'on':''}" 
+      style="font-family:'${f}',sans-serif;"
+      onclick="mstSetFont('${f}',this)">${f.split(' ')[0]}</div>
+  `).join('');
+}
+
+function mstRenderColors() {
+  const g = document.getElementById('mst-colors-grid');
+  if (!g) return;
+  g.innerHTML = MST_COLORS.map(c => `
+    <div class="mst-color ${c===mstTxtColor?'on':''}" 
+      style="background:${c};${c==='#000000'?'border:1px solid #444;':''}"
+      onclick="mstSetColor('${c}',this)"></div>
+  `).join('');
+}
+
+function mstRenderPosGrid() {
+  const g = document.getElementById('mst-pos-grid');
+  if (!g) return;
+  const btns = [
+    ['top-left','↖'],['top','↑'],['top-right','↗'],
+    ['left','←'],['center','●'],['right','→'],
+    ['bottom-left','↙'],['bottom','↓'],['bottom-right','↘']
+  ];
+  g.innerHTML = btns.map(([pos,ic]) => `
+    <div class="mst-pos-btn ${pos===mstTxtPos?'on':''}" onclick="mstSetPos('${pos}',this)">${ic}</div>
+  `).join('');
+}
+
+function mstRenderAnims() {
+  const g = document.getElementById('mst-anim-btns');
+  if (!g) return;
+  const labels = {none:'Sin anim',fade:'Fade','slide-up':'↑ Slide','slide-down':'↓ Slide','slide-left':'← Slide',zoom:'Zoom'};
+  g.innerHTML = MST_ANIMS.map(a => `
+    <div class="mst-anim-btn ${a===mstTxtAnim?'on':''}" onclick="mstSetAnim('${a}',this)">${labels[a]||a}</div>
+  `).join('');
+}
+
+function mstRenderTemplates() {
+  const g = document.getElementById('mst-templates-list');
+  if (!g) return;
+  g.innerHTML = MST_TEMPLATES.map((t,i) => `
+    <div class="mst-mktpl" onclick="mstAplicarTemplate(${i})">
+      <div class="mst-mktpl-name">${t.nombre}</div>
+      <div class="mst-mktpl-prev" style="color:${t.color};">"${t.texto}"</div>
     </div>
   `).join('');
 }
 
-// Subir video nuevo
-function edSubirVideo(event) {
+// ── CLIPS BIBLIOTECA ──────────────────────────
+function mstRenderClips() {
+  const lista = document.getElementById('mst-clips-list');
+  if (!lista) return;
+  if (mstCL.length === 0) {
+    lista.innerHTML = '<div style="text-align:center;padding:16px 8px;font-size:10px;color:rgba(0,212,255,0.2);line-height:1.8;">Sube un video<br>con el botón de arriba</div>';
+    return;
+  }
+  lista.innerHTML = mstCL.map((c,i) => `
+    <div class="mst-vcard ${c.url?'active':''}" id="mstcard_${i}">
+      <div class="mst-vthumb">
+        ${c.url ? `<video src="${c.url}" muted preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.7;"></video>` : '🎬'}
+        <div class="mst-vdur">${c.dur}</div>
+      </div>
+      <div class="mst-vname" title="${c.nombre}">${c.nombre}</div>
+      <div class="mst-vlanding">${c.landing}${c.uso?' · '+c.uso:''}</div>
+      <div class="mst-vactions">
+        ${c.delArchivo && !c.url
+          ? `<div class="mst-vload" onclick="mstCargarVideo(${i})">📁 Cargar</div>`
+          : `<div class="mst-vready">✓ Listo</div>`
+        }
+        <div class="mst-vadd" onclick="mstAddAlTimeline(${i})">+ Timeline</div>
+        <div class="mst-vdel" onclick="mstEliminarClip(${i})" title="Eliminar">✕</div>
+      </div>
+    </div>
+  `).join('');
+  
+  // Renderizar también por landing
+  mstRenderLanding();
+}
+
+function mstRenderLanding() {
+  const g = document.getElementById('mst-landing-list');
+  if (!g) return;
+  const byLanding = {};
+  mstCL.forEach((c,i) => {
+    const key = c.landing || 'Sin landing';
+    if (!byLanding[key]) byLanding[key] = [];
+    byLanding[key].push({...c, idx:i});
+  });
+  if (Object.keys(byLanding).length === 0) {
+    g.innerHTML = '<div style="text-align:center;padding:16px;font-size:10px;color:rgba(0,212,255,0.2);">Agrega clips para verlos organizados por landing</div>';
+    return;
+  }
+  g.innerHTML = Object.entries(byLanding).map(([land, clips]) => `
+    <div style="margin-bottom:10px;">
+      <div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:#ff5520;padding:4px 6px;border-bottom:1px solid #252018;margin-bottom:5px;">${land}</div>
+      ${clips.map(c => `
+        <div style="background:#141210;border:1px solid #252018;border-radius:3px;padding:5px 7px;margin-bottom:3px;display:flex;align-items:center;gap:6px;cursor:pointer;" onclick="mstAddAlTimeline(${c.idx})">
+          <div style="font-size:9px;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.nombre}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:7px;color:#ffe600;">${c.dur}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:7px;color:#00d4ff;cursor:pointer;">+</div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function mstSubirVideo(event) {
   const file = event.target.files[0];
   event.target.value = '';
   if (!file) return;
-  
   const url = URL.createObjectURL(file);
   const clip = {
-    idx: edCL.length,
+    id: 'local_'+Date.now(),
     nombre: file.name.replace(/\.[^.]+$/,'').substring(0,28),
-    dur: '...',
-    durSecs: 0,
-    landing: '',
-    uso: '',
-    url,
-    file,
-    guardado: false
+    dur: '...', durSecs: 0,
+    landing: '', uso: '',
+    url, file,
+    delArchivo: false
   };
-  edCL.unshift(clip);
-  edRenderClips();
-  edAviso('✓ "'+clip.nombre+'" cargado — presiona + para agregar al timeline', true);
-  
+  mstCL.unshift(clip);
+  mstRenderClips();
+  mstAviso('✓ "'+clip.nombre+'" listo — presiona + Timeline', true);
   const v = document.createElement('video');
   v.src = url;
   v.onloadedmetadata = () => {
-    clip.dur = edFT(v.duration);
+    clip.dur = mstFT(v.duration);
     clip.durSecs = v.duration;
-    edRenderClips();
+    mstRenderClips();
   };
 }
 
-// Cargar video para clip del archivo
-function edCargarVideo(i) {
+function mstCargarVideo(i) {
   const inp = document.createElement('input');
-  inp.type = 'file';
-  inp.accept = 'video/*';
+  inp.type = 'file'; inp.accept = 'video/*';
   inp.onchange = e => {
     const file = e.target.files[0];
-    if (!file || !edCL[i]) return;
+    if (!file || !mstCL[i]) return;
     const url = URL.createObjectURL(file);
-    edCL[i].url = url;
-    edCL[i].file = file;
+    mstCL[i].url = url; mstCL[i].file = file;
     const v = document.createElement('video');
     v.src = url;
     v.onloadedmetadata = () => {
-      edCL[i].dur = edFT(v.duration);
-      edCL[i].durSecs = v.duration;
-      edRenderClips();
-      // Actualizar clips en tracks
-      edTR.forEach(t => t.clips.forEach(c => {
+      mstCL[i].dur = mstFT(v.duration);
+      mstCL[i].durSecs = v.duration;
+      mstRenderClips();
+      // Actualizar en tracks
+      mstTR.forEach(t => t.clips.forEach(c => {
         if (c.clipIdx === i) { c.url = url; c.durSecs = v.duration; }
       }));
-      edAviso('✓ Video cargado para "'+edCL[i].nombre+'"', true);
+      mstAviso('✓ Video cargado', true);
     };
   };
   inp.click();
 }
 
-function edAviso(msg, ok) {
-  const n = document.getElementById('ed-notice');
+function mstEliminarClip(i) {
+  if (!confirm('¿Eliminar "'+mstCL[i].nombre+'" de la biblioteca?')) return;
+  if (mstCL[i].url && !mstCL[i].delArchivo) URL.revokeObjectURL(mstCL[i].url);
+  mstCL.splice(i,1);
+  mstRenderClips();
+}
+
+function mstAviso(msg, ok) {
+  const n = document.getElementById('mst-notice');
   if (!n) return;
   n.textContent = msg;
   n.style.display = 'block';
-  n.style.background = ok ? 'rgba(0,255,136,0.08)' : 'rgba(255,34,85,0.08)';
-  n.style.borderColor = ok ? 'rgba(0,255,136,0.3)' : 'rgba(255,34,85,0.3)';
-  n.style.color = ok ? '#00ff88' : '#ff2255';
-  setTimeout(() => { n.style.display = 'none'; }, 4000);
+  n.style.background = ok?'rgba(0,255,136,0.07)':'rgba(255,34,85,0.07)';
+  n.style.borderColor = ok?'rgba(0,255,136,0.3)':'rgba(255,34,85,0.3)';
+  n.style.color = ok?'#00ff88':'#ff2255';
+  setTimeout(()=>{ n.style.display='none'; }, 4000);
 }
 
 // ── TIMELINE ──────────────────────────────────
-function edRenderTracks() {
-  const container = document.getElementById('ed-tracks');
-  if (!container) return;
-  container.innerHTML = edTR.map(t => `
-    <div class="edtrack">
-      <div class="edtrack-lbl" style="color:${t.color};text-shadow:0 0 4px ${t.color}55;">${t.label}</div>
-      <div class="edtrack-area"
+function mstRenderTracks() {
+  const c = document.getElementById('mst-tracks');
+  if (!c) return;
+  c.innerHTML = mstTR.map(t => `
+    <div class="mst-track">
+      <div class="mst-track-lbl" style="color:${t.color};text-shadow:0 0 4px ${t.color}55;">${t.label}</div>
+      <div class="mst-track-area"
         ondragover="event.preventDefault()"
-        ondrop="edDropTrack(event,${t.id})">
+        ondrop="mstDropTrack(event,${t.id})">
         ${t.clips.map(c => `
-          <div class="edtrack-clip"
-            style="left:${c.px}px;width:${c.wpx}px;background:${t.color}22;border:1px solid ${t.color}55;"
+          <div class="mst-tclip"
+            style="left:${c.px}px;width:${c.wpx}px;background:${t.color}1a;border:1px solid ${t.color}44;"
             draggable="true"
-            ondragstart="edDragTrack(event,${c.uid},${t.id})"
-            onclick="edSelClip(${c.uid},${t.id})">
-            <div class="edtrack-clip-name">${c.nombre}</div>
-            <div class="edtrack-clip-del" onclick="event.stopPropagation();edQuitarClip(${c.uid},${t.id})">✕</div>
+            ondragstart="mstDragTClip(event,${c.uid},${t.id})"
+            onclick="mstSelClip(${c.uid},${t.id})">
+            <div class="mst-tclip-name">${c.nombre}</div>
+            <div class="mst-tclip-del" onclick="event.stopPropagation();mstQuitarClip(${c.uid},${t.id})">✕</div>
           </div>
         `).join('')}
       </div>
@@ -1622,437 +1818,549 @@ function edRenderTracks() {
   `).join('');
 }
 
-function edAddATimeline(i) {
-  const clip = edCL[i];
+function mstAddAlTimeline(i) {
+  const clip = mstCL[i];
   if (!clip) return;
-  const track = edTR[0];
+  const track = mstTR[0];
   const last = track.clips[track.clips.length-1];
-  const px = last ? last.px + last.wpx + 4 : 4;
+  const px = last ? last.px+last.wpx+4 : 4;
   const secs = clip.durSecs || 5;
   track.clips.push({
     uid: Date.now(),
     clipIdx: i,
     nombre: clip.nombre,
-    px,
-    wpx: Math.max(Math.round(secs*40), 60),
+    px, wpx: Math.max(Math.round(secs*35),50),
     durSecs: secs,
-    url: clip.url,
-    file: clip.file
+    url: clip.url, file: clip.file,
+    cutStart: 0, cutEnd: secs
   });
-  edRenderTracks();
-  edActualizarVideo();
-  const empty = document.getElementById('ed-preview-empty');
+  mstRenderTracks();
+  mstActualizarVideo();
+  const empty = document.getElementById('mst-empty');
   if (empty) empty.style.display = 'none';
 }
 
-function edNuevaPista() {
+function mstNuevaPista() {
+  const n = mstTR.length+1;
   const cols = ['#ff5520','#00d4ff','#ffe600','#ff2255','#00ff88'];
-  const n = edTR.length + 1;
-  edTR.push({id:n, label:'PISTA '+n, color:cols[n%cols.length], clips:[]});
-  edRenderTracks();
+  mstTR.push({id:n, label:'PISTA '+n, color:cols[n%cols.length], clips:[]});
+  mstRenderTracks();
 }
 
-function edQuitarClip(uid, tid) {
-  const t = edTR.find(x => x.id === tid);
+function mstQuitarClip(uid, tid) {
+  const t = mstTR.find(x=>x.id===tid);
   if (!t) return;
-  t.clips = t.clips.filter(c => c.uid !== uid);
-  edRenderTracks();
-  edActualizarVideo();
+  t.clips = t.clips.filter(c=>c.uid!==uid);
+  mstRenderTracks();
+  mstActualizarVideo();
 }
 
-function edSelClip(uid, tid) {
-  const t = edTR.find(x => x.id === tid);
+function mstSelClip(uid, tid) {
+  const t = mstTR.find(x=>x.id===tid);
   if (!t) return;
-  const c = t.clips.find(x => x.uid === uid);
-  if (!c) return;
-  const info = document.getElementById('ed-clip-info');
-  if (info) {
-    info.innerHTML = `
-      <div style="background:#181410;border:1px solid #2a2420;border-radius:4px;padding:8px;font-size:10px;color:#fff;">
-        <div style="color:#ffe600;font-family:'DM Mono',monospace;font-size:8px;margin-bottom:4px;">CLIP SELECCIONADO</div>
-        <div style="margin-bottom:4px;">${c.nombre}</div>
-        <div style="color:#00d4ff;font-size:9px;">${edFT(c.durSecs)}</div>
-        <div style="margin-top:8px;font-size:9px;color:rgba(255,255,255,0.4);">
-          ${c.url ? '✓ Video cargado' : '⚠️ Sin video — carga el video en el panel izquierdo'}
-        </div>
-      </div>`;
-  }
-  edTab('clip', document.getElementById('edrtab-clip'));
+  const clip = t.clips.find(c=>c.uid===uid);
+  if (!clip) return;
+  mstCutActive = clip;
+  const info = document.getElementById('mst-clip-info');
+  if (info) info.innerHTML = `
+    <div style="background:#141210;border:1px solid #252018;border-radius:4px;padding:8px;font-size:10px;">
+      <div style="color:#ffe600;font-family:'DM Mono',monospace;font-size:7px;margin-bottom:4px;">CLIP ACTIVO</div>
+      <div style="color:#fff;margin-bottom:3px;">${clip.nombre}</div>
+      <div style="color:#00d4ff;font-size:9px;">${mstFT(clip.durSecs)}</div>
+      <div style="margin-top:8px;font-size:9px;color:rgba(255,255,255,0.4);">
+        Corte: ${mstFT(clip.cutStart||0)} → ${mstFT(clip.cutEnd||clip.durSecs)}
+      </div>
+      ${!clip.url ? '<div style="margin-top:5px;font-size:9px;color:#ff5520;">⚠️ Sin video — carga el video en la biblioteca</div>' : ''}
+    </div>`;
+  mstRTab('clip', null);
 }
 
-// Drag desde panel izquierdo
-function edDragPanel(event, i) {
-  event.dataTransfer.setData('tipo','panel');
-  event.dataTransfer.setData('idx', i);
-}
-
-// Drag desde timeline
-function edDragTrack(event, uid, tid) {
-  event.dataTransfer.setData('tipo','track');
+function mstDragTClip(event, uid, tid) {
+  event.dataTransfer.setData('tipo','tclip');
   event.dataTransfer.setData('uid', uid);
   event.dataTransfer.setData('tid', tid);
 }
 
-// Drop en track
-function edDropTrack(event, tid) {
+function mstDropTrack(event, tid) {
   event.preventDefault();
   const tipo = event.dataTransfer.getData('tipo');
-  const toTrack = edTR.find(t => t.id === tid);
-  if (!toTrack) return;
-  
-  if (tipo === 'panel') {
-    const i = parseInt(event.dataTransfer.getData('idx'));
-    edAddATimeline(i); // simplificado: agrega al track 0 por ahora
-  } else if (tipo === 'track') {
+  if (tipo === 'tclip') {
     const uid = parseInt(event.dataTransfer.getData('uid'));
     const fromId = parseInt(event.dataTransfer.getData('tid'));
     if (fromId === tid) return;
-    const fromTrack = edTR.find(t => t.id === fromId);
-    if (!fromTrack) return;
-    const idx = fromTrack.clips.findIndex(c => c.uid === uid);
-    if (idx === -1) return;
-    const [clip] = fromTrack.clips.splice(idx, 1);
-    toTrack.clips.push(clip);
-    edRenderTracks();
+    const from = mstTR.find(t=>t.id===fromId);
+    const to = mstTR.find(t=>t.id===tid);
+    if (!from||!to) return;
+    const idx = from.clips.findIndex(c=>c.uid===uid);
+    if (idx===-1) return;
+    const [clip] = from.clips.splice(idx,1);
+    to.clips.push(clip);
+    mstRenderTracks();
   }
 }
 
-// ── CANVAS / PREVIEW ──────────────────────────
-function edResizeCanvas() {
-  const canvas = document.getElementById('ed-canvas');
-  const wrap = document.getElementById('ed-preview-wrap');
-  if (!canvas || !wrap) return;
-  const mw = wrap.clientWidth - 24, mh = wrap.clientHeight - 24;
-  let w, h;
-  if (edAspRatio === '16:9') { w=mw; h=Math.round(w*9/16); if(h>mh){h=mh;w=Math.round(h*16/9);} }
-  else if (edAspRatio === '9:16') { h=mh; w=Math.round(h*9/16); if(w>mw){w=mw;h=Math.round(w*16/9);} }
-  else { w=h=Math.min(mw,mh); }
+// ── CANVAS / VIDEO ────────────────────────────
+function mstResizeCanvas() {
+  const canvas = document.getElementById('mst-canvas');
+  const wrap = document.getElementById('mst-preview-wrap');
+  if (!canvas||!wrap) return;
+  const mw = wrap.clientWidth-20, mh = wrap.clientHeight-20;
+  let w,h;
+  if (mstAsp_==='16:9'){w=mw;h=Math.round(w*9/16);if(h>mh){h=mh;w=Math.round(h*16/9);}}
+  else if(mstAsp_==='9:16'){h=mh;w=Math.round(h*9/16);if(w>mw){w=mw;h=Math.round(w*16/9);}}
+  else{w=h=Math.min(mw,mh);}
   canvas.width=w; canvas.height=h;
   canvas.style.width=w+'px'; canvas.style.height=h+'px';
 }
 
-function edDrawEmpty() {
-  const canvas = document.getElementById('ed-canvas');
+function mstDrawEmpty() {
+  const canvas = document.getElementById('mst-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#060402';
+  ctx.fillStyle = '#050403';
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.strokeStyle = 'rgba(0,212,255,0.07)';
-  ctx.setLineDash([5,5]);
-  ctx.strokeRect(10,10,canvas.width-20,canvas.height-20);
+  ctx.strokeStyle = 'rgba(0,212,255,0.06)';
+  ctx.setLineDash([4,4]);
+  ctx.strokeRect(8,8,canvas.width-16,canvas.height-16);
   ctx.setLineDash([]);
-  ctx.fillStyle='rgba(0,212,255,0.1)';
-  ctx.font='bold 11px monospace';
-  ctx.textAlign='center';
-  ctx.fillText('Agrega clips al timeline', canvas.width/2, canvas.height/2);
+  ctx.fillStyle = 'rgba(0,212,255,0.08)';
+  ctx.font = 'bold 11px DM Mono,monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('Agrega un video al timeline', canvas.width/2, canvas.height/2);
 }
 
-function edDrawFrame() {
-  const canvas = document.getElementById('ed-canvas');
+function mstDrawFrame(t) {
+  const canvas = document.getElementById('mst-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
   ctx.fillStyle = '#000';
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  if (edVidEl && edVidEl.readyState >= 2) {
-    try { ctx.drawImage(edVidEl, 0, 0, canvas.width, canvas.height); } catch(e){}
+  ctx.fillRect(0,0,W,H);
+  if (mstVid && mstVid.readyState >= 2) {
+    try { ctx.drawImage(mstVid,0,0,W,H); } catch(e){}
   }
-  // Textos
-  edTX.forEach(t => {
-    const fs = t.size || 32;
-    ctx.font = `bold ${fs}px sans-serif`;
-    let x = canvas.width/2, y = fs+12;
+  // Dibujar textos con animación
+  const now = t || (mstVid ? mstVid.currentTime : 0);
+  mstTX.forEach(tx => {
+    if (now < (tx.tStart||0) || now > (tx.tEnd||999)) return;
+    const fs = tx.size||32;
+    // Elegir fuente
+    ctx.font = `bold ${fs}px '${tx.font||'Syne'}',sans-serif`;
+    let x = W/2, y = fs+14;
     ctx.textAlign = 'center';
-    if (t.pos.includes('bottom')) y = canvas.height - 12;
-    if (t.pos === 'center' || t.pos === 'left' || t.pos === 'right') y = canvas.height/2 + fs/2;
-    if (t.pos.includes('left')) { x=12; ctx.textAlign='left'; }
-    if (t.pos.includes('right')) { x=canvas.width-12; ctx.textAlign='right'; }
-    const m = ctx.measureText(t.texto);
+    const pos = tx.pos||'top';
+    if (pos.includes('bottom')) y = H - 14;
+    if (pos==='center'||pos==='left'||pos==='right') y = H/2 + fs/3;
+    if (pos.includes('left')){x=14;ctx.textAlign='left';}
+    if (pos.includes('right')){x=W-14;ctx.textAlign='right';}
+    
+    // Calcular progreso de animación
+    const dur = (tx.tEnd||30)-(tx.tStart||0);
+    const progr = Math.min(1, (now-(tx.tStart||0))/(Math.min(dur,0.5)));
+    let alpha = 1;
+    let dx = 0, dy = 0, scale = 1;
+    const anim = tx.anim||'none';
+    if (anim==='fade') alpha = progr;
+    else if (anim==='slide-up') { alpha=progr; dy=(1-progr)*30; }
+    else if (anim==='slide-down') { alpha=progr; dy=-(1-progr)*30; }
+    else if (anim==='slide-left') { alpha=progr; dx=(1-progr)*40; }
+    else if (anim==='zoom') { scale=0.5+0.5*progr; alpha=progr; }
+    
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    if (scale!==1||dx!==0||dy!==0) ctx.transform(scale,0,0,scale,x*(1-scale)+dx,y*(1-scale)+dy);
+    
+    const m = ctx.measureText(tx.texto);
     const tw = m.width;
-    if (t.fondo !== 'none') {
-      const bx = ctx.textAlign==='left'?x-5:ctx.textAlign==='right'?x-tw-5:x-tw/2-5;
-      ctx.fillStyle = t.fondo==='orange'?'rgba(232,66,10,0.85)':t.fondo==='black'?'rgba(0,0,0,0.9)':'rgba(0,0,0,0.55)';
-      ctx.fillRect(bx, y-fs-2, tw+10, fs+10);
+    const bx = ctx.textAlign==='left'?x-5:ctx.textAlign==='right'?x-tw-5:x-tw/2-5;
+    
+    if (tx.fondo&&tx.fondo!=='none') {
+      ctx.globalAlpha = alpha*0.88;
+      ctx.fillStyle = tx.fondo==='orange'?'rgba(232,66,10,0.88)':tx.fondo==='white'?'rgba(255,255,255,0.9)':tx.fondo==='black'?'rgba(0,0,0,0.92)':'rgba(0,0,0,0.58)';
+      ctx.fillRect(bx-2, y-fs-3, tw+14, fs+10);
     }
-    ctx.shadowColor = t.color; ctx.shadowBlur = 5;
-    ctx.fillStyle = t.color;
-    ctx.fillText(t.texto, x, y);
-    ctx.shadowBlur = 0;
+    ctx.globalAlpha = alpha;
+    // Borde del texto (outline)
+    ctx.strokeStyle = tx.fondo==='white'?'rgba(0,0,0,0.5)':'rgba(0,0,0,0.6)';
+    ctx.lineWidth = 3;
+    if (scale!==1) ctx.restore(), ctx.save(), ctx.globalAlpha=alpha;
+    ctx.strokeText(tx.texto, x+dx, y+dy);
+    ctx.fillStyle = tx.color;
+    ctx.fillText(tx.texto, x+dx, y+dy);
+    ctx.restore();
   });
 }
 
-function edActualizarVideo() {
-  // Buscar primer clip con video en tracks
-  for (const t of edTR) {
+function mstActualizarVideo() {
+  for (const t of mstTR) {
     for (const c of t.clips) {
       if (c.url) {
-        if (!edVidEl) {
-          edVidEl = document.createElement('video');
-          edVidEl.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;';
-          document.body.appendChild(edVidEl);
+        if (!mstVid) {
+          mstVid = document.createElement('video');
+          mstVid.style.cssText='position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;';
+          document.body.appendChild(mstVid);
         }
-        if (edVidEl.src !== c.url) {
-          edVidEl.src = c.url;
-          edVidEl.load();
-        }
-        edVidEl.onloadeddata = () => {
-          edDrawFrame();
-          const timeEl = document.getElementById('ed-time');
-          if (timeEl && edVidEl.duration) timeEl.textContent = '0:00 / ' + edFT(edVidEl.duration);
+        if (mstVid.src !== c.url) { mstVid.src=c.url; mstVid.load(); }
+        mstVid.onloadeddata = () => {
+          mstDrawFrame(0);
+          const te = document.getElementById('mst-time');
+          if (te && mstVid.duration) te.textContent = '0:00 / '+mstFT(mstVid.duration);
         };
         return;
       }
     }
   }
-  edDrawEmpty();
+  mstDrawEmpty();
 }
 
 // ── REPRODUCCIÓN ──────────────────────────────
-function edPlay() {
-  const btn = document.getElementById('ed-playbtn');
-  if (!edVidEl || !edVidEl.src) { alert('Agrega un clip con video al timeline primero'); return; }
-  if (edVidEl.paused) {
-    edVidEl.play();
-    btn.textContent = '⏸ Pausa';
-    edPlaying = true;
-    edLoop();
+function mstPlay() {
+  const btn = document.getElementById('mst-playbtn');
+  if (!mstVid||!mstVid.src){alert('Agrega un clip con video al timeline');return;}
+  if (mstVid.paused) {
+    mstVid.play(); btn.textContent='⏸ Pausa'; mstPlay_=true; mstLoop();
   } else {
-    edVidEl.pause();
-    btn.textContent = '▶ Play';
-    edPlaying = false;
+    mstVid.pause(); btn.textContent='▶ Play'; mstPlay_=false;
   }
 }
 
-function edLoop() {
-  if (!edPlaying) return;
-  edDrawFrame();
-  if (edVidEl && edVidEl.duration) {
-    const pct = (edVidEl.currentTime / edVidEl.duration) * 100;
-    const fill = document.getElementById('ed-prog-fill');
-    const time = document.getElementById('ed-time');
-    if (fill) fill.style.width = pct + '%';
-    if (time) time.textContent = edFT(edVidEl.currentTime) + ' / ' + edFT(edVidEl.duration);
-    if (edVidEl.ended) {
-      edPlaying = false;
-      document.getElementById('ed-playbtn').textContent = '▶ Play';
-      return;
-    }
+function mstLoop() {
+  if (!mstPlay_) return;
+  if (mstVid && mstVid.duration) {
+    mstDrawFrame(mstVid.currentTime);
+    const pct = (mstVid.currentTime/mstVid.duration)*100;
+    const fill = document.getElementById('mst-prog-fill');
+    const time = document.getElementById('mst-time');
+    if (fill) fill.style.width=pct+'%';
+    if (time) time.textContent=mstFT(mstVid.currentTime)+' / '+mstFT(mstVid.duration);
+    if (mstVid.ended){mstPlay_=false;document.getElementById('mst-playbtn').textContent='▶ Play';return;}
   }
-  requestAnimationFrame(edLoop);
+  requestAnimationFrame(mstLoop);
 }
 
-function edSeek(event) {
-  if (!edVidEl || !edVidEl.duration) return;
-  const rect = document.getElementById('ed-prog').getBoundingClientRect();
-  const pct = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
-  edVidEl.currentTime = pct * edVidEl.duration;
-  edDrawFrame();
+function mstSeek(event) {
+  if (!mstVid||!mstVid.duration) return;
+  const rect=document.getElementById('mst-prog').getBoundingClientRect();
+  mstVid.currentTime=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width))*mstVid.duration;
+  mstDrawFrame(mstVid.currentTime);
+}
+
+// ── CORTADOR ──────────────────────────────────
+function mstCutOpen() {
+  if (!mstVid||!mstVid.src||!mstVid.duration){alert('Carga un video primero');return;}
+  mstCutStart = 0;
+  mstCutEnd = mstVid.duration;
+  const cutter = document.getElementById('mst-cutter');
+  if (cutter) cutter.classList.add('on');
+  mstCutUpdateUI();
+}
+
+function mstCutCancel() {
+  const c=document.getElementById('mst-cutter');
+  if(c) c.classList.remove('on');
+}
+
+function mstCutUpdateUI() {
+  if (!mstVid||!mstVid.duration) return;
+  const d = mstVid.duration;
+  const s = mstCutStart/d*100, e = mstCutEnd/d*100;
+  const fill=document.getElementById('mst-cut-fill');
+  const hs=document.getElementById('mst-cut-s');
+  const he=document.getElementById('mst-cut-e');
+  if(fill){fill.style.left=s+'%';fill.style.width=(e-s)+'%';}
+  if(hs) hs.style.left=s+'%';
+  if(he) he.style.left=e+'%';
+  const sl=document.getElementById('mst-cut-start-lbl');
+  const el=document.getElementById('mst-cut-end-lbl');
+  const dl=document.getElementById('mst-cut-dur-lbl');
+  if(sl) sl.textContent=mstFT(mstCutStart);
+  if(el) el.textContent=mstFT(mstCutEnd);
+  if(dl) dl.textContent=mstFT(mstCutEnd-mstCutStart);
+}
+
+function mstCutSeek(event) {
+  if (!mstVid||!mstVid.duration) return;
+  const rect=document.getElementById('mst-cut-tl').getBoundingClientRect();
+  const pct=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width));
+  mstVid.currentTime=pct*mstVid.duration;
+  mstDrawFrame(mstVid.currentTime);
+}
+
+function mstCutDrag(event, handle) {
+  event.preventDefault();
+  const tl=document.getElementById('mst-cut-tl');
+  const rect=tl.getBoundingClientRect();
+  function onMove(e) {
+    const pct=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+    const t=pct*(mstVid.duration||10);
+    if(handle==='s'){mstCutStart=Math.min(t,mstCutEnd-0.5);}
+    else{mstCutEnd=Math.max(t,mstCutStart+0.5);}
+    mstCutUpdateUI();
+    mstVid.currentTime = handle==='s'?mstCutStart:mstCutEnd;
+    mstDrawFrame(mstVid.currentTime);
+  }
+  function onUp(){document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);}
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('mouseup',onUp);
+}
+
+function mstCutApply() {
+  // Actualizar el clip activo con los puntos de corte
+  if (mstCutActive) {
+    mstCutActive.cutStart = mstCutStart;
+    mstCutActive.cutEnd = mstCutEnd;
+    mstCutActive.durSecs = mstCutEnd - mstCutStart;
+    mstCutActive.wpx = Math.max(Math.round(mstCutActive.durSecs*35),50);
+    mstRenderTracks();
+    mstAviso('✓ Corte aplicado: '+mstFT(mstCutStart)+' → '+mstFT(mstCutEnd), true);
+  }
+  mstCutCancel();
+  // Actualizar video al punto de inicio del corte
+  if (mstVid) mstVid.currentTime = mstCutStart;
+  mstDrawFrame(mstCutStart);
 }
 
 // ── ASPECTO ───────────────────────────────────
-function edAspecto(ratio, el) {
-  edAspRatio = ratio;
-  document.querySelectorAll('.edaspect-btn').forEach(b => b.classList.remove('on'));
-  if (el) el.classList.add('on');
-  edResizeCanvas();
-  edDrawFrame();
-}
-
-// ── TABS DERECHA ──────────────────────────────
-function edTab(tab, el) {
-  document.querySelectorAll('.edrtab').forEach(t => t.classList.remove('on'));
-  if (el) el.classList.add('on');
-  ['text','clip','audio'].forEach(t => {
-    const p = document.getElementById('edpanel-'+t);
-    if (p) p.style.display = t === tab ? 'block' : 'none';
-  });
-}
-
-function edSetTool(tool) {
-  document.querySelectorAll('.edtool').forEach(b => b.classList.remove('on'));
-  const btn = document.getElementById('edtool-'+tool);
-  if (btn) btn.classList.add('on');
-  edTab(tool, document.getElementById('edrtab-'+tool));
+function mstAsp(ratio, el) {
+  mstAsp_=ratio;
+  document.querySelectorAll('.mst-asp-btn').forEach(b=>b.classList.remove('on'));
+  if(el) el.classList.add('on');
+  mstResizeCanvas();
+  mstDrawFrame(mstVid?mstVid.currentTime:0);
 }
 
 // ── TEXTO ─────────────────────────────────────
-function edColor(color, el) {
-  edTxtColor = color;
-  document.querySelectorAll('.edcolor').forEach(e => e.classList.remove('on'));
-  if (el) el.classList.add('on');
-}
+function mstSetFont(f,el){mstTxtFont=f;document.querySelectorAll('.mst-font-btn').forEach(b=>b.classList.remove('on'));if(el)el.classList.add('on');}
+function mstSetColor(c,el){mstTxtColor=c;document.querySelectorAll('.mst-color').forEach(b=>b.classList.remove('on'));if(el)el.classList.add('on');}
+function mstSetPos(p,el){mstTxtPos=p;document.querySelectorAll('.mst-pos-btn').forEach(b=>b.classList.remove('on'));if(el)el.classList.add('on');}
+function mstSetAnim(a,el){mstTxtAnim=a;document.querySelectorAll('.mst-anim-btn').forEach(b=>b.classList.remove('on'));if(el)el.classList.add('on');}
 
-function edPos(pos, el) {
-  edTxtPos = pos;
-  document.querySelectorAll('.edpos-btn').forEach(e => e.classList.remove('on'));
-  if (el) el.classList.add('on');
-}
-
-function edAddTexto() {
-  const txt = document.getElementById('ed-txt');
-  const texto = txt ? txt.value.trim() : '';
-  if (!texto) { alert('Escribe el texto primero'); return; }
-  edTX.push({
-    id: Date.now(),
+function mstAddTexto() {
+  const inp=document.getElementById('mst-txt-inp');
+  const texto=(inp?inp.value:'').trim();
+  if(!texto){alert('Escribe el texto primero');return;}
+  mstTX.push({
+    id:Date.now(),
     texto,
-    size: parseInt(document.getElementById('ed-size').value || '32'),
-    color: edTxtColor,
-    pos: edTxtPos,
-    fondo: document.getElementById('ed-fondo').value || 'none'
+    size:parseInt(document.getElementById('mst-size').value||'32'),
+    color:mstTxtColor,
+    pos:mstTxtPos,
+    font:mstTxtFont,
+    anim:mstTxtAnim,
+    fondo:document.getElementById('mst-fondo').value||'none',
+    tStart:parseFloat(document.getElementById('mst-txt-start').value||'0'),
+    tEnd:parseFloat(document.getElementById('mst-txt-end').value||'30'),
   });
-  if (txt) txt.value = '';
-  edRenderTextos();
-  edDrawFrame();
+  if(inp) inp.value='';
+  mstRenderTextos();
+  mstDrawFrame(mstVid?mstVid.currentTime:0);
 }
 
-function edRenderTextos() {
-  const lista = document.getElementById('ed-textos-lista');
-  if (!lista) return;
-  if (edTX.length === 0) {
-    lista.innerHTML = '<div class="edtxt-empty">Sin textos aún</div>';
-    return;
-  }
-  lista.innerHTML = edTX.map(t => `
-    <div class="edtxt-item">
-      <div class="edtxt-dot" style="background:${t.color};box-shadow:0 0 4px ${t.color}88;"></div>
-      <div class="edtxt-text">${t.texto}</div>
-      <div class="edtxt-del" onclick="edBorrarTexto(${t.id})">✕</div>
+function mstAplicarTemplate(i) {
+  const t=MST_TEMPLATES[i];
+  const inp=document.getElementById('mst-txt-inp');
+  if(inp) inp.value=t.texto;
+  mstTxtColor=t.color; mstTxtPos=t.pos; mstTxtAnim=t.anim||'none';
+  mstRenderColors(); mstRenderPosGrid(); mstRenderAnims();
+  document.getElementById('mst-fondo').value=t.fondo||'none';
+  mstRTab('texto',null);
+}
+
+function mstRenderTextos() {
+  const lista=document.getElementById('mst-txt-lista');
+  if(!lista) return;
+  if(mstTX.length===0){lista.innerHTML='<div style="font-size:9px;color:rgba(0,212,255,0.2);text-align:center;padding:6px;">Sin textos aún</div>';return;}
+  lista.innerHTML=mstTX.map(t=>`
+    <div class="mst-txt-item">
+      <div class="mst-txt-dot" style="background:${t.color};box-shadow:0 0 3px ${t.color}88;"></div>
+      <div class="mst-txt-label">${t.texto}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:7px;color:rgba(255,255,255,0.2);flex-shrink:0;">${mstFT(t.tStart)}-${mstFT(t.tEnd)}</div>
+      <div class="mst-txt-del" onclick="mstBorrarTexto(${t.id})">✕</div>
     </div>
   `).join('');
 }
 
-function edBorrarTexto(id) {
-  edTX = edTX.filter(t => t.id !== id);
-  edRenderTextos();
-  edDrawFrame();
+function mstBorrarTexto(id) {
+  mstTX=mstTX.filter(t=>t.id!==id);
+  mstRenderTextos();
+  mstDrawFrame(mstVid?mstVid.currentTime:0);
 }
 
-// ── AUDIO ─────────────────────────────────────
-function edCargarAudio(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const info = document.getElementById('ed-audio-info');
-  if (info) { info.style.display='block'; info.textContent = '🎵 '+file.name; }
+// ── IA PARA TEXTO ─────────────────────────────
+async function mstAISugerir() {
+  const producto=document.getElementById('mst-ai-producto').value.trim();
+  if(!producto){alert('Escribe el producto primero');return;}
+  const loading=document.getElementById('mst-ai-loading');
+  const sugs=document.getElementById('mst-ai-sugs');
+  if(loading) loading.style.display='block';
+  if(sugs) sugs.innerHTML='';
+  try {
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:400,
+        messages:[{role:'user',content:`Genera exactamente 5 textos cortos (máximo 5 palabras cada uno) para superponer sobre un video de marketing del producto: "${producto}". 
+Textos de marketing que generen urgencia, confianza o acción. 
+Responde SOLO con un JSON array de strings, sin explicación, sin comillas extras, sin markdown. 
+Ejemplo: ["texto1","texto2","texto3","texto4","texto5"]`}]
+      })
+    });
+    const data=await resp.json();
+    const content=data.content?.[0]?.text||'[]';
+    let arr;
+    try { arr=JSON.parse(content.trim()); } catch(e){ arr=['¡Compra ahora!','Envío gratis','Solo hoy','Garantía 30 días','Miles de clientes felices']; }
+    if(sugs) sugs.innerHTML=arr.map(s=>`
+      <div class="mst-ai-sug" onclick="document.getElementById('mst-txt-inp').value='${s.replace(/'/g,"\\'")}'">${s}</div>
+    `).join('');
+  } catch(err) {
+    if(sugs) sugs.innerHTML='<div style="font-size:9px;color:#ff2255;text-align:center;padding:6px;">Error al conectar con IA</div>';
+  }
+  if(loading) loading.style.display='none';
+}
+
+// ── TABS ──────────────────────────────────────
+function mstLibTab(tab, el) {
+  document.querySelectorAll('.mst-ltab').forEach(t=>t.classList.remove('on'));
+  if(el) el.classList.add('on');
+  document.getElementById('mst-lib-videos').style.display=tab==='videos'?'block':'none';
+  document.getElementById('mst-lib-landing').style.display=tab==='landing'?'block':'none';
+}
+
+function mstRTab(tab, el) {
+  if(el){document.querySelectorAll('.mst-rtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');}
+  ['texto','mkt','clip'].forEach(t=>{
+    const p=document.getElementById('mst-rpanel-'+t);
+    if(p) p.style.display=t===tab?'block':'none';
+  });
+}
+
+// ── LIMPIAR TODO ──────────────────────────────
+function mstLimpiar() {
+  if(!confirm('¿Limpiar el timeline y los textos para empezar de nuevo?')) return;
+  if(mstVid){mstVid.pause();mstVid.src='';}
+  mstPlay_=false; mstTX=[];
+  mstTR.forEach(t=>t.clips=[]);
+  const btn=document.getElementById('mst-playbtn');
+  if(btn) btn.textContent='▶ Play';
+  const fill=document.getElementById('mst-prog-fill');
+  if(fill) fill.style.width='0%';
+  const time=document.getElementById('mst-time');
+  if(time) time.textContent='0:00 / 0:00';
+  const empty=document.getElementById('mst-empty');
+  if(empty) empty.style.display='block';
+  const cutter=document.getElementById('mst-cutter');
+  if(cutter) cutter.classList.remove('on');
+  mstRenderTracks();
+  mstRenderTextos();
+  mstDrawEmpty();
+  mstAviso('✓ Limpiado — listo para nuevo video', true);
 }
 
 // ── EXPORTAR ──────────────────────────────────
-async function edExport() {
-  const tieneClips = edTR.some(t => t.clips.length > 0);
-  if (!tieneClips) { alert('Agrega clips al timeline primero'); return; }
+async function mstExport(ratio) {
+  const tieneClips=mstTR.some(t=>t.clips.length>0);
+  if(!tieneClips){alert('Agrega clips al timeline primero');return;}
+  const clipsConVideo=mstTR.flatMap(t=>t.clips).filter(c=>c.url||c.file);
+  if(clipsConVideo.length===0){alert('Carga el video de los clips primero (botón 📁 Cargar)');return;}
   
-  const clipsConVideo = edTR.flatMap(t => t.clips).filter(c => c.url || c.file);
-  if (clipsConVideo.length === 0) {
-    alert('Carga el video original de tus clips primero.\n\nEn el panel izquierdo, presiona "📁 Cargar video" en cada clip.');
-    return;
-  }
+  const ratioOld=mstAsp_;
+  mstAsp_=ratio;
+  mstResizeCanvas();
   
-  const proc = document.getElementById('ed-proc');
-  const msg = document.getElementById('ed-proc-msg');
-  if (proc) proc.classList.add('on');
-  if (msg) msg.textContent = 'Cargando FFmpeg...';
+  const proc=document.getElementById('mst-proc');
+  const msg=document.getElementById('mst-proc-txt');
+  if(proc) proc.classList.add('on');
+  if(msg) msg.textContent='Cargando FFmpeg...';
   
   try {
-    if (!ffmpegLoaded) {
-      await ffmpeg.load();
-      ffmpegLoaded = true;
+    if(!ffmpegLoaded){await ffmpeg.load();ffmpegLoaded=true;}
+    if(msg) msg.textContent='Procesando video...';
+    
+    const clip=clipsConVideo[0];
+    const fileData=clip.file||await fetch(clip.url).then(r=>r.blob());
+    ffmpeg.FS('writeFile','input.mp4',await fetchFile(fileData));
+    
+    let vfParts=[];
+    
+    // Aspecto ratio
+    const canvas=document.getElementById('mst-canvas');
+    if(canvas){
+      const W=canvas.width, H=canvas.height;
+      vfParts.push(`scale=${W}:${H}:force_original_aspect_ratio=decrease,pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2`);
     }
-    if (msg) msg.textContent = 'Procesando video...';
     
-    const clip = clipsConVideo[0];
-    const fileData = clip.file || await fetch(clip.url).then(r => r.blob());
-    ffmpeg.FS('writeFile','input.mp4', await fetchFile(fileData));
+    // Corte del clip
+    let inputArgs=['-i','input.mp4'];
+    const cs=clip.cutStart||0, ce=clip.cutEnd||clip.durSecs||9999;
+    if(cs>0||ce<clip.durSecs){
+      inputArgs=['-ss',String(cs),'-i','input.mp4','-t',String(ce-cs)];
+    }
     
-    let vfArgs = [];
-    if (edTX.length > 0) {
-      const posMap = {
+    // Textos con FFmpeg drawtext
+    if(mstTX.length>0){
+      const posMap={
         'top':'x=(w-tw)/2:y=20','top-left':'x=20:y=20','top-right':'x=w-tw-20:y=20',
         'center':'x=(w-tw)/2:y=(h-th)/2','left':'x=20:y=(h-th)/2','right':'x=w-tw-20:y=(h-th)/2',
         'bottom':'x=(w-tw)/2:y=h-th-20','bottom-left':'x=20:y=h-th-20','bottom-right':'x=w-tw-20:y=h-th-20'
       };
-      const filtros = edTX.map(t => {
-        const pos = posMap[t.pos] || posMap['top'];
-        const col = t.color.replace('#','');
-        const safe = t.texto.replace(/'/g,"\\'").replace(/:/g,'\\:');
-        return `drawtext=text='${safe}':fontsize=${t.size}:fontcolor=${col}:${pos}:box=1:boxcolor=black@0.4:boxborderw=5`;
+      mstTX.forEach(t=>{
+        const pos=posMap[t.pos]||posMap['top'];
+        const col=t.color.replace('#','');
+        const safe=t.texto.replace(/'/g,"\\'").replace(/:/g,'\\:');
+        const timeFilter=t.tStart>0||t.tEnd<999?`:enable='between(t,${t.tStart},${t.tEnd})'`:'';
+        vfParts.push(`drawtext=text='${safe}':fontsize=${t.size}:fontcolor=${col}:${pos}:box=1:boxcolor=black@0.4:boxborderw=5${timeFilter}`);
       });
-      vfArgs = ['-vf', filtros.join(',')];
     }
     
-    if (msg) msg.textContent = 'Exportando MP4...';
-    await ffmpeg.run('-i','input.mp4',...vfArgs,'-c:v','libx264','-c:a','aac','-movflags','faststart','output.mp4');
+    if(msg) msg.textContent='Exportando MP4...';
+    const filterArgs=vfParts.length>0?['-vf',vfParts.join(',')]:[];
+    await ffmpeg.run(...inputArgs,...filterArgs,'-c:v','libx264','-c:a','aac','-movflags','faststart','output.mp4');
     
-    const data = ffmpeg.FS('readFile','output.mp4');
-    const blob = new Blob([data.buffer],{type:'video/mp4'});
-    const url = URL.createObjectURL(blob);
-    const nombre = (clipsConVideo[0].nombre||'clip').replace(/\s+/g,'-').toLowerCase();
-    const a = document.createElement('a');
-    a.href = url; a.download = nombre+'-editado.mp4'; a.click();
+    const data=ffmpeg.FS('readFile','output.mp4');
+    const blob=new Blob([data.buffer],{type:'video/mp4'});
+    const url=URL.createObjectURL(blob);
+    const plat=ratio==='16:9'?'meta':ratio==='9:16'?'tiktok':'whatsapp';
+    const nombre=(clipsConVideo[0].nombre||'clip').replace(/\s+/g,'-').toLowerCase();
+    const a=document.createElement('a');
+    a.href=url;a.download=nombre+'-'+plat+'.mp4';a.click();
     URL.revokeObjectURL(url);
-    try { ffmpeg.FS('unlink','input.mp4'); ffmpeg.FS('unlink','output.mp4'); } catch(e){}
-    if (proc) proc.classList.remove('on');
-    
+    try{ffmpeg.FS('unlink','input.mp4');ffmpeg.FS('unlink','output.mp4');}catch(e){}
+    if(proc) proc.classList.remove('on');
+    mstAsp_=ratioOld; mstResizeCanvas();
   } catch(err) {
-    if (proc) proc.classList.remove('on');
+    if(proc) proc.classList.remove('on');
+    mstAsp_=ratioOld; mstResizeCanvas();
     console.error(err);
-    alert('Error al exportar: ' + err.message);
+    alert('Error al exportar: '+err.message);
   }
 }
 
 // ── UTILIDADES ────────────────────────────────
-function edLimpiar() {
-  if (!confirm('¿Limpiar el timeline y empezar con un video nuevo?')) return;
-  // Detener reproducción
-  if (edVidEl) {
-    edVidEl.pause();
-    edVidEl.src = '';
-  }
-  edPlaying = false;
-  edTX = [];
-  // Limpiar clips de los tracks
-  edTR.forEach(t => t.clips = []);
-  // Limpiar clips locales (los subidos en esta sesión, no los del archivo)
-  edCL = edCL.filter(c => c.guardado); // mantener los del archivo, quitar los subidos
-  // Reset UI
-  const btn = document.getElementById('ed-playbtn');
-  if (btn) btn.textContent = '▶ Play';
-  const fill = document.getElementById('ed-prog-fill');
-  if (fill) fill.style.width = '0%';
-  const time = document.getElementById('ed-time');
-  if (time) time.textContent = '0:00 / 0:00';
-  const empty = document.getElementById('ed-preview-empty');
-  if (empty) empty.style.display = 'block';
-  edRenderClips();
-  edRenderTracks();
-  edRenderTextos();
-  edDrawEmpty();
-  edAviso('✓ Timeline limpiado — sube o selecciona un video nuevo', true);
-}
-
-function edFT(s) {
-  if (!s || isNaN(s)) return '0:00';
-  return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
-}
+function mstFT(s){if(!s||isNaN(s))return'0:00';return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');}
 
 // ── INICIALIZACIÓN ────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded',()=>{
   // Botón en Video Studio
-  const nav = document.querySelector('.vs-nav');
-  if (nav) {
-    const btn = document.createElement('button');
-    btn.className = 'vs-new';
-    btn.style.cssText = 'background:rgba(255,230,0,0.1);border-color:rgba(255,230,0,0.3);color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.4);margin-left:6px;';
-    btn.textContent = '✂ Editor Avanzado';
-    btn.onclick = () => { goTo('page-editor'); setTimeout(edInit,100); };
+  const nav=document.querySelector('.vs-nav');
+  if(nav){
+    const btn=document.createElement('button');
+    btn.className='vs-new';
+    btn.style.cssText='background:rgba(255,230,0,0.1);border-color:rgba(255,230,0,0.3);color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.4);margin-left:6px;';
+    btn.textContent='🎬 Marketing Studio';
+    btn.onclick=()=>{goTo('page-editor');setTimeout(mstInit,100);};
     nav.appendChild(btn);
   }
   // Bottom nav
-  const bnav = document.getElementById('bottom-nav');
-  if (bnav) {
-    const btn = document.createElement('button');
-    btn.className = 'bnav-btn';
-    btn.id = 'bnav-advanced';
-    btn.textContent = '✂·Editor';
-    btn.style.color = 'rgba(255,230,0,0.4)';
-    btn.onclick = () => { goTo('page-editor'); setTimeout(edInit,100); };
+  const bnav=document.getElementById('bottom-nav');
+  if(bnav){
+    const btn=document.createElement('button');
+    btn.className='bnav-btn';
+    btn.id='bnav-advanced';
+    btn.textContent='✂·Studio';
+    btn.style.color='rgba(255,230,0,0.4)';
+    btn.onclick=()=>{goTo('page-editor');setTimeout(mstInit,100);};
     bnav.appendChild(btn);
   }
 });
