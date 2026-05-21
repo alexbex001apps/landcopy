@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -782,7 +783,8 @@ function goTo(pageId) {
   const map = {
     'page-main': ['bnav-main','on'],
     'page-login': ['bnav-login','login-on'],
-    'page-pricing': ['bnav-pricing','pricing-on']
+    'page-pricing': ['bnav-pricing','pricing-on'],
+    'page-editor': ['bnav-advanced','on']
   };
   if(map[pageId]) {
     document.getElementById(map[pageId][0]).classList.add(map[pageId][1]);
@@ -1013,7 +1015,16 @@ function vsSave(){
   const name=document.getElementById('vs-clip-name').value.trim();
   if(!name){alert('Ponle un nombre al clip');return;}
   if((vsEnd-vsStart)<=0){alert('Selecciona un fragmento válido');return;}
-  vsClips.unshift({id:Date.now(),name,landing:document.getElementById('vs-clip-landing').value.trim()||'Sin landing',use:document.getElementById('vs-clip-use').value,duration:vsTime(vsEnd-vsStart),date:new Date().toLocaleDateString('es-CO',{day:'numeric',month:'short'})});
+  const clipData = {
+    id:Date.now(),
+    name,
+    landing:document.getElementById('vs-clip-landing').value.trim()||'Sin landing',
+    use:document.getElementById('vs-clip-use').value,
+    duration:vsTime(vsEnd-vsStart),
+    date:new Date().toLocaleDateString('es-CO',{day:'numeric',month:'short'}),
+    cloudUrl: null
+  };
+  vsClips.unshift(clipData);
   localStorage.setItem('vs_clips',JSON.stringify(vsClips));
   vsRenderClips();vsUpdateArchCount();
   document.getElementById('vs-clip-name').value='';
@@ -1031,7 +1042,49 @@ function vsRenderArch(){
   const g=document.getElementById('vs-arch-grid'),t=document.getElementById('vs-arch-ttl-count');
   t.textContent='('+vsClips.length+' clips)';
   if(vsClips.length===0){g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:rgba(0,212,255,0.3);font-size:12px;">Aún no hay clips.</div>';return;}
-  g.innerHTML=vsClips.map(cl=>`<div class="vs-ac"><div class="vs-ac-thumb"><div class="vs-ac-play"><div class="vs-ac-pi"></div></div><div class="vs-ac-dur">${cl.duration}</div></div><div class="vs-ac-info"><div class="vs-ac-name">${cl.name}</div><div class="vs-ac-tag">${cl.landing}</div><div class="vs-ac-date">${cl.date}</div><div class="vs-ac-acts"><button class="vs-acb" onclick="vsDelete(${cl.id})">🗑 Borrar</button></div></div></div>`).join('');
+  g.innerHTML=vsClips.map(cl=>`<div class="vs-ac">
+    <div class="vs-ac-thumb" ${cl.cloudUrl ? `onclick="vsPlayCloud('${cl.cloudUrl}')" style="cursor:pointer;"` : ''}>
+      <div class="vs-ac-play"><div class="vs-ac-pi"></div></div>
+      <div class="vs-ac-dur">${cl.duration}</div>
+      ${cl.cloudUrl ? '<div style="position:absolute;top:5px;left:5px;background:rgba(0,212,255,0.8);border-radius:3px;padding:1px 6px;font-size:8px;font-family:DM Mono,monospace;color:#000;">☁ CLOUD</div>' : ''}
+    </div>
+    <div class="vs-ac-info">
+      <div class="vs-ac-name">${cl.name}</div>
+      <div class="vs-ac-tag">${cl.landing}</div>
+      <div class="vs-ac-date">${cl.date}</div>
+      <div class="vs-ac-acts">
+        ${cl.cloudUrl ? `<button class="vs-acb p" onclick="vsPlayCloud('${cl.cloudUrl}')">▶ Ver</button>` : ''}
+        <button class="vs-acb" onclick="vsDelete(${cl.id})">🗑 Borrar</button>
+      </div>
+    </div>
+  </div>`).join('');
+}
+
+async function vsUploadToCloud(blob, clipName) {
+  try {
+    vsShowProc('Subiendo a la nube...');
+    const filename = clipName.replace(/\s+/g,'-').toLowerCase() + '.mp4';
+    // Pedir URL firmada al servidor
+    const resp = await fetch('/api/upload', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({filename, contentType:'video/mp4'})
+    });
+    if(!resp.ok) throw new Error('Error obteniendo URL de subida');
+    const {signedUrl, publicUrl} = await resp.json();
+    // Subir el blob directamente a Backblaze
+    await fetch(signedUrl, {
+      method: 'PUT',
+      headers: {'Content-Type':'video/mp4'},
+      body: blob
+    });
+    vsHideProc();
+    return publicUrl;
+  } catch(err) {
+    vsHideProc();
+    console.error('Error subiendo a cloud:', err);
+    return null;
+  }
 }
 
 function vsDelete(id){if(!confirm('¿Eliminar?'))return;vsClips=vsClips.filter(c=>c.id!==id);localStorage.setItem('vs_clips',JSON.stringify(vsClips));vsRenderClips();vsUpdateArchCount();}
@@ -1074,6 +1127,25 @@ function vsUpdateWaveformActive(){
     else b.classList.remove('active');
   });
 }
+function vsPlayCloud(url) {
+  // Crear modal para reproducir video desde cloud
+  const existing = document.getElementById('vs-cloud-modal');
+  if(existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'vs-cloud-modal';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;';
+  modal.innerHTML = `
+    <div style="position:relative;width:80vw;max-width:900px;">
+      <video src="${url}" controls autoplay style="width:100%;border-radius:8px;max-height:70vh;"></video>
+    </div>
+    <button onclick="document.getElementById('vs-cloud-modal').remove()" 
+      style="padding:8px 24px;background:rgba(255,34,85,0.2);border:1px solid rgba(255,34,85,0.5);color:#ff2255;font-family:DM Mono,monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:3px;">
+      ✕ Cerrar
+    </button>`;
+  modal.onclick = (e) => { if(e.target === modal) modal.remove(); };
+  document.body.appendChild(modal);
+}
+
 function vsTime(s){if(isNaN(s))return'0:00';return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');}
 function vsParse(str){const p=str.split(':');return p.length===2?parseInt(p[0])*60+parseFloat(p[1]):parseFloat(str)||0;}
 
@@ -1091,5 +1163,999 @@ document.addEventListener('DOMContentLoaded',()=>{vsRenderClips();vsUpdateArchCo
   <button class="bnav-btn" onclick="goToStudio('archive')" id="bnav-archive">3·Archivo</button>
 </div>
 
+
+<script>
+// DIAGNÓSTICO - se ejecuta al cargar
+window.addEventListener('load', function() {
+  const results = [];
+  const fns = ['goTo','goToStudio','vsLoadVideo','vsTogglePlay','vsCut','vsSave',
+    'vsShowEditor','vsShowArchive','vsNewVideo','openStudio','closeStudio',
+    'edInit','edRenderClips','edAddClipToTrack','edTogglePlay','edAddText','edExport',
+    'edSetAspect','edRightTab','edAddTrack','generateContent','selChip','showTab'];
+  
+  fns.forEach(fn => {
+    const exists = typeof window[fn] === 'function';
+    results.push((exists ? '✅' : '❌') + ' ' + fn);
+  });
+  
+  console.log('=== DIAGNÓSTICO DUNAMIXFY ===');
+  results.forEach(r => console.log(r));
+  console.log('=============================');
+});
+</script>
+
 </body>
 </html>
+
+<!-- EDITOR AVANZADO - Inyectado como página separada -->
+<style>
+/* ══ EDITOR AVANZADO ══ */
+#page-editor{background:#060504;overflow:hidden;}
+.ed-wrap{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+
+/* Header editor */
+.ed-topbar{background:#0a0806;border-bottom:1px solid #2a2420;height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0;}
+.ed-back{display:flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid rgba(0,212,255,0.3);background:transparent;color:#00d4ff;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;text-shadow:0 0 6px rgba(0,212,255,0.6);}
+.ed-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#00d4ff;text-shadow:0 0 10px rgba(0,212,255,0.7);}
+.ed-tools{display:flex;gap:6px;}
+.ed-tool{padding:4px 10px;border:1px solid #2a2420;background:transparent;color:rgba(0,212,255,0.5);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all 0.2s;}
+.ed-tool:hover{border-color:rgba(0,212,255,0.4);color:#00d4ff;}
+.ed-tool.on{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.4);color:#00d4ff;text-shadow:0 0 5px rgba(0,212,255,0.5);}
+.ed-export-btn{padding:5px 14px;background:rgba(255,85,32,0.15);border:1px solid rgba(255,85,32,0.5);color:#ff5520;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;text-shadow:0 0 6px rgba(255,85,32,0.6);margin-left:8px;}
+.ed-export-btn:hover{background:rgba(255,85,32,0.3);box-shadow:0 0 12px rgba(255,85,32,0.3);}
+
+/* Body: izquierda + centro + derecha */
+.ed-body{display:grid;grid-template-columns:220px 1fr 220px;flex:1;min-height:0;overflow:hidden;}
+
+/* Panel izquierdo — clips */
+.ed-left{background:#0e0c0a;border-right:1px solid #2a2420;display:flex;flex-direction:column;overflow:hidden;}
+.ed-left-title{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.5);padding:10px 14px;border-bottom:1px solid #2a2420;display:flex;align-items:center;justify-content:space-between;}
+.ed-add-clip{font-size:14px;cursor:pointer;color:#ff5520;text-shadow:0 0 5px rgba(255,85,32,0.5);}
+.ed-clips-scroll{flex:1;overflow-y:auto;padding:8px;}
+.ed-clip-card{background:#181410;border:1px solid #2a2420;border-radius:6px;padding:8px;margin-bottom:6px;cursor:grab;transition:all 0.2s;position:relative;}
+.ed-clip-card:hover{border-color:rgba(0,212,255,0.3);box-shadow:0 0 8px rgba(0,212,255,0.1);}
+.ed-clip-card:active{cursor:grabbing;}
+.ed-clip-thumb{height:60px;background:linear-gradient(135deg,#1a1410,#0a0806);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:6px;position:relative;}
+.ed-clip-dur{position:absolute;bottom:3px;right:4px;background:rgba(0,0,0,0.8);font-family:'DM Mono',monospace;font-size:7px;color:#ffe600;text-shadow:0 0 4px rgba(255,230,0,0.5);padding:1px 4px;border-radius:2px;}
+.ed-clip-name{font-size:10px;color:#fff;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ed-clip-tag{font-family:'DM Mono',monospace;font-size:7px;color:#ff5520;text-shadow:0 0 3px rgba(255,85,32,0.4);margin-top:2px;}
+.ed-clip-add-btn{position:absolute;top:6px;right:6px;width:20px;height:20px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#00d4ff;cursor:pointer;}
+.ed-clip-add-btn:hover{background:rgba(0,212,255,0.25);}
+.ed-upload-area{margin:8px;padding:14px;border:1px dashed rgba(0,212,255,0.2);border-radius:6px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.ed-upload-area:hover{border-color:rgba(0,212,255,0.5);}
+.ed-upload-area-txt{font-size:10px;color:rgba(0,212,255,0.4);line-height:1.5;}
+
+/* Panel central — preview */
+.ed-center{display:flex;flex-direction:column;overflow:hidden;}
+.ed-preview{flex:1;background:#000;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.ed-canvas{max-width:100%;max-height:100%;display:block;}
+.ed-preview-empty{text-align:center;color:rgba(0,212,255,0.2);}
+.ed-preview-empty div:first-child{font-size:40px;margin-bottom:8px;}
+.ed-preview-empty div:last-child{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;}
+.ed-playbar{background:#0e0c0a;border-top:1px solid #2a2420;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.ed-playbtn{padding:5px 14px;border:1px solid rgba(255,85,32,0.4);background:rgba(255,85,32,0.1);color:#ff5520;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;border-radius:2px;text-shadow:0 0 5px rgba(255,85,32,0.5);}
+.ed-time{font-family:'DM Mono',monospace;font-size:10px;color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.5);}
+.ed-progress{flex:1;height:4px;background:#2a2420;border-radius:2px;cursor:pointer;}
+.ed-progress-fill{height:100%;background:#ff5520;border-radius:2px;box-shadow:0 0 6px rgba(255,85,32,0.5);transition:width 0.1s;}
+.ed-aspect-btns{display:flex;gap:4px;}
+.ed-aspect-btn{padding:3px 8px;border:1px solid #2a2420;background:transparent;color:rgba(0,212,255,0.4);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;border-radius:2px;}
+.ed-aspect-btn.on{border-color:rgba(0,212,255,0.4);color:#00d4ff;text-shadow:0 0 4px rgba(0,212,255,0.5);}
+
+/* Timeline multicapa */
+.ed-timeline{background:#0a0806;border-top:1px solid #2a2420;height:180px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;}
+.ed-tl-header{display:flex;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid #2a2420;flex-shrink:0;}
+.ed-tl-title{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.5);}
+.ed-tl-add-track{padding:2px 8px;border:1px solid rgba(255,230,0,0.2);background:transparent;color:rgba(255,230,0,0.5);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;border-radius:2px;}
+.ed-tracks{flex:1;overflow-y:auto;overflow-x:auto;}
+.ed-track{display:flex;align-items:center;border-bottom:1px solid #1a1810;min-height:36px;}
+.ed-track-label{width:80px;flex-shrink:0;padding:0 8px;font-family:'DM Mono',monospace;font-size:7px;color:rgba(0,212,255,0.5);text-shadow:0 0 3px rgba(0,212,255,0.3);letter-spacing:1px;text-transform:uppercase;border-right:1px solid #2a2420;}
+.ed-track-area{flex:1;position:relative;height:36px;background:repeating-linear-gradient(90deg,#1a1810 0px,#1a1810 59px,#2a2420 59px,#2a2420 60px);}
+.ed-track-clip{position:absolute;top:3px;height:30px;border-radius:3px;cursor:grab;display:flex;align-items:center;padding:0 6px;overflow:hidden;border:1px solid transparent;transition:border-color 0.2s;user-select:none;}
+.ed-track-clip:hover{border-color:rgba(255,255,255,0.3);}
+.ed-track-clip.selected{border-color:#ff2255;box-shadow:0 0 6px rgba(255,34,85,0.5);}
+.ed-track-clip-name{font-family:'DM Mono',monospace;font-size:7px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 0 3px rgba(255,255,255,0.5);}
+.ed-track-clip-del{position:absolute;right:2px;top:2px;width:14px;height:14px;background:rgba(255,34,85,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;cursor:pointer;opacity:0;}
+.ed-track-clip:hover .ed-track-clip-del{opacity:1;}
+.ed-playhead-line{position:absolute;top:0;bottom:0;width:2px;background:#ff5520;box-shadow:0 0 6px rgba(255,85,32,0.8);pointer-events:none;z-index:10;}
+
+/* Panel derecho — propiedades */
+.ed-right{background:#0e0c0a;border-left:1px solid #2a2420;display:flex;flex-direction:column;overflow:hidden;}
+.ed-right-tabs{display:flex;border-bottom:1px solid #2a2420;}
+.ed-right-tab{flex:1;padding:8px;text-align:center;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:rgba(0,212,255,0.4);border-bottom:2px solid transparent;transition:all 0.2s;}
+.ed-right-tab.on{color:#00d4ff;text-shadow:0 0 6px rgba(0,212,255,0.6);border-bottom-color:#00d4ff;}
+.ed-right-content{flex:1;overflow-y:auto;padding:12px;}
+.ed-prop-section{margin-bottom:16px;}
+.ed-prop-title{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.5);margin-bottom:8px;}
+.ed-prop-field{margin-bottom:8px;}
+.ed-prop-field label{display:block;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,212,255,0.5);margin-bottom:4px;}
+.ed-prop-field input,.ed-prop-field select,.ed-prop-field textarea{width:100%;background:#181410;border:1px solid #2a2420;padding:6px 8px;font-family:'DM Sans',sans-serif;font-size:11px;color:#00d4ff;border-radius:3px;outline:none;}
+.ed-prop-field input:focus,.ed-prop-field select:focus{border-color:rgba(0,212,255,0.4);}
+.ed-prop-field textarea{min-height:60px;resize:vertical;}
+.ed-color-row{display:flex;gap:6px;flex-wrap:wrap;}
+.ed-color-opt{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.2s;}
+.ed-color-opt.on{border-color:#fff;box-shadow:0 0 6px rgba(255,255,255,0.5);}
+.ed-pos-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;}
+.ed-pos-btn{padding:5px;border:1px solid #2a2420;background:transparent;color:rgba(0,212,255,0.4);font-size:10px;cursor:pointer;border-radius:2px;text-align:center;}
+.ed-pos-btn.on{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.4);color:#00d4ff;}
+.ed-add-text-btn{width:100%;padding:8px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:#00d4ff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border-radius:3px;text-shadow:0 0 5px rgba(0,212,255,0.5);margin-top:4px;}
+.ed-add-text-btn:hover{background:rgba(0,212,255,0.2);}
+.ed-text-layer-item{background:#181410;border:1px solid #2a2420;border-radius:4px;padding:7px;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between;}
+.ed-tli-text{font-size:11px;color:#fff;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ed-tli-del{color:#ff2255;cursor:pointer;font-size:12px;flex-shrink:0;margin-left:6px;}
+
+/* Processing overlay editor */
+.ed-processing{display:none;position:fixed;inset:0;background:rgba(6,5,4,0.92);z-index:99999;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+.ed-processing.on{display:flex;}
+.ed-proc-spin{width:40px;height:40px;border:3px solid #2a2420;border-top-color:#ff5520;border-radius:50%;animation:spin 0.7s linear infinite;}
+.ed-proc-msg{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#ff2255;text-shadow:0 0 10px rgba(255,34,85,0.8);}
+.ed-proc-sub{font-size:11px;color:rgba(255,255,255,0.3);}
+</style>
+
+<!-- ══ PAGE: EDITOR AVANZADO ══ -->
+<div class="page" id="page-editor">
+  <div class="ed-wrap">
+
+    <!-- Topbar -->
+    <div class="ed-topbar">
+      <button class="ed-back" onclick="goTo('page-studio')">← Video Studio</button>
+      <div class="ed-title">🎬 Editor Avanzado</div>
+      <div class="ed-tools">
+        <button class="ed-tool on" id="ed-tool-text" onclick="edSetTool('text')">T Texto</button>
+        <button class="ed-tool" id="ed-tool-clip" onclick="edSetTool('clip')">✂ Clip</button>
+        <button class="ed-tool" id="ed-tool-audio" onclick="edSetTool('audio')">♪ Audio</button>
+        <button class="ed-export-btn" onclick="edExport()">⚡ Exportar MP4</button>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="ed-body" style="flex:1;min-height:0;">
+
+      <!-- Izquierda: clips disponibles -->
+      <div class="ed-left">
+        <div class="ed-left-title">
+          <span>Mis Clips</span>
+          <span class="ed-add-clip" onclick="document.getElementById('ed-file-input').click()" title="Subir video nuevo" style="cursor:pointer;">＋</span>
+        </div>
+        <input type="file" id="ed-file-input" accept="video/*" style="display:none;" onchange="edLoadNewClip(event)">
+        <div class="ed-upload-area" id="ed-upload-area">
+          <div style="font-size:24px;opacity:0.3;margin-bottom:4px;">🎬</div>
+          <div class="ed-upload-area-txt">Haz clic para subir un video nuevo</div>
+          <button onclick="document.getElementById('ed-file-input').click()" 
+            style="margin-top:8px;padding:6px 14px;background:rgba(255,85,32,0.15);border:1px solid rgba(255,85,32,0.4);color:#ff5520;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;">
+            📁 Subir video
+          </button>
+        </div>
+        <div class="ed-clips-scroll" id="ed-clips-scroll">
+          <!-- Se llena dinámicamente -->
+        </div>
+      </div>
+
+      <!-- Centro: preview + playbar + timeline -->
+      <div class="ed-center">
+
+        <!-- Preview -->
+        <div class="ed-preview" id="ed-preview">
+          <canvas id="ed-canvas" class="ed-canvas"></canvas>
+          <div class="ed-preview-empty" id="ed-preview-empty">
+            <div>🎬</div>
+            <div>Arrastra clips al timeline</div>
+          </div>
+        </div>
+
+        <!-- Playbar -->
+        <div class="ed-playbar">
+          <button class="ed-playbtn" id="ed-playbtn" onclick="edTogglePlay()">▶ Play</button>
+          <span class="ed-time" id="ed-time">0:00 / 0:00</span>
+          <div class="ed-progress" id="ed-progress" onclick="edSeekProgress(event)">
+            <div class="ed-progress-fill" id="ed-progress-fill" style="width:0%"></div>
+          </div>
+          <div class="ed-aspect-btns">
+            <button class="ed-aspect-btn on" onclick="edSetAspect('16:9',this)">16:9</button>
+            <button class="ed-aspect-btn" onclick="edSetAspect('9:16',this)">9:16</button>
+            <button class="ed-aspect-btn" onclick="edSetAspect('1:1',this)">1:1</button>
+          </div>
+        </div>
+
+        <!-- Timeline multicapa -->
+        <div class="ed-timeline">
+          <div class="ed-tl-header">
+            <span class="ed-tl-title">Timeline</span>
+            <button class="ed-tl-add-track" onclick="edAddTrack()">+ Pista</button>
+            <span style="font-family:'DM Mono',monospace;font-size:7px;color:rgba(255,255,255,0.2);margin-left:auto;">Arrastra clips desde el panel izquierdo</span>
+          </div>
+          <div class="ed-tracks" id="ed-tracks">
+            <!-- Pistas generadas dinámicamente -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Derecha: propiedades -->
+      <div class="ed-right">
+        <div class="ed-right-tabs">
+          <div class="ed-right-tab on" onclick="edRightTab('text',this)">Texto</div>
+          <div class="ed-right-tab" onclick="edRightTab('clip',this)">Clip</div>
+          <div class="ed-right-tab" onclick="edRightTab('audio',this)">Audio</div>
+        </div>
+
+        <!-- Panel texto -->
+        <div class="ed-right-content" id="ed-panel-text">
+          <div class="ed-prop-section">
+            <div class="ed-prop-title">Agregar texto</div>
+            <div class="ed-prop-field">
+              <label>Texto</label>
+              <textarea id="ed-txt-content" placeholder="Ej: ¡Envío gratis hoy!"></textarea>
+            </div>
+            <div class="ed-prop-field">
+              <label>Tamaño</label>
+              <input type="range" id="ed-txt-size" min="12" max="80" value="32" oninput="edPreviewText()">
+              <span id="ed-txt-size-val" style="font-family:'DM Mono',monospace;font-size:9px;color:#ffe600;">32px</span>
+            </div>
+            <div class="ed-prop-field">
+              <label>Color</label>
+              <div class="ed-color-row">
+                <div class="ed-color-opt on" style="background:#fff;" onclick="edSetTextColor('#fff',this)"></div>
+                <div class="ed-color-opt" style="background:#ff5520;" onclick="edSetTextColor('#ff5520',this)"></div>
+                <div class="ed-color-opt" style="background:#ffe600;" onclick="edSetTextColor('#ffe600',this)"></div>
+                <div class="ed-color-opt" style="background:#00d4ff;" onclick="edSetTextColor('#00d4ff',this)"></div>
+                <div class="ed-color-opt" style="background:#ff2255;" onclick="edSetTextColor('#ff2255',this)"></div>
+                <div class="ed-color-opt" style="background:#00ff88;" onclick="edSetTextColor('#00ff88',this)"></div>
+              </div>
+            </div>
+            <div class="ed-prop-field">
+              <label>Posición</label>
+              <div class="ed-pos-grid">
+                <div class="ed-pos-btn" onclick="edSetTextPos('top-left',this)">↖</div>
+                <div class="ed-pos-btn on" onclick="edSetTextPos('top',this)">↑</div>
+                <div class="ed-pos-btn" onclick="edSetTextPos('top-right',this)">↗</div>
+                <div class="ed-pos-btn" onclick="edSetTextPos('left',this)">←</div>
+                <div class="ed-pos-btn" onclick="edSetTextPos('center',this)">●</div>
+                <div class="ed-pos-btn" onclick="edSetTextPos('right',this)">→</div>
+                <div class="ed-pos-btn" onclick="edSetTextPos('bottom-left',this)">↙</div>
+                <div class="ed-pos-btn" onclick="edSetTextPos('bottom',this)">↓</div>
+                <div class="ed-pos-btn" onclick="edSetTextPos('bottom-right',this)">↘</div>
+              </div>
+            </div>
+            <div class="ed-prop-field">
+              <label>Fondo del texto</label>
+              <select id="ed-txt-bg">
+                <option value="none">Sin fondo</option>
+                <option value="dark">Fondo oscuro</option>
+                <option value="black">Fondo negro</option>
+                <option value="orange">Fondo naranja</option>
+              </select>
+            </div>
+            <button class="ed-add-text-btn" onclick="edAddText()">+ Agregar al video</button>
+          </div>
+
+          <div class="ed-prop-section">
+            <div class="ed-prop-title">Textos en el video</div>
+            <div id="ed-text-layers-list">
+              <div style="font-size:10px;color:rgba(0,212,255,0.3);text-align:center;padding:8px;">Ningún texto agregado aún</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel clip -->
+        <div class="ed-right-content" id="ed-panel-clip" style="display:none;">
+          <div class="ed-prop-section">
+            <div class="ed-prop-title">Clip seleccionado</div>
+            <div id="ed-clip-props">
+              <div style="font-size:10px;color:rgba(0,212,255,0.3);text-align:center;padding:16px;">Selecciona un clip en el timeline</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel audio -->
+        <div class="ed-right-content" id="ed-panel-audio" style="display:none;">
+          <div class="ed-prop-section">
+            <div class="ed-prop-title">Música de fondo</div>
+            <div class="ed-prop-field">
+              <label>Subir audio</label>
+              <button style="width:100%;padding:7px;background:rgba(255,230,0,0.08);border:1px solid rgba(255,230,0,0.2);color:#ffe600;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;border-radius:3px;" onclick="document.getElementById('ed-audio-input').click()">📁 Seleccionar MP3</button>
+              <input type="file" id="ed-audio-input" accept="audio/*" style="display:none;" onchange="edLoadAudio(event)">
+            </div>
+            <div class="ed-prop-field" id="ed-audio-info" style="display:none;">
+              <label>Archivo cargado</label>
+              <div style="font-size:10px;color:#ffe600;background:#181410;padding:6px;border-radius:3px;" id="ed-audio-name"></div>
+            </div>
+            <div class="ed-prop-field">
+              <label>Volumen del audio original</label>
+              <input type="range" id="ed-vol-original" min="0" max="100" value="100">
+            </div>
+            <div class="ed-prop-field">
+              <label>Volumen de la música</label>
+              <input type="range" id="ed-vol-music" min="0" max="100" value="50">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Processing overlay -->
+  <div class="ed-processing" id="ed-processing">
+    <div class="ed-proc-spin"></div>
+    <div class="ed-proc-msg" id="ed-proc-msg">Exportando...</div>
+    <div class="ed-proc-sub" id="ed-proc-sub"></div>
+  </div>
+</div>
+
+<script>
+// ══ EDITOR AVANZADO ══════════════════════════════
+
+// Estado global del editor
+const edState = {
+  clips: [],          // clips disponibles en panel izquierdo
+  tracks: [],         // pistas del timeline
+  textLayers: [],     // capas de texto
+  aspect: '16:9',
+  currentTool: 'text',
+  textColor: '#fff',
+  textPos: 'top',
+  playing: false,
+  currentTime: 0,
+  totalDuration: 0,
+  audioFile: null,
+  selectedClipId: null,
+  animFrame: null,
+  trackCount: 2,
+};
+
+// Inicializar editor cuando se abre
+function edInit() {
+  edRenderClips();
+  edInitTracks();
+  edResizeCanvas();
+  edDrawEmpty();
+}
+
+// Cargar clips del archivo de vsClips
+function edRenderClips() {
+  const scroll = document.getElementById('ed-clips-scroll');
+  const clips = JSON.parse(localStorage.getItem('vs_clips') || '[]');
+  
+  // También incluir videos subidos directamente
+  const allClips = [...clips, ...edState.clips.filter(c => c.isLocal)];
+  
+  if (allClips.length === 0) {
+    scroll.innerHTML = '<div style="text-align:center;padding:16px;font-size:10px;color:rgba(0,212,255,0.3);">Sube un video o corta clips en el Video Studio</div>';
+    return;
+  }
+
+  scroll.innerHTML = allClips.map((clip, i) => `
+    <div class="ed-clip-card" draggable="true" 
+      ondragstart="edDragStart(event, ${i})"
+      id="ed-clip-src-${i}">
+      <div class="ed-clip-thumb" style="${clip.fileUrl || clip.file ? '' : 'border:1px dashed rgba(255,230,0,0.3);'}">
+        🎬
+        <div class="ed-clip-dur">${clip.duration || '?'}</div>
+        ${!(clip.fileUrl || clip.file) ? '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(255,230,0,0.15);font-family:DM Mono,monospace;font-size:6px;color:#ffe600;text-align:center;padding:2px;">Sin video · clic para cargar</div>' : ''}
+      </div>
+      <div class="ed-clip-name">${clip.name || clip.filename || 'Clip'}</div>
+      <div class="ed-clip-tag">${clip.landing || ''} ${clip.use ? '· '+clip.use : ''}</div>
+      <div style="display:flex;gap:4px;margin-top:4px;">
+        ${!(clip.fileUrl || clip.file) ? `<div onclick="edLoadVideoForClip(${i})" title="Cargar video" style="flex:1;padding:3px;background:rgba(255,230,0,0.08);border:1px solid rgba(255,230,0,0.25);border-radius:2px;font-family:'DM Mono',monospace;font-size:7px;color:#ffe600;cursor:pointer;text-align:center;">📁 Cargar</div>` : '<div style="flex:1;padding:3px;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.25);border-radius:2px;font-family:DM Mono,monospace;font-size:7px;color:#00ff88;text-align:center;">✓ Listo</div>'}
+        <div class="ed-clip-add-btn" onclick="edAddClipToTrack(${i})" title="Agregar al timeline" style="flex:0 0 auto;">+</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Guardar referencia
+  edState.clips = allClips;
+}
+
+// Cargar video para un clip existente del archivo
+function edLoadVideoForClip(clipIndex) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'video/*';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    edState.clips[clipIndex].fileUrl = url;
+    edState.clips[clipIndex].file = file;
+    // Obtener duración real
+    const tempVid = document.createElement('video');
+    tempVid.src = url;
+    tempVid.onloadedmetadata = () => {
+      edState.clips[clipIndex].durationSecs = tempVid.duration;
+      edState.clips[clipIndex].duration = vsTime(tempVid.duration);
+      // Actualizar clips en el timeline que usen este clipIndex
+      edState.tracks.forEach(t => {
+        t.clips.forEach(c => {
+          if (c.clipIndex === clipIndex) {
+            c.fileUrl = url;
+            c.file = file;
+            c.durationSecs = tempVid.duration;
+          }
+        });
+      });
+      edRenderClips();
+      edRenderTracks();
+      edShowPreview();
+    };
+  };
+  input.click();
+}
+
+// Cargar nuevo video
+function edLoadNewClip(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const newClip = {
+    name: file.name.replace(/\.[^.]+$/, ''),
+    filename: file.name,
+    duration: '--:--',
+    isLocal: true,
+    fileUrl: url,
+    file: file
+  };
+  
+  // Obtener duración
+  const tempVideo = document.createElement('video');
+  tempVideo.src = url;
+  tempVideo.onloadedmetadata = () => {
+    newClip.duration = vsTime(tempVideo.duration);
+    newClip.durationSecs = tempVideo.duration;
+    edState.clips.push(newClip);
+    edRenderClips();
+  };
+}
+
+// Inicializar pistas del timeline
+function edInitTracks() {
+  edState.tracks = [
+    { id: 1, label: 'Video 1', color: '#ff5520', clips: [] },
+    { id: 2, label: 'Video 2', color: '#00d4ff', clips: [] },
+  ];
+  edRenderTracks();
+}
+
+function edAddTrack() {
+  edState.trackCount++;
+  edState.tracks.push({
+    id: edState.trackCount,
+    label: 'Pista ' + edState.trackCount,
+    color: ['#ff5520','#00d4ff','#ffe600','#ff2255','#00ff88'][edState.trackCount % 5],
+    clips: []
+  });
+  edRenderTracks();
+}
+
+function edRenderTracks() {
+  const container = document.getElementById('ed-tracks');
+  container.innerHTML = edState.tracks.map(track => `
+    <div class="ed-track" 
+      ondragover="event.preventDefault()"
+      ondrop="edDropToTrack(event, ${track.id})">
+      <div class="ed-track-label" style="color:${track.color};text-shadow:0 0 4px ${track.color}40;">${track.label}</div>
+      <div class="ed-track-area" id="ed-track-area-${track.id}">
+        ${track.clips.map(clip => `
+          <div class="ed-track-clip ${edState.selectedClipId === clip.uid ? 'selected' : ''}"
+            id="ed-track-clip-${clip.uid}"
+            style="left:${clip.startPx}px;width:${clip.widthPx}px;background:${track.color}33;border-color:${track.color}66;"
+            onclick="edSelectClip(${clip.uid})"
+            draggable="true"
+            ondragstart="edDragTrackClip(event, ${clip.uid}, ${track.id})">
+            <div class="ed-track-clip-name">${clip.name}</div>
+            <div class="ed-track-clip-del" onclick="event.stopPropagation();edRemoveClipFromTrack(${clip.uid},${track.id})">✕</div>
+          </div>
+        `).join('')}
+        <div class="ed-playhead-line" style="left:${edState.currentTime * 60}px;"></div>
+      </div>
+    </div>
+  `).join('');
+  edUpdateTotalDuration();
+}
+
+// Drag and drop
+function edDragStart(event, clipIndex) {
+  event.dataTransfer.setData('clipIndex', clipIndex);
+  event.dataTransfer.setData('source', 'library');
+}
+
+function edDragTrackClip(event, clipUid, trackId) {
+  event.dataTransfer.setData('clipUid', clipUid);
+  event.dataTransfer.setData('trackId', trackId);
+  event.dataTransfer.setData('source', 'track');
+}
+
+function edDropToTrack(event, trackId) {
+  event.preventDefault();
+  const source = event.dataTransfer.getData('source');
+  
+  if (source === 'library') {
+    const clipIndex = parseInt(event.dataTransfer.getData('clipIndex'));
+    edAddClipToTrack(clipIndex, trackId);
+  } else if (source === 'track') {
+    const clipUid = parseInt(event.dataTransfer.getData('clipUid'));
+    const fromTrackId = parseInt(event.dataTransfer.getData('trackId'));
+    edMoveClipBetweenTracks(clipUid, fromTrackId, trackId);
+  }
+}
+
+function edAddClipToTrack(clipIndex, trackId) {
+  const clip = edState.clips[clipIndex];
+  if (!clip) return;
+  
+  // Buscar la pista (primera si no se especifica)
+  const track = edState.tracks.find(t => t.id === (trackId || edState.tracks[0].id));
+  if (!track) return;
+  
+  // Calcular posición (después del último clip en esta pista)
+  const lastClip = track.clips[track.clips.length - 1];
+  const startPx = lastClip ? lastClip.startPx + lastClip.widthPx + 4 : 0;
+  const durationSecs = clip.durationSecs || 5;
+  const widthPx = Math.max(durationSecs * 60, 80);
+  
+  const newClip = {
+    uid: Date.now() + Math.random(),
+    name: clip.name || clip.filename || 'Clip',
+    clipIndex,
+    startPx,
+    widthPx,
+    durationSecs,
+    fileUrl: clip.fileUrl || clip.cloudUrl || null,
+    file: clip.file || null,
+  };
+  
+  track.clips.push(newClip);
+  edRenderTracks();
+  edUpdateTotalDuration();
+  edShowPreview();
+  document.getElementById('ed-preview-empty').style.display = 'none';
+}
+
+function edMoveClipBetweenTracks(clipUid, fromTrackId, toTrackId) {
+  const fromTrack = edState.tracks.find(t => t.id === fromTrackId);
+  const toTrack = edState.tracks.find(t => t.id === toTrackId);
+  if (!fromTrack || !toTrack) return;
+  
+  const clipIndex = fromTrack.clips.findIndex(c => c.uid === clipUid);
+  if (clipIndex === -1) return;
+  
+  const [clip] = fromTrack.clips.splice(clipIndex, 1);
+  toTrack.clips.push(clip);
+  edRenderTracks();
+}
+
+function edRemoveClipFromTrack(clipUid, trackId) {
+  const track = edState.tracks.find(t => t.id === trackId);
+  if (!track) return;
+  track.clips = track.clips.filter(c => c.uid !== clipUid);
+  edRenderTracks();
+  edUpdateTotalDuration();
+}
+
+function edSelectClip(uid) {
+  edState.selectedClipId = uid;
+  edRenderTracks();
+  
+  // Mostrar propiedades del clip
+  let foundClip = null;
+  edState.tracks.forEach(t => {
+    const c = t.clips.find(c => c.uid === uid);
+    if (c) foundClip = c;
+  });
+  
+  if (foundClip) {
+    document.getElementById('ed-clip-props').innerHTML = `
+      <div class="ed-prop-field"><label>Nombre</label><div style="font-size:11px;color:#fff;padding:5px;background:#181410;border-radius:3px;">${foundClip.name}</div></div>
+      <div class="ed-prop-field"><label>Duración</label><div style="font-size:11px;color:#ffe600;padding:5px;background:#181410;border-radius:3px;">${vsTime(foundClip.durationSecs || 0)}</div></div>
+    `;
+  }
+}
+
+// Texto
+let edTextColor = '#fff';
+let edTextPos = 'top';
+
+function edSetTextColor(color, el) {
+  edTextColor = color;
+  document.querySelectorAll('.ed-color-opt').forEach(e => e.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function edSetTextPos(pos, el) {
+  edTextPos = pos;
+  document.querySelectorAll('.ed-pos-btn').forEach(e => e.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function edAddText() {
+  const content = document.getElementById('ed-txt-content').value.trim();
+  if (!content) { alert('Escribe el texto primero'); return; }
+  
+  const size = document.getElementById('ed-txt-size').value;
+  const bg = document.getElementById('ed-txt-bg').value;
+  
+  const layer = {
+    id: Date.now(),
+    text: content,
+    size: parseInt(size),
+    color: edTextColor,
+    position: edTextPos,
+    bg
+  };
+  
+  edState.textLayers.push(layer);
+  edRenderTextLayers();
+  edDrawCurrentFrame();
+  document.getElementById('ed-txt-content').value = '';
+}
+
+function edRenderTextLayers() {
+  const list = document.getElementById('ed-text-layers-list');
+  if (edState.textLayers.length === 0) {
+    list.innerHTML = '<div style="font-size:10px;color:rgba(0,212,255,0.3);text-align:center;padding:8px;">Ningún texto agregado aún</div>';
+    return;
+  }
+  list.innerHTML = edState.textLayers.map(layer => `
+    <div class="ed-tli">
+      <div class="ed-tli-text">${layer.text}</div>
+      <div class="ed-tli-del" onclick="edRemoveText(${layer.id})">✕</div>
+    </div>
+  `).join('');
+}
+
+function edRemoveText(id) {
+  edState.textLayers = edState.textLayers.filter(l => l.id !== id);
+  edRenderTextLayers();
+  edDrawCurrentFrame();
+}
+
+function edPreviewText() {
+  const val = document.getElementById('ed-txt-size').value;
+  document.getElementById('ed-txt-size-val').textContent = val + 'px';
+}
+
+// Canvas y preview
+function edResizeCanvas() {
+  const canvas = document.getElementById('ed-canvas');
+  const preview = document.getElementById('ed-preview');
+  const aspect = edState.aspect;
+  
+  const maxW = preview.clientWidth - 32;
+  const maxH = preview.clientHeight - 32;
+  
+  let w, h;
+  if (aspect === '16:9') { w = maxW; h = w * 9/16; if(h > maxH){h=maxH;w=h*16/9;} }
+  else if (aspect === '9:16') { h = maxH; w = h * 9/16; if(w > maxW){w=maxW;h=w*16/9;} }
+  else { w = Math.min(maxW, maxH); h = w; }
+  
+  canvas.width = Math.round(w);
+  canvas.height = Math.round(h);
+  canvas.style.width = Math.round(w) + 'px';
+  canvas.style.height = Math.round(h) + 'px';
+}
+
+function edDrawEmpty() {
+  const canvas = document.getElementById('ed-canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#0a0806';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  // Guía visual
+  ctx.strokeStyle = 'rgba(0,212,255,0.1)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([8,8]);
+  ctx.strokeRect(20,20,canvas.width-40,canvas.height-40);
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(0,212,255,0.2)';
+  ctx.font = 'bold 14px DM Mono, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('Carga los videos de tus clips', canvas.width/2, canvas.height/2 - 20);
+  ctx.font = '11px DM Mono, monospace';
+  ctx.fillStyle = 'rgba(0,212,255,0.12)';
+  ctx.fillText('Haz clic en "Cargar" en cada clip del panel izquierdo', canvas.width/2, canvas.height/2 + 10);
+}
+
+function edDrawCurrentFrame() {
+  const canvas = document.getElementById('ed-canvas');
+  const ctx = canvas.getContext('2d');
+  
+  // Fondo
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  
+  // Dibujar video actual si hay
+  const vid = document.getElementById('ed-preview-video-hidden');
+  if (vid && !vid.paused && !vid.ended) {
+    ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+  } else if (vid && vid.readyState >= 2) {
+    ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+  }
+  
+  // Dibujar capas de texto
+  edState.textLayers.forEach(layer => {
+    const fs = layer.size;
+    ctx.font = `bold ${fs}px Syne, sans-serif`;
+    ctx.textAlign = 'center';
+    
+    // Posición
+    let x = canvas.width / 2;
+    let y;
+    const pad = fs + 16;
+    
+    if (layer.position.includes('top')) y = pad;
+    else if (layer.position.includes('bottom')) y = canvas.height - 16;
+    else y = canvas.height / 2;
+    
+    if (layer.position.includes('left')) { x = 16; ctx.textAlign = 'left'; }
+    else if (layer.position.includes('right')) { x = canvas.width - 16; ctx.textAlign = 'right'; }
+    
+    // Fondo del texto
+    if (layer.bg !== 'none') {
+      const metrics = ctx.measureText(layer.text);
+      const tw = metrics.width;
+      const th = fs;
+      const bx = ctx.textAlign === 'left' ? x - 8 : ctx.textAlign === 'right' ? x - tw - 8 : x - tw/2 - 8;
+      const by = y - th - 4;
+      ctx.fillStyle = layer.bg === 'dark' ? 'rgba(0,0,0,0.6)' : layer.bg === 'black' ? 'rgba(0,0,0,0.9)' : 'rgba(232,66,10,0.85)';
+      ctx.fillRect(bx, by, tw + 16, th + 12);
+    }
+    
+    // Texto
+    ctx.fillStyle = layer.color;
+    ctx.shadowColor = layer.color;
+    ctx.shadowBlur = 8;
+    ctx.fillText(layer.text, x, y);
+    ctx.shadowBlur = 0;
+  });
+}
+
+function edShowPreview() {
+  // Buscar primer clip con video
+  for (const track of edState.tracks) {
+    for (const clip of track.clips) {
+      if (clip.fileUrl || clip.file) {
+        let hidden = document.getElementById('ed-preview-video-hidden');
+        if (!hidden) {
+          hidden = document.createElement('video');
+          hidden.id = 'ed-preview-video-hidden';
+          hidden.style.display = 'none';
+          document.body.appendChild(hidden);
+        }
+        hidden.src = clip.fileUrl || URL.createObjectURL(clip.file);
+        hidden.onloadeddata = () => edDrawCurrentFrame();
+        return;
+      }
+    }
+  }
+}
+
+// Reproducción
+function edTogglePlay() {
+  const vid = document.getElementById('ed-preview-video-hidden');
+  const btn = document.getElementById('ed-playbtn');
+  
+  if (!vid) return;
+  
+  if (vid.paused) {
+    vid.play();
+    btn.textContent = '⏸ Pausa';
+    edState.playing = true;
+    edPlayLoop();
+  } else {
+    vid.pause();
+    btn.textContent = '▶ Play';
+    edState.playing = false;
+  }
+}
+
+function edPlayLoop() {
+  if (!edState.playing) return;
+  edDrawCurrentFrame();
+  edUpdateProgress();
+  requestAnimationFrame(edPlayLoop);
+}
+
+function edUpdateProgress() {
+  const vid = document.getElementById('ed-preview-video-hidden');
+  if (!vid || !vid.duration) return;
+  const pct = (vid.currentTime / vid.duration) * 100;
+  document.getElementById('ed-progress-fill').style.width = pct + '%';
+  document.getElementById('ed-time').textContent = vsTime(vid.currentTime) + ' / ' + vsTime(vid.duration);
+}
+
+function edSeekProgress(event) {
+  const vid = document.getElementById('ed-preview-video-hidden');
+  if (!vid || !vid.duration) return;
+  const rect = event.target.getBoundingClientRect();
+  const pct = (event.clientX - rect.left) / rect.width;
+  vid.currentTime = pct * vid.duration;
+  edDrawCurrentFrame();
+}
+
+function edUpdateTotalDuration() {
+  let maxEnd = 0;
+  edState.tracks.forEach(t => {
+    t.clips.forEach(c => {
+      const end = c.startPx / 60 + (c.durationSecs || 0);
+      if (end > maxEnd) maxEnd = end;
+    });
+  });
+  edState.totalDuration = maxEnd;
+  document.getElementById('ed-time').textContent = '0:00 / ' + vsTime(maxEnd);
+}
+
+// Herramientas
+function edSetTool(tool) {
+  edState.currentTool = tool;
+  document.querySelectorAll('.ed-tool').forEach(b => b.classList.remove('on'));
+  document.getElementById('ed-tool-' + tool).classList.add('on');
+}
+
+function edRightTab(tab, el) {
+  document.querySelectorAll('.ed-right-tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('ed-panel-text').style.display = tab === 'text' ? 'block' : 'none';
+  document.getElementById('ed-panel-clip').style.display = tab === 'clip' ? 'block' : 'none';
+  document.getElementById('ed-panel-audio').style.display = tab === 'audio' ? 'block' : 'none';
+}
+
+function edSetAspect(aspect, el) {
+  edState.aspect = aspect;
+  document.querySelectorAll('.ed-aspect-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  edResizeCanvas();
+  edDrawCurrentFrame();
+}
+
+// Audio
+function edLoadAudio(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  edState.audioFile = file;
+  document.getElementById('ed-audio-info').style.display = 'block';
+  document.getElementById('ed-audio-name').textContent = file.name;
+}
+
+// Exportar
+async function edExport() {
+  // Verificar que hay clips en el timeline
+  const hasClips = edState.tracks.some(t => t.clips.length > 0);
+  if (!hasClips) { alert('Agrega clips al timeline primero'); return; }
+
+  edShowProc('Preparando exportación...');
+
+  try {
+    // Recolectar todos los videos en orden del timeline
+    const allClips = [];
+    edState.tracks[0].clips.forEach(clip => {
+      if (clip.fileUrl || clip.file) {
+        allClips.push({ url: clip.fileUrl, file: clip.file, duration: clip.durationSecs });
+      }
+    });
+
+    if (allClips.length === 0) { edHideProc(); alert('Los clips no tienen video cargado. Sube los videos originales.'); return; }
+
+    if (!ffmpegLoaded) {
+      edShowProc('Cargando FFmpeg...');
+      await ffmpeg.load();
+      ffmpegLoaded = true;
+    }
+
+    edShowProc('Procesando clips...');
+
+    // Si hay un solo clip
+    if (allClips.length === 1) {
+      const clip = allClips[0];
+      const data = clip.file ? clip.file : await fetch(clip.url).then(r => r.blob());
+      ffmpeg.FS('writeFile', 'input0.mp4', await fetchFile(data));
+
+      // Construir filtros de texto
+      let vf = '';
+      if (edState.textLayers.length > 0) {
+        vf = edState.textLayers.map(layer => {
+          const pos = edGetFFmpegPos(layer.position);
+          const color = layer.color.replace('#','');
+          return `drawtext=text='${layer.text.replace(/'/g,"\\'")}':fontsize=${layer.size}:fontcolor=${color}:${pos}:box=1:boxcolor=black@0.4:boxborderw=4`;
+        }).join(',');
+      }
+
+      edShowProc('Exportando en MP4...');
+      const filterArgs = vf ? ['-vf', vf] : [];
+      await ffmpeg.run('-i','input0.mp4',...filterArgs,'-c:v','libx264','-c:a','aac','-movflags','faststart','output.mp4');
+
+      const outData = ffmpeg.FS('readFile','output.mp4');
+      const blob = new Blob([outData.buffer], {type:'video/mp4'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'dunamixfy-editor.mp4'; a.click();
+      URL.revokeObjectURL(url);
+      ffmpeg.FS('unlink','input0.mp4');
+      ffmpeg.FS('unlink','output.mp4');
+
+    } else {
+      // Múltiples clips — concatenar
+      edShowProc('Uniendo clips...');
+      for (let i = 0; i < allClips.length; i++) {
+        const clip = allClips[i];
+        const data = clip.file ? clip.file : await fetch(clip.url).then(r => r.blob());
+        ffmpeg.FS('writeFile', `input${i}.mp4`, await fetchFile(data));
+      }
+
+      // Crear archivo de lista para concat
+      const listContent = allClips.map((_,i) => `file 'input${i}.mp4'`).join('\n');
+      ffmpeg.FS('writeFile', 'list.txt', listContent);
+
+      edShowProc('Exportando MP4 final...');
+      await ffmpeg.run('-f','concat','-safe','0','-i','list.txt','-c:v','libx264','-c:a','aac','-movflags','faststart','output.mp4');
+
+      const outData = ffmpeg.FS('readFile','output.mp4');
+      const blob = new Blob([outData.buffer], {type:'video/mp4'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'dunamixfy-editor.mp4'; a.click();
+      URL.revokeObjectURL(url);
+
+      // Limpiar
+      allClips.forEach((_,i) => ffmpeg.FS('unlink', `input${i}.mp4`));
+      ffmpeg.FS('unlink','list.txt');
+      ffmpeg.FS('unlink','output.mp4');
+    }
+
+    edHideProc();
+    alert('✅ Video exportado exitosamente en MP4');
+
+  } catch(err) {
+    edHideProc();
+    alert('Error exportando: ' + err.message);
+  }
+}
+
+function edGetFFmpegPos(pos) {
+  const map = {
+    'top': 'x=(w-tw)/2:y=20',
+    'top-left': 'x=20:y=20',
+    'top-right': 'x=w-tw-20:y=20',
+    'center': 'x=(w-tw)/2:y=(h-th)/2',
+    'left': 'x=20:y=(h-th)/2',
+    'right': 'x=w-tw-20:y=(h-th)/2',
+    'bottom': 'x=(w-tw)/2:y=h-th-20',
+    'bottom-left': 'x=20:y=h-th-20',
+    'bottom-right': 'x=w-tw-20:y=h-th-20'
+  };
+  return map[pos] || map['top'];
+}
+
+function edShowProc(msg, sub) {
+  document.getElementById('ed-proc-msg').textContent = msg || 'Procesando...';
+  document.getElementById('ed-proc-sub').textContent = sub || '';
+  document.getElementById('ed-processing').classList.add('on');
+}
+function edHideProc() { document.getElementById('ed-processing').classList.remove('on'); }
+
+// Editor init se llama directamente desde los botones
+
+// Agregar botón al Video Studio para abrir Editor Avanzado
+document.addEventListener('DOMContentLoaded', () => {
+  // Agregar botón en topbar del studio
+  const studioNav = document.querySelector('.vs-nav');
+  if (studioNav) {
+    const edBtn = document.createElement('button');
+    edBtn.className = 'vs-new';
+    edBtn.style.cssText = 'background:rgba(255,230,0,0.1);border-color:rgba(255,230,0,0.3);color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.5);margin-left:6px;';
+    edBtn.textContent = '✂ Editor Avanzado';
+    edBtn.onclick = () => { goTo('page-editor'); setTimeout(()=>{edInit();edRenderClips();},100); };
+    studioNav.appendChild(edBtn);
+  }
+
+  // Agregar al bottom nav
+  const bnav = document.getElementById('bottom-nav');
+  if (bnav) {
+    const btn = document.createElement('button');
+    btn.className = 'bnav-btn';
+    btn.id = 'bnav-advanced';
+    btn.textContent = '✂·Editor';
+    btn.style.cssText = 'color:rgba(255,230,0,0.4);';
+    btn.onclick = () => { goTo('page-editor'); setTimeout(()=>{edInit();edRenderClips();},100); };
+    bnav.appendChild(btn);
+  }
+});
+</script>
