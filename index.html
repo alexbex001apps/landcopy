@@ -2673,7 +2673,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   // Bottom nav
   const bnav=document.getElementById('bottom-nav');
-  if(bnav){
+  if(bnav && VIDEO_ENABLED){
     const btn=document.createElement('button');
     btn.className='bnav-btn';
     btn.id='bnav-advanced';
