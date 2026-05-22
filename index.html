@@ -1169,6 +1169,171 @@ document.addEventListener('DOMContentLoaded',()=>{vsRenderClips();vsUpdateArchCo
 ════════════════════════════════════════════ -->
 <style>
 
+
+/* ══ NEON EXTRA — TODO VISIBLE ══ */
+#page-editor .mst-pos-btn {
+  color:#ffffff !important;
+  text-shadow:0 0 8px rgba(255,255,255,1), 0 0 16px rgba(255,255,255,0.6) !important;
+  border-color:rgba(255,255,255,0.2) !important;
+}
+#page-editor .mst-pos-btn.on {
+  color:#00d4ff !important;
+  text-shadow:0 0 10px rgba(0,212,255,1), 0 0 20px rgba(0,212,255,0.8) !important;
+  border-color:rgba(0,212,255,0.6) !important;
+  background:rgba(0,212,255,0.15) !important;
+}
+#page-editor .mst-anim-btn {
+  color:#ffe600 !important;
+  text-shadow:0 0 8px rgba(255,230,0,1), 0 0 16px rgba(255,230,0,0.6) !important;
+  border-color:rgba(255,230,0,0.25) !important;
+}
+#page-editor .mst-anim-btn.on {
+  color:#ffe600 !important;
+  text-shadow:0 0 12px rgba(255,230,0,1), 0 0 24px rgba(255,230,0,0.8) !important;
+  border-color:rgba(255,230,0,0.6) !important;
+  background:rgba(255,230,0,0.12) !important;
+}
+#page-editor .mst-tl-hint {
+  color:#ffffff !important;
+  text-shadow:0 0 6px rgba(255,255,255,0.9), 0 0 12px rgba(255,255,255,0.5) !important;
+  opacity:1 !important;
+}
+#page-editor .mst-tl-add {
+  color:#ffe600 !important;
+  text-shadow:0 0 6px rgba(255,230,0,0.9) !important;
+  border-color:rgba(255,230,0,0.4) !important;
+}
+#page-editor .mst-upload-btn {
+  border-color:rgba(0,212,255,0.4) !important;
+}
+#page-editor .mst-upload-icon {
+  opacity:1 !important;
+  filter:drop-shadow(0 0 8px rgba(0,212,255,0.8)) !important;
+}
+#page-editor .mst-upload-txt {
+  color:#ffffff !important;
+  text-shadow:0 0 8px rgba(255,255,255,0.9), 0 0 16px rgba(255,255,255,0.5) !important;
+  font-weight:700 !important;
+  letter-spacing:2px !important;
+}
+#page-editor .mst-empty-icon {
+  opacity:1 !important;
+  filter:drop-shadow(0 0 12px rgba(0,212,255,0.8)) !important;
+}
+#page-editor .mst-empty-txt {
+  color:#ffffff !important;
+  text-shadow:0 0 10px rgba(255,255,255,1), 0 0 20px rgba(255,255,255,0.6) !important;
+  font-size:11px !important;
+}
+#page-editor .mst-font-btn {
+  color:#ffffff !important;
+  text-shadow:0 0 6px rgba(255,255,255,0.8) !important;
+  border-color:rgba(255,255,255,0.15) !important;
+}
+#page-editor .mst-font-btn.on {
+  color:#00d4ff !important;
+  text-shadow:0 0 10px rgba(0,212,255,1), 0 0 20px rgba(0,212,255,0.7) !important;
+  border-color:rgba(0,212,255,0.5) !important;
+  background:rgba(0,212,255,0.12) !important;
+}
+#page-editor .mst-pfield label {
+  color:#ffe600 !important;
+  text-shadow:0 0 6px rgba(255,230,0,0.9) !important;
+  font-weight:700 !important;
+}
+#page-editor .mst-pfield textarea,
+#page-editor .mst-pfield select,
+#page-editor .mst-pfield input[type=text] {
+  color:#ffffff !important;
+  text-shadow:0 0 4px rgba(255,255,255,0.5) !important;
+  border-color:rgba(0,212,255,0.3) !important;
+}
+#page-editor .mst-pfield textarea::placeholder,
+#page-editor .mst-pfield input[type=text]::placeholder {
+  color:rgba(255,255,255,0.3) !important;
+}
+#page-editor .mst-ltab:not(.on),
+#page-editor .mst-rtab:not(.on) {
+  color:#ffffff !important;
+  text-shadow:0 0 4px rgba(255,255,255,0.5) !important;
+  opacity:0.7 !important;
+}
+#page-editor .mst-ltab.on,
+#page-editor .mst-rtab.on {
+  color:#00d4ff !important;
+  text-shadow:0 0 10px rgba(0,212,255,1), 0 0 20px rgba(0,212,255,0.7) !important;
+  opacity:1 !important;
+}
+#page-editor .mst-vload {
+  color:#ffe600 !important;
+  text-shadow:0 0 6px rgba(255,230,0,0.9) !important;
+  border-color:rgba(255,230,0,0.4) !important;
+}
+#page-editor .mst-vadd {
+  color:#00d4ff !important;
+  text-shadow:0 0 6px rgba(0,212,255,0.9) !important;
+  border-color:rgba(0,212,255,0.4) !important;
+}
+#page-editor .mst-vdel {
+  color:#ff2255 !important;
+  text-shadow:0 0 6px rgba(255,34,85,0.9) !important;
+}
+#page-editor .mst-clip-info {
+  color:#ffffff !important;
+  text-shadow:0 0 4px rgba(255,255,255,0.5) !important;
+}
+#page-editor .mst-mktpl-prev {
+  text-shadow:0 0 5px currentColor !important;
+  opacity:1 !important;
+}
+#page-editor .mst-mktpl-name {
+  color:#ffe600 !important;
+  text-shadow:0 0 6px rgba(255,230,0,0.9) !important;
+}
+#page-editor .mst-ai-btn {
+  color:#ffe600 !important;
+  text-shadow:0 0 8px rgba(255,230,0,1) !important;
+  border-color:rgba(255,230,0,0.4) !important;
+  background:rgba(255,230,0,0.08) !important;
+}
+#page-editor .mst-ai-btn:hover {
+  background:rgba(255,230,0,0.15) !important;
+}
+#page-editor .mst-ai-sug {
+  color:#ffffff !important;
+  text-shadow:0 0 5px rgba(255,255,255,0.6) !important;
+}
+#page-editor .mst-ai-sug:hover {
+  color:#ffe600 !important;
+  text-shadow:0 0 8px rgba(255,230,0,0.9) !important;
+}
+#page-editor .mst-cut-btn {
+  color:#00d4ff !important;
+  text-shadow:0 0 6px rgba(0,212,255,0.9) !important;
+  border-color:rgba(0,212,255,0.4) !important;
+}
+#page-editor .mst-cutter-title {
+  color:#ffe600 !important;
+  text-shadow:0 0 8px rgba(255,230,0,1), 0 0 16px rgba(255,230,0,0.6) !important;
+}
+#page-editor .mst-add-txt {
+  color:#00d4ff !important;
+  text-shadow:0 0 8px rgba(0,212,255,1) !important;
+  border-color:rgba(0,212,255,0.4) !important;
+}
+#page-editor .mst-back {
+  color:#00d4ff !important;
+  text-shadow:0 0 8px rgba(0,212,255,1) !important;
+}
+#page-editor .mst-clear {
+  color:#ff2255 !important;
+  text-shadow:0 0 6px rgba(255,34,85,0.9) !important;
+}
+/* Todo texto que sea span, div con contenido, que no sea botón */
+#page-editor * {
+  -webkit-font-smoothing:antialiased !important;
+}
+
 /* ══ NEON TEXT — MARKETING STUDIO ══ */
 #page-editor .mst-title {
   color:#00d4ff !important;
