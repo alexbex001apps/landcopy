@@ -355,7 +355,7 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
     <div class="dh-logo" onclick="goTo('page-main')">Land<span>Copy</span></div>
     <div class="dh-right">
       <div class="dh-tag">LandCopy · v4.0</div>
-      <button class="dh-btn dh-studio" onclick="goTo('page-studio')">🎬 Video Studio</button>
+      <button class="dh-btn dh-studio" data-video onclick="goTo('page-studio')">🎬 Video Studio</button>
       <button class="dh-btn dh-ghost" onclick="goTo('page-pricing')">Planes</button>
       <button class="dh-btn dh-outline" onclick="goTo('page-login')">Iniciar sesión</button>
     </div>
@@ -434,7 +434,7 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
         <div class="empty-icon">⚡</div>
         <div class="empty-title">Listo para generar</div>
         <div class="empty-sub">Completa los datos y presiona Generar. En segundos tendrás landing, WhatsApp y redes listo para publicar.</div>
-        <div class="studio-hint" onclick="goTo('page-studio')">
+        <div class="studio-hint" data-video onclick="goTo('page-studio')">
           <div style="font-size:24px;">🎬</div>
           <div class="sh-text">¿Tienes videos del producto? Córtalos en el <span class="sh-link">Video Studio →</span></div>
         </div>
@@ -704,45 +704,42 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
     </div>
     <div class="pr-grid">
       <div class="pr-card">
-        <div class="pr-name">Gratis</div>
-        <div class="pr-desc">Para probar antes de comprometerte</div>
-        <div class="pr-price"><sup>$</sup>0<sub>/mes</sub></div>
+        <div class="pr-name">Básico</div>
+        <div class="pr-desc">Para empezar a generar copy profesional</div>
+        <div class="pr-price"><sup>$</sup>9<sub>/mes</sub></div>
         <div class="pr-feats">
-          <div class="pr-feat ok"><span class="pf-ok">✓</span>5 generaciones al mes</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>30 generaciones al mes</div>
           <div class="pr-feat ok"><span class="pf-ok">✓</span>Landing, WhatsApp y redes</div>
-          <div class="pr-feat ok"><span class="pf-ok">✓</span>1 país disponible</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>3 países disponibles</div>
           <div class="pr-feat off"><span class="pf-x">✗</span>Meta Ads e imágenes IA</div>
-          <div class="pr-feat off"><span class="pf-x">✗</span>Video Studio</div>
-          <div class="pr-feat off"><span class="pf-x">✗</span>Historial y archivo</div>
+          <div class="pr-feat off"><span class="pf-x">✗</span>Soporte por WhatsApp</div>
         </div>
-        <button class="pr-cta dark" onclick="goTo('page-login')">Empezar gratis</button>
+        <button class="pr-cta dark" onclick="goTo('page-login')">Empezar — $9/mes</button>
       </div>
       <div class="pr-card feat">
         <div class="pr-badge">⭐ Más popular</div>
         <div class="pr-name">Pro</div>
-        <div class="pr-desc">Para discípulos y vendedores activos</div>
-        <div class="pr-price accent"><sup style="color:rgba(255,85,32,0.5);">$</sup>19<sub style="color:rgba(255,85,32,0.4);">/mes</sub></div>
+        <div class="pr-desc">Para vendedores activos que quieren escalar</div>
+        <div class="pr-price accent"><sup style="color:rgba(255,85,32,0.5);">$</sup>14<sub style="color:rgba(255,85,32,0.4);">/mes</sub></div>
         <div class="pr-feats">
           <div class="pr-feat ok"><span class="pf-ok">✓</span>Generaciones ilimitadas</div>
           <div class="pr-feat ok"><span class="pf-ok">✓</span>Todos los módulos activos</div>
-          <div class="pr-feat ok"><span class="pf-ok">✓</span>Los 5 países disponibles</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Los 5 países + General</div>
           <div class="pr-feat ok"><span class="pf-ok">✓</span>Meta Ads + imágenes IA</div>
-          <div class="pr-feat ok"><span class="pf-ok">✓</span><strong>Video Studio completo</strong></div>
           <div class="pr-feat ok"><span class="pf-ok">✓</span>Soporte por WhatsApp</div>
         </div>
-        <button class="pr-cta primary" onclick="goTo('page-login')">Suscribirse — $19/mes</button>
+        <button class="pr-cta primary" onclick="goTo('page-login')">Suscribirse — $14/mes</button>
         <div style="text-align:center;margin-top:7px;font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,85,32,0.4);">Cancela cuando quieras</div>
       </div>
       <div class="pr-card">
         <div class="pr-name">Equipo</div>
         <div class="pr-desc">Para tiendas con varios discípulos</div>
-        <div class="pr-price"><sup>$</sup>49<sub>/mes</sub></div>
+        <div class="pr-price"><sup>$</sup>18<sub>/mes</sub></div>
         <div class="pr-feats">
           <div class="pr-feat ok"><span class="pf-ok">✓</span>Todo lo del plan Pro</div>
-          <div class="pr-feat ok"><span class="pf-ok">✓</span>Hasta 10 usuarios</div>
-          <div class="pr-feat ok"><span class="pf-ok">✓</span>Archivo compartido</div>
-          <div class="pr-feat ok"><span class="pf-ok">✓</span>Dashboard de equipo</div>
-          <div class="pr-feat ok"><span class="pf-ok">✓</span>Soporte dedicado</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Hasta 3 usuarios</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Historial compartido</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Soporte prioritario</div>
           <div class="pr-feat ok"><span class="pf-ok">✓</span>Onboarding personalizado</div>
         </div>
         <button class="pr-cta ghost" onclick="goTo('page-login')">Contactar para demo</button>
@@ -757,6 +754,11 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 </div>
 
 <script>
+// ══════════════════════════════════════════
+// ACTIVAR / DESACTIVAR VIDEO — cambiar a true para reactivar todo
+const VIDEO_ENABLED = false;
+// ══════════════════════════════════════════
+
 // ── NAVEGACIÓN ──────────────────────────────
 let currentPage = 'page-main';
 function goToStudio(view) {
@@ -1150,7 +1152,14 @@ function vsTime(s){if(isNaN(s))return'0:00';return Math.floor(s/60)+':'+String(M
 function vsParse(str){const p=str.split(':');return p.length===2?parseInt(p[0])*60+parseFloat(p[1]):parseFloat(str)||0;}
 
 // Init
-document.addEventListener('DOMContentLoaded',()=>{vsRenderClips();vsUpdateArchCount();});
+document.addEventListener('DOMContentLoaded',()=>{
+  vsRenderClips();
+  vsUpdateArchCount();
+  // Controlar visibilidad de video según VIDEO_ENABLED
+  document.querySelectorAll('[data-video]').forEach(el => {
+    el.style.display = VIDEO_ENABLED ? '' : 'none';
+  });
+});
 </script>
 
 <!-- BOTTOM NAV -->
@@ -1158,9 +1167,9 @@ document.addEventListener('DOMContentLoaded',()=>{vsRenderClips();vsUpdateArchCo
   <button class="bnav-btn on" onclick="goTo('page-main')" id="bnav-main">0·LandCopy</button>
   <button class="bnav-btn" onclick="goTo('page-login')" id="bnav-login">5·Login</button>
   <button class="bnav-btn" onclick="goTo('page-pricing')" id="bnav-pricing">6·Planes</button>
-  <button class="bnav-btn" onclick="goToStudio('upload')" id="bnav-upload">1·Upload</button>
-  <button class="bnav-btn" onclick="goToStudio('editor')" id="bnav-editor">2·Editor</button>
-  <button class="bnav-btn" onclick="goToStudio('archive')" id="bnav-archive">3·Archivo</button>
+  <button class="bnav-btn" data-video onclick="goToStudio('upload')" id="bnav-upload">1·Upload</button>
+  <button class="bnav-btn" data-video onclick="goToStudio('editor')" id="bnav-editor">2·Editor</button>
+  <button class="bnav-btn" data-video onclick="goToStudio('archive')" id="bnav-archive">3·Archivo</button>
 </div>
 
 
