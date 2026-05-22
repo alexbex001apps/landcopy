@@ -1168,6 +1168,148 @@ document.addEventListener('DOMContentLoaded',()=>{vsRenderClips();vsUpdateArchCo
      EDITOR AVANZADO v2 — MARKETING STUDIO
 ════════════════════════════════════════════ -->
 <style>
+
+/* ══ NEON TEXT — MARKETING STUDIO ══ */
+#page-editor .mst-title {
+  color:#00d4ff !important;
+  text-shadow:0 0 10px rgba(0,212,255,1), 0 0 20px rgba(0,212,255,0.8), 0 0 40px rgba(0,212,255,0.5) !important;
+}
+#page-editor .mst-tl-title,
+#page-editor .mst-ptitle,
+#page-editor .mst-cutter-title {
+  color:#ffe600 !important;
+  text-shadow:0 0 8px rgba(255,230,0,1), 0 0 16px rgba(255,230,0,0.7), 0 0 30px rgba(255,230,0,0.4) !important;
+}
+#page-editor .mst-track-lbl {
+  text-shadow:0 0 8px currentColor, 0 0 16px currentColor !important;
+  font-weight:700 !important;
+}
+#page-editor .mst-tclip-name {
+  color:#ffffff !important;
+  text-shadow:0 0 6px rgba(255,255,255,0.9), 0 0 12px rgba(255,255,255,0.5) !important;
+  opacity:1 !important;
+}
+#page-editor .mst-vname {
+  color:#ffffff !important;
+  text-shadow:0 0 6px rgba(255,255,255,0.8), 0 0 12px rgba(255,255,255,0.4) !important;
+}
+#page-editor .mst-vlanding {
+  color:#ff5520 !important;
+  text-shadow:0 0 6px rgba(255,85,32,0.9), 0 0 12px rgba(255,85,32,0.5) !important;
+}
+#page-editor .mst-vdur {
+  color:#ffe600 !important;
+  text-shadow:0 0 5px rgba(255,230,0,1), 0 0 10px rgba(255,230,0,0.6) !important;
+}
+#page-editor .mst-time {
+  color:#ffe600 !important;
+  text-shadow:0 0 8px rgba(255,230,0,1), 0 0 16px rgba(255,230,0,0.6) !important;
+}
+#page-editor .mst-cut-time {
+  color:#ffe600 !important;
+  text-shadow:0 0 6px rgba(255,230,0,1), 0 0 12px rgba(255,230,0,0.5) !important;
+}
+#page-editor .mst-ltab.on,
+#page-editor .mst-rtab.on {
+  color:#00d4ff !important;
+  text-shadow:0 0 8px rgba(0,212,255,1), 0 0 16px rgba(0,212,255,0.6) !important;
+}
+#page-editor .mst-ltab:not(.on),
+#page-editor .mst-rtab:not(.on) {
+  color:rgba(0,212,255,0.5) !important;
+}
+#page-editor .mst-tl-hint {
+  color:rgba(255,255,255,0.25) !important;
+  text-shadow:none !important;
+}
+#page-editor .mst-upload-txt {
+  color:#00d4ff !important;
+  text-shadow:0 0 6px rgba(0,212,255,0.8) !important;
+  letter-spacing:2px !important;
+}
+#page-editor .mst-empty-txt {
+  color:#00d4ff !important;
+  text-shadow:0 0 8px rgba(0,212,255,0.8), 0 0 20px rgba(0,212,255,0.4) !important;
+}
+#page-editor .mst-range-val,
+#page-editor #mst-size-val {
+  color:#ffe600 !important;
+  text-shadow:0 0 6px rgba(255,230,0,1), 0 0 12px rgba(255,230,0,0.5) !important;
+}
+#page-editor .mst-pfield label {
+  color:#00d4ff !important;
+  text-shadow:0 0 5px rgba(0,212,255,0.7) !important;
+}
+#page-editor .mst-mktpl-name {
+  text-shadow:0 0 5px rgba(255,230,0,0.8) !important;
+}
+#page-editor .mst-txt-label {
+  color:#ffffff !important;
+  text-shadow:0 0 4px rgba(255,255,255,0.6) !important;
+}
+#page-editor .mst-txt-dot {
+  box-shadow:0 0 6px currentColor, 0 0 12px currentColor !important;
+}
+#page-editor .mst-ai-sug {
+  color:rgba(255,255,255,0.85) !important;
+  text-shadow:0 0 4px rgba(255,255,255,0.3) !important;
+}
+#page-editor .mst-ai-sug:hover {
+  color:#fff !important;
+  text-shadow:0 0 8px rgba(255,255,255,0.8) !important;
+}
+#page-editor .mst-font-btn {
+  color:rgba(0,212,255,0.5) !important;
+}
+#page-editor .mst-font-btn.on {
+  color:#00d4ff !important;
+  text-shadow:0 0 6px rgba(0,212,255,0.9) !important;
+}
+#page-editor .mst-anim-btn {
+  color:rgba(0,212,255,0.4) !important;
+}
+#page-editor .mst-anim-btn.on {
+  color:#00d4ff !important;
+  text-shadow:0 0 6px rgba(0,212,255,0.9) !important;
+}
+#page-editor .mst-pos-btn {
+  color:rgba(0,212,255,0.35) !important;
+}
+#page-editor .mst-pos-btn.on {
+  color:#00d4ff !important;
+  text-shadow:0 0 6px rgba(0,212,255,0.9) !important;
+}
+#page-editor .mst-vready {
+  color:#00ff88 !important;
+  text-shadow:0 0 6px rgba(0,255,136,0.9) !important;
+}
+#page-editor .mst-clip-info {
+  color:rgba(0,212,255,0.5) !important;
+}
+#page-editor .mst-ai-loading {
+  color:#ffe600 !important;
+  text-shadow:0 0 6px rgba(255,230,0,0.8) !important;
+}
+/* Neon en los botones de exportar */
+#page-editor .mst-exp.meta {
+  text-shadow:0 0 6px rgba(0,212,255,0.9) !important;
+  box-shadow:0 0 8px rgba(0,212,255,0.2) !important;
+}
+#page-editor .mst-exp.tiktok {
+  text-shadow:0 0 6px rgba(255,34,85,0.9) !important;
+  box-shadow:0 0 8px rgba(255,34,85,0.2) !important;
+}
+#page-editor .mst-exp.whatsapp {
+  text-shadow:0 0 6px rgba(0,255,136,0.9) !important;
+  box-shadow:0 0 8px rgba(0,255,136,0.2) !important;
+}
+#page-editor .mst-back {
+  text-shadow:0 0 6px rgba(0,212,255,0.8) !important;
+}
+#page-editor .mst-proc-txt {
+  text-shadow:0 0 12px rgba(255,34,85,1), 0 0 24px rgba(255,34,85,0.6) !important;
+}
+
 /* ── BASE ───────────────────────────────────── */
 #page-editor{background:#050403;}
 .mst{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
