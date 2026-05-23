@@ -133,6 +133,7 @@ METODO DE PAGO: ${co.pay}.
 
 PRODUCTO:
 - Nombre: ${name}
+- Categoria: ${category || 'general'}
 - Problema: ${problem}
 - Beneficio principal: ${benefit}
 - Precio: ${price}${priceOld ? ` (antes ${priceOld})` : ''}${clients ? `\n- Clientes: ${clients}` : ''}${hasChars ? `\n- Caracteristicas: ${chars}` : ''}
