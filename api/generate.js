@@ -53,8 +53,51 @@ REGLA DE ORO: BENEFICIO siempre mayor que CARACTERISTICA. Habla de lo que el cli
 IDIOMA: Todo el contenido debe estar en ESPAÑOL. Los prompts de imagenes tambien en ESPAÑOL.
 TONO: ${tone}. Adapta el lenguaje coloquial al pais: ${co.name}.
 METODO DE PAGO disponible: ${co.pay}.
+FORMATO OBLIGATORIO: Cada item, objecion, testimonio, anuncio, hook, beneficio o pregunta DEBE estar separado por una linea en blanco. Nunca juntes varios items en un mismo parrafo.
 
 DATOS DEL PRODUCTO:
+- Nombre: ${name}
+- Problema que resuelve: ${problem}
+- Beneficio principal: ${benefit}
+- Precio oferta: ${price}${priceOld ? ` | Precio anterior: ${priceOld}` : ''}${clients ? ` | Clientes actuales: ${clients}` : ''}
+- Categoria: ${category || 'general'}
+- Pais objetivo: ${co.name}${hasChars ? `\n- Caracteristicas del producto: ${chars}` : ''}
+${hasImage ? '\nANALIZA LA IMAGEN adjunta: describe el producto, colores, presentacion, empaque y usa esa informacion para enriquecer el copy.' : ''}
+
+Responde UNICAMENTE con un objeto JSON valido. Sin markdown, sin bloques de codigo, sin texto antes o despues. Solo el JSON puro.
+En cada campo que tenga multiples items, separalos con \n\n (doble salto de linea) para que queden visualmente separados.
+
+{
+  "landing_trust_bar": "4 badges separados por | con emojis: 🚚 ENVIOS A TODO ${co.name} | ⭐ +CLIENTES SATISFECHOS | 💳 PAGAS AL RECIBIR | ✅ GARANTIA DE ENTREGA",
+  "landing_hero": "Titular hero potente en 3 lineas separadas por \n\n atacando el dolor",
+  "landing_problem": "Titular empatico\n\n¿Sabias que el X% de personas sufren de...?\n\n❌ Sintoma 1\n\n❌ Sintoma 2\n\n❌ Sintoma 3\n\n❌ Sintoma 4\n\n❌ Sintoma 5\n\n❌ Sintoma 6",
+  "landing_solution": "Storytelling completo de la solucion minimo 150 palabras. Empezar con empatia, explicar el problema, presentar el producto, mostrar el resultado.",
+  "landing_benefits": "✅ Beneficio emocional 1\n\n✅ Beneficio emocional 2\n\n✅ Beneficio emocional 3\n\n✅ Beneficio emocional 4\n\n✅ Beneficio emocional 5\n\n✅ Beneficio emocional 6",
+  "landing_testimonials": "⭐⭐⭐⭐⭐\n\"Historia completa del cliente 1 — problema, experiencia y resultado en 3 oraciones\"\n— Nombre, Ciudad\n\n⭐⭐⭐⭐⭐\n\"Historia completa del cliente 2\"\n— Nombre, Ciudad\n\n⭐⭐⭐⭐⭐\n\"Historia completa del cliente 3\"\n— Nombre, Ciudad",
+  "landing_uses": "Titulo introductorio\n\n✅ Perfil de uso 1\n\n✅ Perfil de uso 2\n\n✅ Perfil de uso 3\n\n✅ Perfil de uso 4\n\n✅ Perfil de uso 5\n\n✅ Perfil de uso 6",
+  "landing_whats_included": "¿Que incluye tu pedido?\n\n✅ Item 1\n\n✅ Item 2\n\n✅ Item 3\n\n✅ Item 4\n\n✅ Item 5",
+  "landing_faq": "¿Pregunta 1?\nRespuesta completa y tranquilizadora.\n\n¿Pregunta 2?\nRespuesta completa.\n\n¿Pregunta 3?\nRespuesta completa.\n\n¿Pregunta 4?\nRespuesta completa.\n\n¿Pregunta 5?\nRespuesta completa.\n\n¿Pregunta 6?\nRespuesta completa.",
+  "landing_cta": "CTA final urgente completo con precio, garantia y boton de accion",
+  "wa_cold": "Mensaje WhatsApp contacto frio — maximo 6 lineas empaticas sin vender directo",
+  "wa_followup": "Mensaje WhatsApp seguimiento con urgencia — maximo 8 lineas",
+  "wa_close": "Mensaje WhatsApp cierre con escasez garantia e instruccion clara — maximo 8 lineas",
+  "social_post": "Post completo Instagram y Facebook con gancho historia beneficios CTA y emojis — minimo 150 palabras",
+  "social_tiktok": "[0-3 seg] Gancho visual\n\n[3-10 seg] Presentar el problema\n\n[10-20 seg] Mostrar solucion y resultado\n\n[20-30 seg] CTA claro",
+  "social_hashtags": "#hashtag1\n\n#hashtag2\n\n#hashtag3\n\n(25 hashtags en español separados por \n\n)",
+  "meta_campaign": "Objetivo: ...\n\nAudiencia: ...\n\nPresupuesto sugerido: ...\n\nEstructura: ...\n\nCreatividades recomendadas: ...",
+  "meta_ads": "ANUNCIO 1 — Angulo dolor\nTITULAR: ...\nDESCRIPCION: ...\nCTA: ...\n\nANUNCIO 2 — Angulo beneficio\nTITULAR: ...\nDESCRIPCION: ...\nCTA: ...\n\nANUNCIO 3 — Angulo testimonial\nTITULAR: ...\nDESCRIPCION: ...\nCTA: ...\n\nANUNCIO 4 — Angulo urgencia\nTITULAR: ...\nDESCRIPCION: ...\nCTA: ...\n\nANUNCIO 5 — Angulo precio\nTITULAR: ...\nDESCRIPCION: ...\nCTA: ...",
+  "ad_hooks": "1. Hook de pregunta\n\n2. Hook de afirmacion\n\n3. Hook de dato sorprendente\n\n4. Hook de situacion cotidiana\n\n5. Hook de dolor\n\n6. Hook de resultado\n\n7. Hook de urgencia\n\n8. Hook de testimonio\n\n9. Hook de comparacion\n\n10. Hook de transformacion",
+  "image_prompts": "1. Descripcion escena imagen 1\n\n2. Descripcion escena imagen 2\n\n3. Descripcion escena imagen 3\n\n4. Descripcion escena imagen 4\n\n5. Descripcion escena imagen 5",
+  "image_overlay": "Texto 1\n\nTexto 2\n\nTexto 3\n\nTexto 4\n\nTexto 5\n\nTexto 6\n\nTexto 7\n\nTexto 8\n\nTexto 9\n\nTexto 10",
+  "ugc_ideas": "IDEA 1\nPerfil: ...\nEscena: ...\nGuion: ...\n\nIDEA 2\nPerfil: ...\nEscena: ...\nGuion: ...\n\nIDEA 3\nPerfil: ...\nEscena: ...\nGuion: ...\n\nIDEA 4\nPerfil: ...\nEscena: ...\nGuion: ...\n\nIDEA 5\nPerfil: ...\nEscena: ...\nGuion: ...",
+  "extra_email": "Asunto: ...\n\nCuerpo completo del email minimo 200 palabras con saludo historia producto beneficios testimonial y CTA",
+  "extra_objeciones": "Objecion: El precio es muy alto.\nRespuesta: Respuesta completa que derriba esta objecion.\n\nObjecion: No confio en el producto.\nRespuesta: Respuesta completa.\n\nObjecion: Ya probe otras cosas y no funcionaron.\nRespuesta: Respuesta completa.\n\nObjecion: No creo que me llegue el pedido.\nRespuesta: Respuesta completa.\n\nObjecion: Mi caso es diferente.\nRespuesta: Respuesta completa.\n\nObjecion: Lo voy a pensar.\nRespuesta: Respuesta completa.",
+  "extra_desc": "Descripcion completa SEO para tienda minimo 200 palabras con beneficios caracteristicas para quien es y garantia",
+  "extra_seo": "1. keyword corta\n\n2. keyword de cola larga\n\n3. pregunta que busca el cliente\n\n(20 keywords en español separadas por \n\n)"${hasChars ? `,
+  "benefit_transform": [{"char": "caracteristica original", "benefit": "beneficio emocional que recibe el cliente"}]` : ''}${hasImage ? `,
+  "vision_analysis": "Descripcion detallada: tipo de producto, forma, colores, empaque, materiales, percepcion de marca y calidad",
+  "vision_summary": "En una sola oracion: que tipo de producto es y cual es su principal atributo visual"` : ''}
+}`;
 - Nombre: ${name}
 - Problema que resuelve: ${problem}
 - Beneficio principal: ${benefit}
