@@ -23,11 +23,11 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 
 /* ══ HEADER PRINCIPAL ══ */
 .dh{background:var(--dark);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:200;flex-shrink:0;}
-.dh-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;cursor:pointer;display:flex;overflow:hidden;}
+.dh-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;cursor:pointer;display:flex;align-items:center;}
 .dh-logo span{color:var(--neon-orange);text-shadow:0 0 12px rgba(255,85,32,0.9);}
-.logo-land{display:inline-block;animation:logoSlideIn 0.5s cubic-bezier(0.22,1,0.36,1) both;}
-.logo-copy{display:inline-block;animation:logoSlideIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.2s both;}
-@keyframes logoSlideIn{from{opacity:0;transform:translateX(-24px);}to{opacity:1;transform:translateX(0);}}
+.logo-land{display:inline-block;animation:logoSlideIn 0.6s cubic-bezier(0.22,1,0.36,1) both;}
+.logo-copy{display:inline-block;animation:logoSlideIn 0.6s cubic-bezier(0.22,1,0.36,1) 0.25s both;}
+@keyframes logoSlideIn{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:translateX(0);}}
 .dh-right{display:flex;align-items:center;gap:10px;}
 .dh-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#fff;background:rgba(255,255,255,0.05);padding:4px 10px;border:1px solid rgba(255,255,255,0.08);}
 .dh-btn{padding:7px 14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all 0.2s;}
@@ -55,9 +55,10 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 .chip{padding:6px 10px;border:1px solid var(--border);background:var(--surface2);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);border-radius:3px;cursor:pointer;transition:all 0.2s;}
 .chip.on{background:var(--dark);border-color:var(--dark);color:#fff;}
 .divider{border:none;border-top:1px solid var(--border);margin:18px 0;}
-.checks{display:flex;flex-direction:column;gap:7px;}
-.chk{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:12px;color:var(--text);padding:5px 0;border-bottom:1px solid var(--border);}
+.checks{display:flex;flex-direction:column;gap:0;}
+.chk{display:flex;align-items:center;gap:12px;cursor:pointer;font-size:13px;color:var(--text);padding:10px 0;border-bottom:1px solid var(--border);}
 .chk:last-child{border-bottom:none;}
+.chk input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);flex-shrink:0;cursor:pointer;}
 .chk input[type=checkbox]{width:14px;height:14px;accent-color:var(--accent);}
 .gen-btn{width:100%;padding:14px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;cursor:pointer;border-radius:3px;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;text-shadow:0 0 10px rgba(255,255,255,0.8),0 0 20px rgba(255,255,255,0.4);box-shadow:0 0 25px rgba(232,66,10,0.5),0 0 50px rgba(232,66,10,0.2);transition:all 0.2s;}
 .gen-btn:hover{background:var(--neon-orange);box-shadow:0 0 30px rgba(255,85,32,0.5);}
@@ -1357,38 +1358,41 @@ const copyWords = [
   'Generado con IA','¡Aprovecha ya!','Testimonios reales',
   'Descuento especial','Resultados en días','Precio especial',
 ];
-const wordColors=[{r:232,g:66,b:10},{r:0,g:180,b:220},{r:200,g:155,b:0},{r:60,g:60,b:60}];
+const wordColors=[{r:232,g:66,b:10},{r:0,g:150,b:200},{r:160,g:120,b:0},{r:60,g:55,b:50}];
 let wordsActive=[];
-const WORDS_MAX=20;
+const WORDS_MAX=18;
+
+function rand(a,b){return a+Math.random()*(b-a);}
 
 function spawnCopyWord(){
   const container=document.getElementById('copy-words-container');
-  if(!container||wordsActive.length>=WORDS_MAX)return;
-  const box=document.getElementById('empty-state');
-  if(!box||box.style.display==='none')return;
+  const emptyState=document.getElementById('empty-state');
+  if(!container||!emptyState||emptyState.style.display==='none')return;
+  if(wordsActive.length>=WORDS_MAX)return;
 
-  // Zona segura del cuadrado negro central (aprox centro)
-  const bw=box.offsetWidth, bh=box.offsetHeight;
-  const safeX1=bw*0.2, safeX2=bw*0.8;
-  const safeY1=bh*0.2, safeY2=bh*0.8;
+  const w=emptyState.offsetWidth||800;
+  const h=emptyState.offsetHeight||600;
+
+  // zona segura central (donde está el cuadro)
+  const cx1=w*0.25, cx2=w*0.75, cy1=h*0.3, cy2=h*0.7;
+
+  let sx,sy,tries=0;
+  do{
+    sx=rand(20,w-120);
+    sy=rand(20,h-40);
+    tries++;
+  } while(sx>cx1&&sx<cx2&&sy>cy1&&sy<cy2&&tries<30);
 
   const word=copyWords[Math.floor(Math.random()*copyWords.length)];
   const c=wordColors[Math.floor(Math.random()*wordColors.length)];
-  const alpha=0.55+Math.random()*0.3;
-  const size=12+Math.random()*7;
-  const totalDur=5000+Math.random()*5000;
-  const fadeIn=500+Math.random()*700;
-  const fadeOut=700+Math.random()*800;
-
-  // Generar posición fuera de la zona segura
-  let sx,sy;
-  do {
-    sx=Math.random()*bw*0.85;
-    sy=Math.random()*bh*0.85;
-  } while(sx>safeX1&&sx<safeX2&&sy>safeY1&&sy<safeY2);
-
-  const driftX=(Math.random()-0.5)*120;
-  const driftY=-(30+Math.random()*100);
+  const alpha=rand(0.55,0.85);
+  const size=rand(12,17);
+  // MUY lento
+  const totalDur=rand(14000,22000);
+  const fadeIn=rand(2000,3000);
+  const fadeOut=rand(2000,3000);
+  const driftX=rand(-60,60);
+  const driftY=rand(-80,-20);
 
   const el=document.createElement('div');
   el.className='copy-word';
@@ -1404,26 +1408,31 @@ function spawnCopyWord(){
     if(phase==='in'){
       const p=Math.min(e/fadeIn,1);
       el.style.color=`rgba(${c.r},${c.g},${c.b},${alpha*p})`;
-      el.style.transform=`translate(${driftX*0.05*p}px,${driftY*0.05*p}px)`;
+      el.style.transform=`translate(${driftX*0.03*p}px,${driftY*0.03*p}px)`;
       if(p>=1){phase='hold';start=ts;}
     } else if(phase==='hold'){
       const hold=totalDur-fadeIn-fadeOut;
       const p=Math.min(e/hold,1);
-      el.style.transform=`translate(${driftX*(0.05+0.7*p)}px,${driftY*(0.05+0.7*p)}px)`;
+      el.style.transform=`translate(${driftX*(0.03+0.7*p)}px,${driftY*(0.03+0.7*p)}px)`;
       if(e>=hold){phase='out';start=ts;}
     } else {
       const p=Math.min(e/fadeOut,1);
       el.style.color=`rgba(${c.r},${c.g},${c.b},${alpha*(1-p)})`;
-      if(p>=1){el.remove();const i=wordsActive.indexOf(el);if(i>-1)wordsActive.splice(i,1);return;}
+      if(p>=1){
+        el.remove();
+        const i=wordsActive.indexOf(el);
+        if(i>-1)wordsActive.splice(i,1);
+        return;
+      }
     }
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
 }
 
-// Arrancar palabras flotantes
-for(let i=0;i<10;i++) setTimeout(spawnCopyWord,i*250);
-setInterval(spawnCopyWord,900);
+// Arrancar — lento y pausado
+for(let i=0;i<8;i++) setTimeout(spawnCopyWord,i*600);
+setInterval(spawnCopyWord,2000);
 
 // Init
 document.addEventListener('DOMContentLoaded',()=>{
