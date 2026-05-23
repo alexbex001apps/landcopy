@@ -58,6 +58,34 @@ export default async function handler(req, res) {
   const hasChars = !!(chars && chars.trim());
   const o = outputs || {};
 
+  // ── MODO HERO ONLY ──────────────────────
+  if(req.body.heroOnly) {
+    const heroPrompt = `Eres experto en copywriting persuasivo para ecommerce latinoamericano.
+
+Producto: ${name} | Problema: ${problem} | Beneficio: ${benefit} | Precio: ${price} | Pais: ${co.name}
+
+Genera 3 titulares hero DIFERENTES para este producto. Cada uno con un angulo distinto. Maximo 4 lineas cada uno.
+
+Responde SOLO con este JSON sin markdown:
+{
+  "hero_emocional": "titular hero con angulo emocional — conecta con el dolor y la esperanza",
+  "hero_racional": "titular hero con angulo racional — usa datos, logica y resultados concretos",
+  "hero_urgente": "titular hero con angulo urgente — escasez, tiempo limitado, accion inmediata"
+}`;
+
+    const result = await callOpenAI(process.env.OPENAI_API_KEY, {
+      model: 'gpt-4o-mini',
+      max_tokens: 800,
+      temperature: 0.9,
+      messages: [{ role: 'user', content: heroPrompt }]
+    });
+
+    if(result.status !== 200) return res.status(500).json({ error: result.body.error?.message || 'Error OpenAI' });
+    const raw = result.body.choices[0].message.content.trim();
+    const clean = raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();
+    return res.status(200).json(JSON.parse(clean));
+  }
+
   // Build JSON fields as string — avoids double-escaping
   const jsonFields = [];
 
