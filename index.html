@@ -26,7 +26,7 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 .dh-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;cursor:pointer;}
 .dh-logo span{color:var(--neon-orange);text-shadow:0 0 12px rgba(255,85,32,0.9);}
 .dh-right{display:flex;align-items:center;gap:10px;}
-.dh-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#444;background:rgba(255,255,255,0.05);padding:4px 10px;border:1px solid rgba(255,255,255,0.08);}
+.dh-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#fff;background:rgba(255,255,255,0.05);padding:4px 10px;border:1px solid rgba(255,255,255,0.08);}
 .dh-btn{padding:7px 14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all 0.2s;}
 .dh-ghost{background:transparent;border:1px solid rgba(0,212,255,0.25);color:rgba(0,212,255,0.7);text-shadow:0 0 6px rgba(0,212,255,0.4);}
 .dh-ghost:hover{border-color:var(--neon-blue);color:var(--neon-blue);text-shadow:0 0 10px rgba(0,212,255,0.9);box-shadow:0 0 12px rgba(0,212,255,0.2);}
@@ -73,7 +73,7 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 .img-fmt{padding:2px 7px;border:1px solid var(--border);border-radius:2px;font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);}
 .img-preview-wrap{border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:4px;display:none;}
 .img-preview-wrap.visible{display:block;}
-.img-thumb{width:100%;height:140px;object-fit:cover;display:block;}
+.img-thumb{width:100%;height:140px;object-fit:contain;display:block;background:var(--surface2);}
 .img-preview-bar{padding:7px 12px;background:var(--surface2);display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);}
 .img-filename{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px;}
 .img-analyzed{display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:8px;color:#1a7a3a;letter-spacing:1px;}
@@ -337,23 +337,23 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 
 /* ══ BOTTOM NAV BAR ══ */
 .bottom-nav{
-  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
-  z-index:9999;display:flex;gap:6px;
-  background:rgba(6,5,4,0.95);
-  padding:8px 14px;border-radius:40px;
-  border:1px solid rgba(255,255,255,0.08);
+  position:fixed;bottom:20px;left:0;width:400px;
+  z-index:9999;display:flex;gap:4px;
+  background:rgba(6,5,4,0.97);
+  padding:8px 12px;border-radius:8px;
+  border:1px solid rgba(255,255,255,0.12);
   backdrop-filter:blur(12px);
-  box-shadow:0 0 30px rgba(0,0,0,0.5);
+  box-shadow:0 4px 24px rgba(0,0,0,0.5);
 }
 .bnav-btn{
-  padding:5px 12px;border-radius:20px;
-  font-family:'DM Mono',monospace;font-size:9px;
+  flex:1;padding:8px 6px;border-radius:5px;
+  font-family:'DM Mono',monospace;font-size:10px;
   letter-spacing:1px;text-transform:uppercase;
-  cursor:pointer;border:none;
-  background:transparent;color:rgba(255,255,255,0.3);
-  transition:all 0.2s;
+  cursor:pointer;border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.8);
+  transition:all 0.2s;text-align:center;
 }
-.bnav-btn:hover{color:rgba(255,255,255,0.7);}
+.bnav-btn:hover{background:rgba(255,255,255,0.12);color:#fff;}
 .bnav-btn.on{
   background:var(--neon-orange);color:#fff;
   text-shadow:0 0 8px rgba(255,255,255,0.8);
@@ -1392,9 +1392,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav" id="bottom-nav">
-  <button class="bnav-btn on" onclick="goTo('page-main')" id="bnav-main">0·LandCopy</button>
-  <button class="bnav-btn" onclick="goTo('page-login')" id="bnav-login">5·Login</button>
-  <button class="bnav-btn" onclick="goTo('page-pricing')" id="bnav-pricing">6·Planes</button>
+  <button class="bnav-btn on" onclick="goTo('page-main')" id="bnav-main">LandCopy</button>
+  <button class="bnav-btn" onclick="goTo('page-login')" id="bnav-login">Login</button>
+  <button class="bnav-btn" onclick="goTo('page-pricing')" id="bnav-pricing">Planes</button>
   <button class="bnav-btn" data-video onclick="goToStudio('upload')" id="bnav-upload">1·Upload</button>
   <button class="bnav-btn" data-video onclick="goToStudio('editor')" id="bnav-editor">2·Editor</button>
   <button class="bnav-btn" data-video onclick="goToStudio('archive')" id="bnav-archive">3·Archivo</button>
