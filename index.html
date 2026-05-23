@@ -114,6 +114,9 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 .improve-tab{padding:7px 14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:transparent;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
 .improve-tab.on{color:var(--accent);border-bottom-color:var(--accent);}
 
+.tab.has-content::before{content:'●';font-size:6px;margin-right:5px;color:var(--accent);vertical-align:middle;}
+.tab.no-content::before{content:'○';font-size:6px;margin-right:5px;color:var(--border);vertical-align:middle;}
+
 /* ══ RIGHT PANEL ══ */
 .rp{padding:28px;padding-bottom:80px;overflow-y:auto;background:var(--bg);}
 .empty-state{position:relative;overflow:hidden;min-height:calc(100vh - 120px);display:flex;align-items:center;justify-content:center;background:var(--bg);}
@@ -545,12 +548,12 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
         </div>
         <div class="tabs">
           <div class="tab" id="tab-btn-vision" onclick="showTab('vision')" style="display:none;color:var(--neon-blue);">👁️ Visión IA</div>
-          <div class="tab on" onclick="showTab('landing')">Landing</div>
-          <div class="tab" onclick="showTab('ads')">Meta Ads</div>
-          <div class="tab" onclick="showTab('imagenes')">Imágenes</div>
-          <div class="tab" onclick="showTab('whatsapp')">WhatsApp</div>
-          <div class="tab" onclick="showTab('social')">Redes</div>
-          <div class="tab" onclick="showTab('extras')">Extras</div>
+          <div class="tab on" id="tab-btn-landing" onclick="showTab('landing')">Landing</div>
+          <div class="tab" id="tab-btn-ads" onclick="showTab('ads')">Meta Ads</div>
+          <div class="tab" id="tab-btn-imagenes" onclick="showTab('imagenes')">Imágenes</div>
+          <div class="tab" id="tab-btn-whatsapp" onclick="showTab('whatsapp')">WhatsApp</div>
+          <div class="tab" id="tab-btn-social" onclick="showTab('social')">Redes</div>
+          <div class="tab" id="tab-btn-extras" onclick="showTab('extras')">Extras</div>
         </div>
         <!-- VISION TAB -->
         <div class="tc" id="tab-vision">
@@ -1292,6 +1295,26 @@ async function generateContent() {
       'extra-email':'extra_email','extra-objeciones':'extra_objeciones','extra-desc':'extra_desc','extra-seo':'extra_seo'
     };
     Object.entries(map).forEach(([elId,key])=>{const el=document.getElementById(elId);if(el)renderContent(el,parsed[key]);});
+
+    // ── INDICADORES DE TABS ──────────────────
+    const tabMap = {
+      'tab-btn-landing':  ['landing-hero','landing-problem','landing-solution'],
+      'tab-btn-ads':      ['meta-ads','meta-campaign'],
+      'tab-btn-imagenes': ['image-prompts','image-overlay'],
+      'tab-btn-whatsapp': ['wa-cold','wa-followup','wa-close'],
+      'tab-btn-social':   ['social-post','social-tiktok'],
+      'tab-btn-extras':   ['extra-desc','extra-seo'],
+    };
+    Object.entries(tabMap).forEach(([tabId, contentIds]) => {
+      const tabEl = document.getElementById(tabId);
+      if(!tabEl) return;
+      const hasContent = contentIds.some(id => {
+        const el = document.getElementById(id);
+        return el && (el.innerText || el.textContent || '').trim().length > 5;
+      });
+      tabEl.classList.remove('has-content','no-content');
+      tabEl.classList.add(hasContent ? 'has-content' : 'no-content');
+    });
     // Vision / image results
     if(parsed.vision_analysis || parsed.benefit_transform) {
       document.getElementById('tab-btn-vision').style.display='block';
