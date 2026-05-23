@@ -105,11 +105,13 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 
 /* ══ RIGHT PANEL ══ */
 .rp{padding:28px;padding-bottom:80px;overflow-y:auto;background:var(--bg);}
-.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;gap:10px;}
-.empty-icon{font-size:56px;opacity:0.2;}
-.empty-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--muted);}
-.empty-sub{font-size:12px;color:var(--muted);max-width:280px;line-height:1.6;}
-.studio-hint{margin-top:16px;padding:12px 16px;background:rgba(232,66,10,0.05);border:1px solid rgba(232,66,10,0.12);border-radius:6px;display:flex;align-items:center;gap:12px;max-width:360px;cursor:pointer;}
+.empty-state{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;gap:10px;}
+.empty-box{background:var(--dark);border-radius:12px;padding:40px 48px;display:flex;flex-direction:column;align-items:center;gap:12px;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,0.15);}
+.empty-icon{font-size:40px;opacity:0.6;}
+.empty-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;}
+.empty-sub{font-size:12px;color:rgba(255,255,255,0.55);max-width:260px;line-height:1.7;}
+.empty-badge{margin-top:4px;padding:7px 18px;background:rgba(232,66,10,0.15);border:1px solid rgba(232,66,10,0.4);border-radius:20px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--neon-orange);text-transform:uppercase;}
+.copy-word{position:absolute;font-family:'DM Mono',monospace;letter-spacing:2px;text-transform:uppercase;pointer-events:none;white-space:nowrap;user-select:none;font-weight:500;z-index:1;}
 .sh-text{font-size:12px;color:var(--muted);}
 .sh-link{color:var(--accent);font-weight:500;}
 
@@ -336,47 +338,8 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 .vs-wb.active{background:rgba(255,85,32,0.7);}
 
 /* ══ BOTTOM NAV BAR ══ */
-.bottom-nav{
-  position:fixed;bottom:20px;left:0;width:400px;
-  z-index:9999;display:flex;gap:4px;
-  background:rgba(6,5,4,0.97);
-  padding:8px 12px;border-radius:8px;
-  border:1px solid rgba(255,255,255,0.12);
-  backdrop-filter:blur(12px);
-  box-shadow:0 4px 24px rgba(0,0,0,0.5);
-}
-.bnav-btn{
-  flex:1;padding:8px 6px;border-radius:5px;
-  font-family:'DM Mono',monospace;font-size:10px;
-  letter-spacing:1px;text-transform:uppercase;
-  cursor:pointer;border:1px solid rgba(255,255,255,0.1);
-  background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.8);
-  transition:all 0.2s;text-align:center;
-}
-.bnav-btn:hover{background:rgba(255,255,255,0.12);color:#fff;}
-.bnav-btn.on{
-  background:var(--neon-orange);color:#fff;
-  text-shadow:0 0 8px rgba(255,255,255,0.8);
-  box-shadow:0 0 12px rgba(255,85,32,0.6);
-}
-.bnav-btn.studio-on{
-  background:rgba(0,212,255,0.15);
-  color:var(--neon-blue);
-  text-shadow:0 0 8px rgba(0,212,255,0.8);
-  border:1px solid rgba(0,212,255,0.3);
-}
-.bnav-btn.login-on{
-  background:rgba(255,230,0,0.12);
-  color:var(--neon-yellow);
-  text-shadow:0 0 8px rgba(255,230,0,0.7);
-  border:1px solid rgba(255,230,0,0.25);
-}
-.bnav-btn.pricing-on{
-  background:rgba(255,34,85,0.12);
-  color:var(--neon-red);
-  text-shadow:0 0 8px rgba(255,34,85,0.7);
-  border:1px solid rgba(255,34,85,0.25);
-}
+.bottom-nav{display:none;}
+.bnav-btn{display:none;}
 
 /* ══ RESPONSIVE ══ */
 @media(max-width:768px){
@@ -525,13 +488,13 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 
     <!-- RIGHT -->
     <div class="rp" id="right-panel">
-      <div class="empty-state" id="empty-state">
-        <div class="empty-icon">⚡</div>
-        <div class="empty-title">Listo para generar</div>
-        <div class="empty-sub">Completa los datos y presiona Generar. En segundos tendrás landing, WhatsApp y redes listo para publicar.</div>
-        <div class="studio-hint" data-video onclick="goTo('page-studio')">
-          <div style="font-size:24px;">🎬</div>
-          <div class="sh-text">¿Tienes videos del producto? Córtalos en el <span class="sh-link">Video Studio →</span></div>
+      <div id="empty-state" style="position:relative;overflow:hidden;min-height:400px;display:flex;align-items:center;justify-content:center;">
+        <div id="copy-words-container" style="position:absolute;inset:0;pointer-events:none;"></div>
+        <div class="empty-box">
+          <div class="empty-icon">⚡</div>
+          <div class="empty-title">Listo para generar</div>
+          <div class="empty-sub">Completa los datos y presiona Generar. En segundos tendrás landing, WhatsApp y redes listo para publicar.</div>
+          <div class="empty-badge">IA · Copy profesional · LandCopy</div>
         </div>
       </div>
 
@@ -1378,6 +1341,85 @@ function vsPlayCloud(url) {
 
 function vsTime(s){if(isNaN(s))return'0:00';return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');}
 function vsParse(str){const p=str.split(':');return p.length===2?parseInt(p[0])*60+parseFloat(p[1]):parseFloat(str)||0;}
+
+// ── PALABRAS FLOTANTES ─────────────────────
+const copyWords = [
+  '¡Compra ahora!','Envío gratis','Garantía 30 días','Pagas al recibir',
+  'Alivio inmediato','+17.000 clientes','¡Solo hoy!','No te lo pierdas',
+  'Resultados reales','Sin riesgo','100% natural','Oferta limitada',
+  'WhatsApp directo','Meta Ads','Landing page','Copy profesional',
+  '¿Sufres de dolor?','La solución llegó','Pide el tuyo',
+  'Stock limitado','⭐⭐⭐⭐⭐','Envío express','Sin pastillas',
+  'Generado con IA','¡Aprovecha ya!','Testimonios reales',
+  'Descuento especial','Resultados en días','Precio especial',
+];
+const wordColors=[{r:232,g:66,b:10},{r:0,g:180,b:220},{r:200,g:155,b:0},{r:60,g:60,b:60}];
+let wordsActive=[];
+const WORDS_MAX=20;
+
+function spawnCopyWord(){
+  const container=document.getElementById('copy-words-container');
+  if(!container||wordsActive.length>=WORDS_MAX)return;
+  const box=document.getElementById('empty-state');
+  if(!box||box.style.display==='none')return;
+
+  // Zona segura del cuadrado negro central (aprox centro)
+  const bw=box.offsetWidth, bh=box.offsetHeight;
+  const safeX1=bw*0.2, safeX2=bw*0.8;
+  const safeY1=bh*0.2, safeY2=bh*0.8;
+
+  const word=copyWords[Math.floor(Math.random()*copyWords.length)];
+  const c=wordColors[Math.floor(Math.random()*wordColors.length)];
+  const alpha=0.55+Math.random()*0.3;
+  const size=12+Math.random()*7;
+  const totalDur=5000+Math.random()*5000;
+  const fadeIn=500+Math.random()*700;
+  const fadeOut=700+Math.random()*800;
+
+  // Generar posición fuera de la zona segura
+  let sx,sy;
+  do {
+    sx=Math.random()*bw*0.85;
+    sy=Math.random()*bh*0.85;
+  } while(sx>safeX1&&sx<safeX2&&sy>safeY1&&sy<safeY2);
+
+  const driftX=(Math.random()-0.5)*120;
+  const driftY=-(30+Math.random()*100);
+
+  const el=document.createElement('div');
+  el.className='copy-word';
+  el.textContent=word;
+  el.style.cssText=`left:${sx}px;top:${sy}px;font-size:${size}px;color:rgba(${c.r},${c.g},${c.b},0);`;
+  container.appendChild(el);
+  wordsActive.push(el);
+
+  let start=null,phase='in';
+  function tick(ts){
+    if(!start)start=ts;
+    const e=ts-start;
+    if(phase==='in'){
+      const p=Math.min(e/fadeIn,1);
+      el.style.color=`rgba(${c.r},${c.g},${c.b},${alpha*p})`;
+      el.style.transform=`translate(${driftX*0.05*p}px,${driftY*0.05*p}px)`;
+      if(p>=1){phase='hold';start=ts;}
+    } else if(phase==='hold'){
+      const hold=totalDur-fadeIn-fadeOut;
+      const p=Math.min(e/hold,1);
+      el.style.transform=`translate(${driftX*(0.05+0.7*p)}px,${driftY*(0.05+0.7*p)}px)`;
+      if(e>=hold){phase='out';start=ts;}
+    } else {
+      const p=Math.min(e/fadeOut,1);
+      el.style.color=`rgba(${c.r},${c.g},${c.b},${alpha*(1-p)})`;
+      if(p>=1){el.remove();const i=wordsActive.indexOf(el);if(i>-1)wordsActive.splice(i,1);return;}
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// Arrancar palabras flotantes
+for(let i=0;i<10;i++) setTimeout(spawnCopyWord,i*250);
+setInterval(spawnCopyWord,900);
 
 // Init
 document.addEventListener('DOMContentLoaded',()=>{
