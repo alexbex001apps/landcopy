@@ -58,6 +58,40 @@ export default async function handler(req, res) {
   const hasChars = !!(chars && chars.trim());
   const o = outputs || {};
 
+  // ── MODO IMPROVE ONLY ──────────────────────
+  if(req.body.improveOnly) {
+    const { originalText, sectionName } = req.body;
+    const improvePrompt = `Eres el mejor experto en copywriting persuasivo para ecommerce latinoamericano.
+
+Tu tarea: tomar este texto de marketing y hacerlo MAS VENDEDOR, MAS EMOCIONAL y MAS PERSUASIVO.
+
+Seccion: ${sectionName || 'copy de marketing'}
+Pais: ${(countryData[country] || countryData.general).name}
+
+TEXTO ORIGINAL:
+${originalText}
+
+INSTRUCCIONES:
+- Mantén la misma estructura y longitud aproximada
+- Usa palabras más poderosas y emocionales
+- Agrega más urgencia donde aplique
+- Frases más directas y con más impacto
+- Mantén el mismo idioma y tono base pero intensifícalo
+- NO cambies los datos (precios, nombres, ciudades)
+- Responde SOLO con el texto mejorado, sin explicaciones ni JSON`;
+
+    const result = await callOpenAI(process.env.OPENAI_API_KEY, {
+      model: 'gpt-4o-mini',
+      max_tokens: 1500,
+      temperature: 0.85,
+      messages: [{ role: 'user', content: improvePrompt }]
+    });
+
+    if(result.status !== 200) return res.status(500).json({ error: result.body.error?.message || 'Error OpenAI' });
+    const improved = result.body.choices[0].message.content.trim();
+    return res.status(200).json({ improved });
+  }
+
   // ── MODO HERO ONLY ──────────────────────
   if(req.body.heroOnly) {
     const heroPrompt = `Eres experto en copywriting persuasivo para ecommerce latinoamericano.
