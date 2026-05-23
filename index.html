@@ -609,7 +609,16 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
           <div class="ocard"><div class="ocard-h"><span class="ocard-t">🧲 Hooks para anuncios</span><button class="copy-btn" onclick="copySection('ad-hooks')">Copiar</button></div><div class="ocard-b"><div class="otext" id="ad-hooks"></div></div></div>
         </div>
         <div class="tc" id="tab-imagenes">
-          <div class="ocard"><div class="ocard-h"><span class="ocard-t">🖼️ Prompts para imágenes</span><button class="copy-btn" onclick="copySection('image-prompts')">Copiar</button></div><div class="ocard-b"><div class="otext" id="image-prompts"></div></div></div>
+          <div class="ocard">
+            <div class="ocard-h">
+              <span class="ocard-t">🖼️ Prompts para imágenes</span>
+              <div style="display:flex;gap:6px;">
+                <button class="copy-btn" id="regen-prompts-btn" onclick="regenerarImagePrompts()" style="background:rgba(232,66,10,0.08);border-color:rgba(232,66,10,0.3);color:var(--accent);">⚡ Prompts profesionales</button>
+                <button class="copy-btn" onclick="copySection('image-prompts')">Copiar</button>
+              </div>
+            </div>
+            <div class="ocard-b"><div class="otext" id="image-prompts"></div></div>
+          </div>
           <div class="ocard"><div class="ocard-h"><span class="ocard-t">✍️ Texto sobre imagen</span><button class="copy-btn" onclick="copySection('image-overlay')">Copiar</button></div><div class="ocard-b"><div class="otext" id="image-overlay"></div></div></div>
           <div class="ocard"><div class="ocard-h"><span class="ocard-t">🎬 Ideas UGC</span><button class="copy-btn" onclick="copySection('ugc-ideas')">Copiar</button></div><div class="ocard-b"><div class="otext" id="ugc-ideas"></div></div></div>
         </div>
@@ -1014,6 +1023,44 @@ function imgRemove() {
   document.getElementById('gen-btn-icon').textContent = '⚡';
   document.getElementById('gen-btn-text').textContent = 'Generar todo ahora';
   document.getElementById('gen-note').textContent = 'Generado con IA · Backend seguro · LandCopy';
+}
+
+// ── REGENERAR IMAGE PROMPTS ──────────────────
+async function regenerarImagePrompts() {
+  const name = document.getElementById('product-name').value.trim();
+  if(!name) { alert('Primero genera el copy principal.'); return; }
+
+  const btn = document.getElementById('regen-prompts-btn');
+  btn.textContent = '⏳ Generando...';
+  btn.disabled = true;
+
+  try {
+    const resp = await fetch('/api/imageprompts', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name,
+        problem: document.getElementById('product-problem').value.trim(),
+        benefit: document.getElementById('product-benefit').value.trim(),
+        category: document.getElementById('product-category').value,
+        country: selCountry
+      })
+    });
+    const data = await resp.json();
+    if(data.prompt1) {
+      const el = document.getElementById('image-prompts');
+      const text = [data.prompt1, data.prompt2, data.prompt3, data.prompt4, data.prompt5]
+        .filter(Boolean)
+        .map((p, i) => `${i+1}. ${p}`)
+        .join('\n\n');
+      renderContent(el, text);
+    }
+  } catch(err) {
+    console.error(err);
+  } finally {
+    btn.textContent = '⚡ Prompts profesionales';
+    btn.disabled = false;
+  }
 }
 
 // ── HAZLO MÁS VENDEDOR ──────────────────────
