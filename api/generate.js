@@ -1,206 +1,119 @@
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Método no permitido" });
-  }
+
+const OpenAI = require('openai');
+
+const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+const countryData = {
+  colombia:   { name:'Colombia',    currency:'COP', symbol:'$',  slang:'parcero/a, chimba, bacano', pay:'pago contra entrega', ship:'Colombia' },
+  costarica:  { name:'Costa Rica',  currency:'CRC', symbol:'₡',  slang:'mae, tuanis, pura vida',    pay:'pago contra entrega', ship:'Costa Rica' },
+  mexico:     { name:'México',      currency:'MXN', symbol:'$',  slang:'wey, chido, órale',         pay:'pago contra entrega', ship:'México' },
+  venezuela:  { name:'Venezuela',   currency:'USD', symbol:'$',  slang:'chamo/a, chévere, pana',    pay:'pago contra entrega', ship:'Venezuela' },
+  ecuador:    { name:'Ecuador',     currency:'USD', symbol:'$',  slang:'causa, bacán, ñaño',        pay:'pago contra entrega', ship:'Ecuador' },
+  general:    { name:'Latinoamérica', currency:'USD', symbol:'$', slang:'',                         pay:'pago contra entrega', ship:'tu país' },
+};
+
+module.exports = async (req, res) => {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  const {
+    name, problem, benefit, price, priceOld, clients, chars,
+    category, country, tone, image, imageMime, outputs
+  } = req.body;
+
+  if (!name) return res.status(400).json({ error: 'Nombre del producto requerido' });
+
+  const co = countryData[country] || countryData.general;
+  const hasImage = !!image;
+  const hasChars = !!(chars && chars.trim());
+  const model = hasImage ? 'gpt-4o' : 'gpt-4o-mini';
+
+  // ── BUILD PROMPT ─────────────────────────────
+  const systemPrompt = `Eres LandCopy, un experto en copywriting persuasivo para ecommerce latinoamericano. 
+Conoces a fondo la psicología de compra: emoción primero, lógica después.
+Regla de oro: BENEFICIO > CARACTERÍSTICA. Nunca hables solo de especificaciones — habla de lo que el cliente GANA, EVITA o MEJORA.
+Orden psicológico de landing: Atención → Problema → Solución → Beneficios → Testimonios → FAQ → Confianza.
+Responde ÚNICAMENTE con un objeto JSON válido, sin markdown, sin explicaciones, sin texto fuera del JSON.`;
+
+  const charsSection = hasChars ? `\n\nCARACTERÍSTICAS DEL PRODUCTO (convierte cada una en beneficio emocional):\n${chars}` : '';
+  const priceSection = priceOld ? `Precio oferta: ${price} (antes: ${priceOld})` : `Precio: ${price}`;
+  const clientsSection = clients ? `Clientes actuales: ${clients}` : '';
+
+  const userPromptText = `Genera copy de marketing para este producto en ${co.name}:
+
+PRODUCTO: ${name}
+PROBLEMA QUE RESUELVE: ${problem}
+BENEFICIO PRINCIPAL: ${benefit}
+${priceSection}
+${clientsSection}
+CATEGORÍA: ${category}
+TONO: ${tone}
+PAÍS: ${co.name} — jerga local: ${co.slang || 'neutral'}
+MÉTODO DE PAGO: ${co.pay}${charsSection}${hasImage ? '\n\nANALIZA LA IMAGEN DEL PRODUCTO adjunta y extrae: tipo de producto, apariencia visual, colores, presentación, percepción. Usa esa información para hacer el copy más visual y específico.' : ''}
+
+Genera el siguiente JSON con TODOS estos campos (no omitas ninguno):
+{
+  "landing_hero": "Titular hero — fórmula: ¿Todavía sufres de [problema]? [Nombre] — [beneficio en minutos]",
+  "landing_problem": "Sección problema con storytelling — empieza con empatía, lista de síntomas con ❌, estadística de identificación",
+  "landing_solution": "Solución con storytelling — Sabemos lo frustrante que es... Por eso creamos... Ahora puedes...",
+  "landing_benefits": "6 beneficios reales en formato ✅ — beneficios emocionales NO características técnicas",
+  "landing_testimonials": "3 testimonios completos con ⭐⭐⭐⭐⭐, nombre, ciudad, historia (problema→experiencia→resultado)",
+  "landing_uses": "Sección ideal para — distintos perfiles y escenarios de uso con ✅",
+  "landing_whats_included": "¿Qué incluye? — lista con ✅ de todo lo que viene en el pedido",
+  "landing_faq": "6 preguntas frecuentes respondidas — seguridad, uso, resultados, garantía, pago, envío",
+  "landing_cta": "CTA final urgente con precio, descuento, método de pago y garantía",
+  "landing_trust_bar": "Top bar de confianza — 4 badges: envío, clientes, pago, garantía",
+  "wa_cold": "WhatsApp primer contacto frío — máximo 5 líneas, empático, sin vender directo",
+  "wa_followup": "WhatsApp seguimiento — crea urgencia, responde objeción de precio",
+  "wa_close": "WhatsApp cierre de venta — escasez, garantía, instrucción de compra",
+  "social_post": "Post Instagram/Facebook — gancho + historia + CTA + emojis",
+  "social_tiktok": "Guión TikTok 30 segundos — gancho 3 seg + problema + solución + CTA",
+  "social_hashtags": "20 hashtags relevantes en español para ${co.name}",
+  "meta_campaign": "Campaña Meta Ads completa — objetivo, audiencia, presupuesto sugerido, creatividades",
+  "meta_ads": "5 anuncios Meta diferentes — cada uno con titular + descripción + CTA",
+  "ad_hooks": "10 hooks de apertura para anuncios de video — primeros 3 segundos",
+  "image_prompts": "5 prompts en inglés para generar imágenes del producto con IA",
+  "image_overlay": "10 textos cortos (máx 5 palabras) para superponer en imágenes del producto",
+  "ugc_ideas": "5 ideas de videos UGC para el producto — guión breve de cada uno",
+  "extra_desc": "Descripción de tienda Shopify/web — SEO optimizada, 150 palabras",
+  "extra_seo": "15 keywords SEO en español para ${co.name}"${hasChars ? `,
+  "benefit_transform": [{"char": "característica original", "benefit": "beneficio emocional"}]` : ''}${hasImage ? `,
+  "vision_analysis": "Descripción detallada de lo que ves en la imagen del producto — tipo, apariencia, colores, presentación, percepción de marca",
+  "vision_summary": "Resumen en 1 oración de lo más relevante visual del producto para el copy"` : ''}
+}`;
 
   try {
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      return res.status(500).json({ error: "Falta configurar OPENAI_API_KEY en Vercel" });
+    // Build messages array — with or without image
+    let messages;
+    if (hasImage) {
+      messages = [{
+        role: 'user',
+        content: [
+          { type: 'image_url', image_url: { url: `data:${imageMime};base64,${image}`, detail: 'low' } },
+          { type: 'text', text: userPromptText }
+        ]
+      }];
+    } else {
+      messages = [{ role: 'user', content: userPromptText }];
     }
 
-    const body = req.body || {};
-
-    const producto = body.name || body.nombreProducto || "Producto sin nombre";
-    const problema = body.problem || body.problema || "No especificado";
-    const beneficio = body.benefit || body.beneficio || "No especificado";
-    const precio = body.price || body.precio || "No especificado";
-    const categoria = body.category || body.categoria || "General";
-    const pais = body.country || body.pais || "Latinoamérica";
-    const tono = body.tone || body.tono || "persuasivo, profesional y vendedor";
-    const enabledOutputs = body.enabled_outputs || body.enabledOutputs || "landing,whatsapp,social,email,objeciones,meta,images,extras,hooks";
-
-    const prompt = `
-Eres un estratega senior de marketing, copywriter de respuesta directa, experto en ecommerce, Meta Ads, WhatsApp Business, landing pages, contenido UGC y ventas digitales.
-
-Tu tarea es crear una campaña completa, profesional, amplia, estratégica y lista para vender.
-Debes pensar como un director de marketing de marcas multimillonarias.
-
-La campaña debe:
-- generar deseo inmediato
-- aumentar percepción de valor
-- sonar humana y emocional
-- usar neuroventas
-- incluir copywriting moderno
-- crear urgencia real
-- atacar dolores ocultos
-- aumentar conversión
-- sonar premium y profesional
-- evitar textos genéricos
-- evitar repetir palabras
-- escribir como anuncios ganadores de Meta Ads
-
-La landing debe verse como una página de ventas real.
-Los copies deben parecer hechos por un experto senior.
-Los WhatsApp deben cerrar ventas rápido.
-Las redes sociales deben ser virales y emocionales.
-
-Usa lenguaje natural latinoamericano.
-DATOS DEL PRODUCTO:
-Producto: ${producto}
-Problema que resuelve: ${problema}
-Beneficio principal: ${beneficio}
-Precio: ${precio}
-Categoría: ${categoria}
-País objetivo: ${pais}
-Tono: ${tono}
-
-RESPONDE SOLO EN JSON VÁLIDO.
-No uses markdown.
-No uses explicación fuera del JSON.
-SECCIONES ACTIVADAS POR EL USUARIO:
-${enabledOutputs}
-REGLA OBLIGATORIA:
-Genera contenido SOLO para las secciones incluidas en SECCIONES ACTIVADAS.
-
-Para cualquier sección NO incluida:
-- devuelve "" en las claves correspondientes
-- no generes texto
-- no inventes contenido
-- no rellenes campos automáticamente
-
-Usa exactamente estas claves:
-
-{
-  "landing_hero": "",
-  "landing_problem": "",
-  "landing_solution": "",
-  "landing_testimonials": "",
-  "landing_cta": "",
-  "wa_cold": "",
-  "wa_followup": "",
-  "wa_close": "",
-  "social_post": "",
-  "social_tiktok": "",
-  "social_hashtags": "",
-  "extra_email": "",
-  "extra_objeciones": "",
-  "extra_desc": "",
-  "extra_seo": "",
-  "meta_campaign": "",
-  "meta_ads": "",
-  "ad_hooks": "",
-  "image_prompts": "",
-  "image_overlay": "",
-  "ugc_ideas": "",
-"enabled_outputs": ""
-}
-
-INSTRUCCIONES:
-
-landing_hero:
-Crea un titular fuerte, subtítulo vendedor y texto de botón. Debe despertar deseo y urgencia.
-
-landing_problem:
-Explica el problema del cliente con lenguaje emocional, cercano y realista.
-
-landing_solution:
-Presenta la solución con mínimo 7 beneficios claros, enfocados en transformación, comodidad, ahorro, rapidez, confianza y deseo.
-
-landing_testimonials:
-Crea 3 testimonios sugeridos. Aclara que son ejemplos sugeridos, no testimonios reales.
-
-landing_cta:
-Cierre fuerte con urgencia moderada, confianza, precio, llamado a WhatsApp y razón para comprar hoy.
-
-wa_cold:
-Mensaje inicial de WhatsApp para responder a un cliente interesado.
-
-wa_followup:
-Mensaje de seguimiento para cliente que no respondió.
-
-wa_close:
-Mensaje para cerrar venta con seguridad y naturalidad.
-
-social_post:
-Copy largo para Facebook/Instagram con gancho, problema, solución, beneficios, prueba social sugerida y CTA.
-
-social_tiktok:
-Guion completo para video TikTok/Reels de 30 segundos con escenas, texto en pantalla y voz.
-
-social_hashtags:
-20 hashtags estratégicos.
-
-extra_email:
-Email completo con asunto, apertura, cuerpo vendedor y cierre.
-
-extra_objeciones:
-Lista de 8 objeciones comunes y respuestas persuasivas.
-
-extra_desc:
-Descripción profesional para tienda online, entre 180 y 250 palabras.
-
-extra_seo:
-Palabras clave SEO separadas por comas.
-
-meta_campaign:
-Estrategia completa para Meta Ads: objetivo, público, intereses, segmentación, presupuesto sugerido, estructura de campaña y consejo de optimización.
-
-meta_ads:
-5 anuncios completos para Meta Ads. Cada anuncio debe tener: texto principal, titular, descripción y CTA.
-
-ad_hooks:
-20 hooks potentes para anuncios.
-
-image_prompts:
-10 prompts profesionales para generar imágenes publicitarias con IA. Incluye estilo visual, fondo, iluminación, composición y emoción.
-
-image_overlay:
-15 frases cortas para poner encima de imágenes publicitarias.
-
-ugc_ideas:
-7 ideas de videos UGC con escena, gancho inicial, demostración, frase emocional y cierre.
-
-REGLAS:
-- Escribe como experto humano.
-- No suenes genérico.
-- No prometas curas ni resultados imposibles.
-- No uses claims engañosos.
-- Hazlo vendedor, estratégico y premium.
-- Enfócate en conversión.
-- Adapta el lenguaje al país objetivo.
-`;
-
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.85,
-        response_format: { type: "json_object" }
-      })
+    const completion = await client.chat.completions.create({
+      model,
+      max_tokens: 4000,
+      temperature: 0.8,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        ...messages
+      ]
     });
 
-    const data = await response.json();
+    const raw = completion.choices[0].message.content.trim();
+    // Clean potential markdown fences
+    const clean = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+    const parsed = JSON.parse(clean);
+    res.status(200).json(parsed);
 
-    if (!response.ok) {
-      return res.status(response.status).json({
-        error: data.error?.message || "Error al conectar con OpenAI"
-      });
-    }
-
-    const text = data.choices?.[0]?.message?.content || "{}";
-    const parsed = JSON.parse(text);
-
-    return res.status(200).json(parsed);
-
-  } catch (error) {
-    return res.status(500).json({
-      error: error.message || "Error interno del servidor"
-    });
+  } catch (err) {
+    console.error('LandCopy generate error:', err);
+    res.status(500).json({ error: err.message || 'Error al generar contenido' });
   }
-}
+};
