@@ -46,7 +46,7 @@ export default async function handler(req, res) {
   const co = countryData[country] || countryData.general;
   const hasImage = !!image;
   const hasChars = !!(chars && chars.trim());
-  const model = hasImage ? 'gpt-4o' : 'gpt-4o-mini';
+  const model = 'gpt-4o-mini';
 
   const prompt = `Eres el mejor experto en copywriting persuasivo para ecommerce latinoamericano. 
 REGLA DE ORO: BENEFICIO siempre mayor que CARACTERISTICA. Habla de lo que el cliente GANA, EVITA o MEJORA — nunca de especificaciones tecnicas frias.
