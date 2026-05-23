@@ -60,6 +60,49 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 .gen-btn:disabled{background:#bbb;cursor:not-allowed;box-shadow:none;text-shadow:none;}
 .gen-note{margin-top:8px;font-size:10px;color:var(--muted);text-align:center;}
 
+/* ══ IMAGE UPLOAD ══ */
+.img-upload-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:flex;align-items:center;gap:8px;}
+.img-pro-badge{background:var(--neon-orange);color:#fff;padding:2px 7px;border-radius:20px;font-size:7px;letter-spacing:1px;text-shadow:none;}
+.img-drop-empty{border:2px dashed var(--border);border-radius:6px;padding:20px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--surface2);margin-bottom:4px;}
+.img-drop-empty:hover{border-color:rgba(232,66,10,0.4);background:rgba(232,66,10,0.03);}
+.img-drop-icon{font-size:28px;margin-bottom:6px;opacity:0.35;}
+.img-drop-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--dark);margin-bottom:3px;}
+.img-drop-sub{font-size:11px;color:var(--muted);line-height:1.5;}
+.img-drop-btn{display:inline-block;margin-top:10px;padding:7px 14px;background:var(--dark);color:#fff;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border-radius:3px;cursor:pointer;}
+.img-formats{display:flex;gap:6px;justify-content:center;margin-top:8px;}
+.img-fmt{padding:2px 7px;border:1px solid var(--border);border-radius:2px;font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);}
+.img-preview-wrap{border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:4px;display:none;}
+.img-preview-wrap.visible{display:block;}
+.img-thumb{width:100%;height:140px;object-fit:cover;display:block;}
+.img-preview-bar{padding:7px 12px;background:var(--surface2);display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);}
+.img-filename{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px;}
+.img-analyzed{display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:8px;color:#1a7a3a;letter-spacing:1px;}
+.img-analyzed-dot{width:5px;height:5px;background:#1a7a3a;border-radius:50%;}
+.img-change-btn{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;}
+.ia-reading-note{background:rgba(232,66,10,0.05);border:1px solid rgba(232,66,10,0.12);border-radius:4px;padding:8px 10px;font-size:10px;color:var(--muted);line-height:1.5;display:none;}
+.ia-reading-note.visible{display:block;}
+.ia-reading-note strong{color:var(--accent);}
+
+/* ══ CHARACTERISTICS ══ */
+.chars-hint-tag{font-size:8px;color:rgba(0,212,255,0.7);background:rgba(0,212,255,0.06);padding:2px 8px;border:1px solid rgba(0,212,255,0.15);border-radius:20px;letter-spacing:1px;}
+.chars-sub{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5;}
+
+/* ══ VISION BANNER ══ */
+.vision-banner{background:var(--dark);border-radius:6px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:flex-start;gap:12px;border-left:3px solid var(--neon-blue);}
+.vb-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.vb-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;}
+.vb-body{font-size:11px;color:rgba(255,255,255,0.5);line-height:1.5;}
+.vb-tag{display:inline-block;margin-top:5px;padding:2px 8px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);color:var(--neon-blue);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;border-radius:20px;}
+
+/* ══ BENEFIT TRANSFORM TABLE ══ */
+.bt-table{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:12px;}
+.bt-table-header{padding:9px 14px;background:var(--surface2);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.bt-row{display:grid;grid-template-columns:1fr 20px 1fr;border-bottom:1px solid var(--border);}
+.bt-row:last-child{border-bottom:none;}
+.bt-char{padding:9px 12px;font-size:11px;color:var(--muted);background:rgba(255,34,85,0.02);}
+.bt-arr{display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--accent);background:var(--surface2);}
+.bt-ben{padding:9px 12px;font-size:11px;color:var(--text);}
+
 /* ══ RIGHT PANEL ══ */
 .rp{padding:28px;padding-bottom:80px;overflow-y:auto;background:var(--bg);}
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;gap:10px;}
@@ -367,11 +410,62 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
       <div class="lp-title">Genera en segundos.</div>
       <div class="lp-sub">Completa los datos del producto y la IA genera landing, WhatsApp, Meta Ads y más.</div>
 
+      <!-- ── IMAGEN DEL PRODUCTO ── -->
+      <div class="field">
+        <div class="img-upload-label">
+          Imagen del producto
+          <span class="img-pro-badge">PRO</span>
+        </div>
+        <input type="file" id="img-file-input" accept="image/*" style="display:none;" onchange="imgLoad(event)">
+        <div class="img-drop-empty" id="img-drop-empty"
+          onclick="document.getElementById('img-file-input').click()"
+          ondragover="event.preventDefault();this.style.borderColor='rgba(232,66,10,0.5)'"
+          ondragleave="this.style.borderColor=''"
+          ondrop="event.preventDefault();this.style.borderColor='';imgLoad({target:{files:[event.dataTransfer.files[0]]}})">
+          <div class="img-drop-icon">🖼️</div>
+          <div class="img-drop-title">Foto del producto</div>
+          <div class="img-drop-sub">Arrastra o selecciona la imagen.<br>La IA la analiza y genera copy visual.</div>
+          <div class="img-drop-btn" onclick="event.stopPropagation();document.getElementById('img-file-input').click()">Seleccionar imagen</div>
+          <div class="img-formats">
+            <div class="img-fmt">JPG</div><div class="img-fmt">PNG</div><div class="img-fmt">WEBP</div>
+          </div>
+        </div>
+        <div class="img-preview-wrap" id="img-preview-wrap">
+          <img id="img-thumb" class="img-thumb" src="" alt="Producto"/>
+          <div class="img-preview-bar">
+            <span class="img-filename" id="img-filename">imagen.jpg</span>
+            <span class="img-analyzed"><span class="img-analyzed-dot"></span> Lista</span>
+            <button class="img-change-btn" onclick="imgRemove()">Cambiar</button>
+          </div>
+        </div>
+        <div class="ia-reading-note" id="ia-reading-note">
+          👁️ La IA va a <strong>analizar la imagen</strong> — extrae tipo de producto, apariencia, colores y lo integra al copy generado.
+        </div>
+      </div>
+
+      <!-- ── CARACTERÍSTICAS ── -->
+      <div class="field">
+        <label style="display:flex;align-items:center;gap:8px;">
+          Características del producto
+          <span class="chars-hint-tag">Pega de Amazon · MeLi · etc.</span>
+        </label>
+        <textarea id="product-chars" style="min-height:90px;" placeholder="Ejemplo:
+• Gel con glucosamina y colágeno marino
+• Absorción rápida en 3 minutos
+• Frasco 90ml — uso 30 días
+• Sin parabenos ni fragancias
+• Certificado GMP
+..."></textarea>
+        <div class="chars-sub">✦ La IA convierte cada característica en beneficio emocional para el cliente.</div>
+      </div>
       <div class="field"><label>Nombre del producto</label><input type="text" id="product-name" placeholder="Ej: Masajeador eléctrico cervical"/></div>
       <div class="field"><label>¿Qué problema resuelve?</label><textarea id="product-problem" placeholder="Ej: Alivia el dolor de cuello en personas que trabajan frente al computador"></textarea></div>
       <div class="field"><label>Beneficio principal</label><input type="text" id="product-benefit" placeholder="Ej: Alivio en 10 minutos, sin pastillas"/></div>
       <div class="field-row">
-        <div class="field"><label>Precio</label><input type="text" id="product-price" placeholder="Ej: 45.000"/></div>
+        <div class="field"><label>Precio oferta</label><input type="text" id="product-price" placeholder="Ej: 45.000"/></div>
+        <div class="field"><label>Precio anterior</label><input type="text" id="product-price-old" placeholder="Ej: 79.000"/></div>
+      </div>
+      <div class="field-row">
         <div class="field"><label>Categoría</label>
           <select id="product-category">
             <option value="salud">Salud y bienestar</option><option value="hogar">Hogar</option>
@@ -382,6 +476,7 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
           </select>
         </div>
       </div>
+      <div class="field"><label>Clientes actuales (aprox.)</label><input type="text" id="product-clients" placeholder="Ej: 17.000+ clientes satisfechos"/></div>
 
       <hr class="divider">
 
@@ -423,9 +518,9 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
       </div>
 
       <button class="gen-btn" id="gen-btn" onclick="generateContent()">
-        <span>⚡</span> Generar todo ahora
+        <span id="gen-btn-icon">⚡</span> <span id="gen-btn-text">Generar todo ahora</span>
       </button>
-      <div class="gen-note">Generado con IA · Backend seguro · LandCopy</div>
+      <div class="gen-note" id="gen-note">Generado con IA · Backend seguro · LandCopy</div>
     </div>
 
     <!-- RIGHT -->
@@ -466,6 +561,7 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
           <div class="stat"><div class="stat-n" id="stat-country">COL</div><div class="stat-l">País</div></div>
         </div>
         <div class="tabs">
+          <div class="tab" id="tab-btn-vision" onclick="showTab('vision')" style="display:none;color:var(--neon-blue);">👁️ Visión IA</div>
           <div class="tab on" onclick="showTab('landing')">Landing</div>
           <div class="tab" onclick="showTab('ads')">Meta Ads</div>
           <div class="tab" onclick="showTab('imagenes')">Imágenes</div>
@@ -473,12 +569,29 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
           <div class="tab" onclick="showTab('social')">Redes</div>
           <div class="tab" onclick="showTab('extras')">Extras</div>
         </div>
+        <!-- VISION TAB -->
+        <div class="tc" id="tab-vision">
+          <div id="vision-banner-wrap"></div>
+          <div class="bt-table" id="benefit-transform-wrap" style="display:none;">
+            <div class="bt-table-header">⚡ Características → Beneficios (conversión automática)</div>
+            <div id="benefit-transform-rows"></div>
+          </div>
+          <div class="ocard" id="vision-analysis-card" style="display:none;">
+            <div class="ocard-h"><span class="ocard-t">👁️ Análisis de imagen</span><button class="copy-btn" onclick="copySection('vision-analysis')">Copiar</button></div>
+            <div class="ocard-b"><div class="otext" id="vision-analysis"></div></div>
+          </div>
+        </div>
         <div class="tc on" id="tab-landing">
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">🏷️ Top Bar de Confianza</span><button class="copy-btn" onclick="copySection('landing-trust-bar')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-trust-bar"></div></div></div>
           <div class="ocard"><div class="ocard-h"><span class="ocard-t">🏠 Hero — Titular</span><button class="copy-btn" onclick="copySection('landing-hero')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-hero"></div></div></div>
           <div class="ocard"><div class="ocard-h"><span class="ocard-t">😰 El problema</span><button class="copy-btn" onclick="copySection('landing-problem')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-problem"></div></div></div>
           <div class="ocard"><div class="ocard-h"><span class="ocard-t">✅ La solución</span><button class="copy-btn" onclick="copySection('landing-solution')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-solution"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">💪 Beneficios reales</span><button class="copy-btn" onclick="copySection('landing-benefits')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-benefits"></div></div></div>
           <div class="ocard"><div class="ocard-h"><span class="ocard-t">⭐ Testimonios</span><button class="copy-btn" onclick="copySection('landing-testimonials')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-testimonials"></div></div></div>
-          <div class="ocard"><div class="ocard-h"><span class="ocard-t">🚀 CTA</span><button class="copy-btn" onclick="copySection('landing-cta')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-cta"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">🎯 Ideal para / Usos</span><button class="copy-btn" onclick="copySection('landing-uses')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-uses"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">📦 ¿Qué incluye?</span><button class="copy-btn" onclick="copySection('landing-whats-included')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-whats-included"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">❓ FAQ — Preguntas frecuentes</span><button class="copy-btn" onclick="copySection('landing-faq')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-faq"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">🚀 CTA Final</span><button class="copy-btn" onclick="copySection('landing-cta')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-cta"></div></div></div>
         </div>
         <div class="tc" id="tab-ads">
           <div class="ocard"><div class="ocard-h"><span class="ocard-t">🎯 Campaña completa</span><button class="copy-btn" onclick="copySection('meta-campaign')">Copiar</button></div><div class="ocard-b"><div class="otext" id="meta-campaign"></div></div></div>
@@ -819,6 +932,40 @@ function fmt(data) {
   if(typeof data==='object')return Object.entries(data).map(([k,v])=>k+': '+fmt(v)).join('\n\n');
   return String(data);
 }
+// ── IMAGEN DEL PRODUCTO ────────────────────
+let imgBase64 = null;
+let imgMimeType = 'image/jpeg';
+
+function imgLoad(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  imgMimeType = file.type || 'image/jpeg';
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    imgBase64 = ev.target.result.split(',')[1];
+    document.getElementById('img-thumb').src = ev.target.result;
+    document.getElementById('img-filename').textContent = file.name;
+    document.getElementById('img-drop-empty').style.display = 'none';
+    document.getElementById('img-preview-wrap').classList.add('visible');
+    document.getElementById('ia-reading-note').classList.add('visible');
+    document.getElementById('gen-btn-icon').textContent = '👁️';
+    document.getElementById('gen-btn-text').textContent = 'Generar con imagen';
+    document.getElementById('gen-note').textContent = 'GPT-4o analiza la imagen · copy visual real · LandCopy Pro';
+  };
+  reader.readAsDataURL(file);
+}
+
+function imgRemove() {
+  imgBase64 = null;
+  document.getElementById('img-file-input').value = '';
+  document.getElementById('img-drop-empty').style.display = 'block';
+  document.getElementById('img-preview-wrap').classList.remove('visible');
+  document.getElementById('ia-reading-note').classList.remove('visible');
+  document.getElementById('gen-btn-icon').textContent = '⚡';
+  document.getElementById('gen-btn-text').textContent = 'Generar todo ahora';
+  document.getElementById('gen-note').textContent = 'Generado con IA · Backend seguro · LandCopy';
+}
+
 async function generateContent() {
   const name=document.getElementById('product-name').value.trim();
   if(!name){alert('Por favor ingresa el nombre del producto');return;}
@@ -829,6 +976,10 @@ async function generateContent() {
   document.getElementById('loading-state').style.display='flex';
   document.getElementById('output-state').style.display='none';
   document.getElementById('gen-btn').disabled=true;
+  document.getElementById('tab-btn-vision').style.display='none';
+  document.getElementById('vision-banner-wrap').innerHTML='';
+  document.getElementById('benefit-transform-wrap').style.display='none';
+  document.getElementById('vision-analysis-card').style.display='none';
   const steps=['step-1','step-2','step-3','step-4','step-5'];
   let si=0;
   const iv=setInterval(()=>{
@@ -841,8 +992,13 @@ async function generateContent() {
       name,problem:document.getElementById('product-problem').value.trim(),
       benefit:document.getElementById('product-benefit').value.trim(),
       price:document.getElementById('product-price').value.trim(),
+      priceOld:document.getElementById('product-price-old').value.trim(),
+      clients:document.getElementById('product-clients').value.trim(),
+      chars:document.getElementById('product-chars').value.trim(),
       category:document.getElementById('product-category').value,
       country:selCountry,tone:selTone,
+      image: imgBase64 || null,
+      imageMime: imgBase64 ? imgMimeType : null,
       outputs:{landing:document.getElementById('gen-landing').checked,whatsapp:document.getElementById('gen-whatsapp').checked,social:document.getElementById('gen-social').checked,email:genEmail,objeciones:genObj}
     })});
     clearInterval(iv);
@@ -852,7 +1008,9 @@ async function generateContent() {
     allContent=parsed;
     const map={
       'landing-hero':'landing_hero','landing-problem':'landing_problem','landing-solution':'landing_solution',
-      'landing-testimonials':'landing_testimonials','landing-cta':'landing_cta',
+      'landing-benefits':'landing_benefits','landing-testimonials':'landing_testimonials',
+      'landing-uses':'landing_uses','landing-whats-included':'landing_whats_included',
+      'landing-faq':'landing_faq','landing-cta':'landing_cta','landing-trust-bar':'landing_trust_bar',
       'wa-cold':'wa_cold','wa-followup':'wa_followup','wa-close':'wa_close',
       'social-post':'social_post','social-tiktok':'social_tiktok','social-hashtags':'social_hashtags',
       'meta-campaign':'meta_campaign','meta-ads':'meta_ads','ad-hooks':'ad_hooks',
@@ -860,6 +1018,33 @@ async function generateContent() {
       'extra-email':'extra_email','extra-objeciones':'extra_objeciones','extra-desc':'extra_desc','extra-seo':'extra_seo'
     };
     Object.entries(map).forEach(([elId,key])=>{const el=document.getElementById(elId);if(el)el.textContent=fmt(parsed[key]);});
+    // Vision / image results
+    if(parsed.vision_analysis || parsed.benefit_transform) {
+      document.getElementById('tab-btn-vision').style.display='block';
+      if(parsed.vision_analysis) {
+        document.getElementById('vision-analysis').textContent=parsed.vision_analysis;
+        document.getElementById('vision-analysis-card').style.display='block';
+        document.getElementById('vision-banner-wrap').innerHTML=`
+          <div class="vision-banner">
+            <div class="vb-icon">👁️</div>
+            <div>
+              <div class="vb-title">Imagen analizada por GPT-4o</div>
+              <div class="vb-body">${parsed.vision_summary||'La IA analizó la imagen y generó copy visual real.'}</div>
+              <span class="vb-tag">GPT-4o VISION ACTIVO</span>
+            </div>
+          </div>`;
+      }
+      if(parsed.benefit_transform && Array.isArray(parsed.benefit_transform)) {
+        document.getElementById('benefit-transform-wrap').style.display='block';
+        document.getElementById('benefit-transform-rows').innerHTML=parsed.benefit_transform.map(r=>`
+          <div class="bt-row">
+            <div class="bt-char">${r.char}</div>
+            <div class="bt-arr">→</div>
+            <div class="bt-ben">${r.benefit}</div>
+          </div>`).join('');
+      }
+      showTab('vision');
+    }
     document.getElementById('card-email').style.display=genEmail?'block':'none';
     document.getElementById('card-objeciones').style.display=genObj?'block':'none';
     const allText=Object.values(parsed).join(' ');
