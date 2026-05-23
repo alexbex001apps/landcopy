@@ -107,6 +107,10 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 .bt-arr{display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--accent);background:var(--surface2);}
 .bt-ben{padding:9px 12px;font-size:11px;color:var(--text);}
 
+.hero-var-tab{padding:7px 14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:transparent;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+.hero-var-tab.on{color:var(--accent);border-bottom-color:var(--accent);}
+.hero-var-tab:hover{color:var(--text);}
+
 /* ══ RIGHT PANEL ══ */
 .rp{padding:28px;padding-bottom:80px;overflow-y:auto;background:var(--bg);}
 .empty-state{position:relative;overflow:hidden;min-height:calc(100vh - 120px);display:flex;align-items:center;justify-content:center;background:var(--bg);}
@@ -552,7 +556,34 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
         </div>
         <div class="tc on" id="tab-landing">
           <div class="ocard"><div class="ocard-h"><span class="ocard-t">🏷️ Top Bar de Confianza</span><button class="copy-btn" onclick="copySection('landing-trust-bar')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-trust-bar"></div></div></div>
-          <div class="ocard"><div class="ocard-h"><span class="ocard-t">🏠 Hero — Titular</span><button class="copy-btn" onclick="copySection('landing-hero')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-hero"></div></div></div>
+          <div class="ocard" id="card-hero">
+            <div class="ocard-h">
+              <span class="ocard-t">🏠 Hero — Titular</span>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <button class="copy-btn" id="regen-hero-btn" onclick="regenerarHero()" style="background:rgba(232,66,10,0.08);border-color:rgba(232,66,10,0.3);color:var(--accent);">↻ Regenerar Hero</button>
+                <button class="copy-btn" onclick="copySection('landing-hero')">Copiar</button>
+              </div>
+            </div>
+            <div class="ocard-b">
+              <!-- Original hero -->
+              <div id="hero-original"><div class="otext" id="landing-hero"></div></div>
+              <!-- Variantes (se muestran después de regenerar) -->
+              <div id="hero-variantes" style="display:none;">
+                <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:14px;">
+                  <button class="hero-var-tab on" onclick="showHeroVar(0,this)">❤️ Emocional</button>
+                  <button class="hero-var-tab" onclick="showHeroVar(1,this)">🧠 Racional</button>
+                  <button class="hero-var-tab" onclick="showHeroVar(2,this)">🔥 Urgente</button>
+                  <button class="hero-var-tab" onclick="showHeroVar(3,this)" style="margin-left:auto;color:var(--muted);">← Original</button>
+                </div>
+                <div id="hero-var-0" class="otext hero-var-content"></div>
+                <div id="hero-var-1" class="otext hero-var-content" style="display:none;"></div>
+                <div id="hero-var-2" class="otext hero-var-content" style="display:none;"></div>
+                <div style="margin-top:10px;display:flex;justify-content:flex-end;">
+                  <button class="copy-btn" onclick="copyHeroVar()" style="background:var(--dark);color:#fff;border-color:var(--dark);">Copiar variante activa</button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="ocard"><div class="ocard-h"><span class="ocard-t">😰 El problema</span><button class="copy-btn" onclick="copySection('landing-problem')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-problem"></div></div></div>
           <div class="ocard"><div class="ocard-h"><span class="ocard-t">✅ La solución</span><button class="copy-btn" onclick="copySection('landing-solution')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-solution"></div></div></div>
           <div class="ocard"><div class="ocard-h"><span class="ocard-t">💪 Beneficios reales</span><button class="copy-btn" onclick="copySection('landing-benefits')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-benefits"></div></div></div>
@@ -973,6 +1004,75 @@ function imgRemove() {
   document.getElementById('gen-btn-icon').textContent = '⚡';
   document.getElementById('gen-btn-text').textContent = 'Generar todo ahora';
   document.getElementById('gen-note').textContent = 'Generado con IA · Backend seguro · LandCopy';
+}
+
+// ── REGENERAR HERO ──────────────────────────
+let heroVarActive = 0;
+
+function showHeroVar(idx, btn) {
+  document.querySelectorAll('.hero-var-tab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.hero-var-content').forEach(el => el.style.display = 'none');
+  if(idx === 3) {
+    // Volver al original
+    document.getElementById('hero-variantes').style.display = 'none';
+    document.getElementById('hero-original').style.display = 'block';
+  } else {
+    heroVarActive = idx;
+    document.getElementById(`hero-var-${idx}`).style.display = 'block';
+  }
+}
+
+function copyHeroVar() {
+  const el = document.getElementById(`hero-var-${heroVarActive}`);
+  if(el) navigator.clipboard.writeText(el.innerText || el.textContent);
+}
+
+async function regenerarHero() {
+  const name = document.getElementById('product-name').value.trim();
+  const problem = document.getElementById('product-problem').value.trim();
+  const benefit = document.getElementById('product-benefit').value.trim();
+  const price = document.getElementById('product-price').value.trim();
+  const country = selCountry;
+
+  if(!name) { alert('Primero genera el copy principal.'); return; }
+
+  const btn = document.getElementById('regen-hero-btn');
+  btn.textContent = '⏳ Generando...';
+  btn.disabled = true;
+
+  try {
+    const resp = await fetch('/api/generate', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name, problem, benefit, price, country,
+        tone: selTone,
+        heroOnly: true,
+        outputs: { landing: true }
+      })
+    });
+    const data = await resp.json();
+
+    if(data.hero_emocional && data.hero_racional && data.hero_urgente) {
+      document.getElementById('hero-var-0').textContent = data.hero_emocional;
+      document.getElementById('hero-var-1').textContent = data.hero_racional;
+      document.getElementById('hero-var-2').textContent = data.hero_urgente;
+      document.getElementById('hero-original').style.display = 'none';
+      document.getElementById('hero-variantes').style.display = 'block';
+      // Reset tabs
+      document.querySelectorAll('.hero-var-tab').forEach(b => b.classList.remove('on'));
+      document.querySelectorAll('.hero-var-content').forEach(el => el.style.display = 'none');
+      document.querySelector('.hero-var-tab').classList.add('on');
+      document.getElementById('hero-var-0').style.display = 'block';
+      heroVarActive = 0;
+    }
+  } catch(err) {
+    console.error(err);
+  } finally {
+    btn.textContent = '↻ Regenerar Hero';
+    btn.disabled = false;
+  }
 }
 
 async function generateContent() {
