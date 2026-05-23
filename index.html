@@ -1109,8 +1109,8 @@ async function hacerMasVendedor(cardId, sectionName, btnEl) {
     renderContent(document.getElementById(`original-${cardId}`), originalText);
     renderContent(document.getElementById(`improved-${cardId}`), data.improved);
 
-    // Mostrar el mejorado por defecto
-    switchImproveTab(`original-${cardId}`, `improved-${cardId}`, 1, parent.querySelector('.improve-tabs'));
+    // Mostrar el ORIGINAL por defecto
+    switchImproveTab(`original-${cardId}`, `improved-${cardId}`, 0, parent.querySelector('.improve-tabs'));
 
   } catch(err) {
     console.error(err);
