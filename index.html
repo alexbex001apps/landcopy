@@ -25,8 +25,8 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 .dh{background:var(--dark);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:200;flex-shrink:0;}
 .dh-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;cursor:pointer;display:flex;align-items:center;}
 .dh-logo span{color:var(--neon-orange);text-shadow:0 0 12px rgba(255,85,32,0.9);}
-.logo-land{display:inline-block;animation:logoSlideIn 0.6s cubic-bezier(0.22,1,0.36,1) both;}
-.logo-copy{display:inline-block;animation:logoSlideIn 0.6s cubic-bezier(0.22,1,0.36,1) 0.25s both;}
+.logo-land{display:inline-block;color:#fff;animation:logoSlideIn 1s cubic-bezier(0.22,1,0.36,1) both;}
+.logo-copy{display:inline-block;animation:logoSlideIn 1s cubic-bezier(0.22,1,0.36,1) 0.4s both;}
 @keyframes logoSlideIn{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:translateX(0);}}
 .dh-right{display:flex;align-items:center;gap:10px;}
 .dh-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#fff;background:rgba(255,255,255,0.05);padding:4px 10px;border:1px solid rgba(255,255,255,0.08);}
@@ -56,9 +56,9 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 .chip.on{background:var(--dark);border-color:var(--dark);color:#fff;}
 .divider{border:none;border-top:1px solid var(--border);margin:18px 0;}
 .checks{display:flex;flex-direction:column;gap:0;}
-.chk{display:flex;align-items:center;gap:12px;cursor:pointer;font-size:13px;color:var(--text);padding:10px 0;border-bottom:1px solid var(--border);}
+.chk{display:flex;align-items:center;gap:14px;cursor:pointer;font-size:13px;color:var(--text);padding:11px 0;border-bottom:1px solid var(--border);}
 .chk:last-child{border-bottom:none;}
-.chk input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);flex-shrink:0;cursor:pointer;}
+.chk input[type=checkbox]{width:17px;height:17px;accent-color:var(--accent);flex-shrink:0;cursor:pointer;margin:0;}
 .chk input[type=checkbox]{width:14px;height:14px;accent-color:var(--accent);}
 .gen-btn{width:100%;padding:14px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;cursor:pointer;border-radius:3px;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;text-shadow:0 0 10px rgba(255,255,255,0.8),0 0 20px rgba(255,255,255,0.4);box-shadow:0 0 25px rgba(232,66,10,0.5),0 0 50px rgba(232,66,10,0.2);transition:all 0.2s;}
 .gen-btn:hover{background:var(--neon-orange);box-shadow:0 0 30px rgba(255,85,32,0.5);}
@@ -494,7 +494,6 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
     <!-- RIGHT -->
     <div class="rp" id="right-panel">
       <div id="empty-state" style="position:relative;overflow:hidden;min-height:400px;display:flex;align-items:center;justify-content:center;">
-        <div id="copy-words-container" style="position:absolute;inset:0;pointer-events:none;z-index:1;"></div>
         <div class="empty-box" style="position:relative;z-index:10;">
           <div class="empty-icon">⚡</div>
           <div class="empty-title">Listo para generar</div>
@@ -1347,92 +1346,94 @@ function vsPlayCloud(url) {
 function vsTime(s){if(isNaN(s))return'0:00';return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');}
 function vsParse(str){const p=str.split(':');return p.length===2?parseInt(p[0])*60+parseFloat(p[1]):parseFloat(str)||0;}
 
-// ── PALABRAS FLOTANTES ─────────────────────
-const copyWords = [
-  '¡Compra ahora!','Envío gratis','Garantía 30 días','Pagas al recibir',
-  'Alivio inmediato','+17.000 clientes','¡Solo hoy!','No te lo pierdas',
-  'Resultados reales','Sin riesgo','100% natural','Oferta limitada',
-  'WhatsApp directo','Meta Ads','Landing page','Copy profesional',
-  '¿Sufres de dolor?','La solución llegó','Pide el tuyo',
-  'Stock limitado','⭐⭐⭐⭐⭐','Envío express','Sin pastillas',
-  'Generado con IA','¡Aprovecha ya!','Testimonios reales',
-  'Descuento especial','Resultados en días','Precio especial',
+// ── TARJETAS FLOTANTES ─────────────────────
+const floatCards = [
+  { icon:'🏠', label:'Hero',        color:'#e8420a', text:'¿Todavía sufres de dolor? Rodillax — alivio natural en minutos.' },
+  { icon:'💬', label:'WhatsApp',    color:'#25D366', text:'Hola, ¿sabías que el 60% de personas mayores de 40 sufren esto sin saberlo?' },
+  { icon:'🎯', label:'Meta Ads',    color:'#1877F2', text:'¡Envío gratis + pagas al recibir! Solo hoy con 31% de descuento.' },
+  { icon:'⭐', label:'Testimonios', color:'#f5a623', text:'"En una semana noté la diferencia. Lo recomiendo mucho." — Carmen, Bogotá' },
+  { icon:'📸', label:'Instagram',   color:'#E1306C', text:'¿Cuánto más vas a esperar? Miles ya lo probaron. Tú puedes ser el siguiente.' },
+  { icon:'🎬', label:'TikTok',      color:'#010101', text:'[Hook] ¿Te duelen las rodillas? Espera, mira esto...' },
+  { icon:'📧', label:'Email',       color:'#00d4ff', text:'Asunto: Lo que nadie te dijo sobre el dolor articular crónico' },
+  { icon:'🛡️', label:'Objeciones', color:'#7c3aed', text:'"Es muy caro" → Piensa en lo que gastas en pastillas cada mes.' },
+  { icon:'🔑', label:'SEO',         color:'#059669', text:'gel articular natural · alivio dolor rodilla · sin pastillas' },
+  { icon:'📦', label:'¿Qué incluye?', color:'#e8420a', text:'✅ Producto x2 · ✅ Guía de uso · ✅ Garantía 30 días · 🎁 Bonus' },
 ];
-const wordColors=[{r:232,g:66,b:10},{r:0,g:150,b:200},{r:160,g:120,b:0},{r:60,g:55,b:50}];
-let wordsActive=[];
-const WORDS_MAX=18;
 
-function rand(a,b){return a+Math.random()*(b-a);}
+const fcActive = [];
+const FC_MAX = 6;
 
-function spawnCopyWord(){
-  const container=document.getElementById('copy-words-container');
-  const emptyState=document.getElementById('empty-state');
-  if(!container||!emptyState||emptyState.style.display==='none')return;
-  if(wordsActive.length>=WORDS_MAX)return;
+function randF(a,b){return a+Math.random()*(b-a);}
 
-  const w=emptyState.offsetWidth||800;
-  const h=emptyState.offsetHeight||600;
-
-  // zona segura central (donde está el cuadro)
-  const cx1=w*0.25, cx2=w*0.75, cy1=h*0.3, cy2=h*0.7;
-
-  let sx,sy,tries=0;
-  do{
-    sx=rand(20,w-120);
-    sy=rand(20,h-40);
-    tries++;
-  } while(sx>cx1&&sx<cx2&&sy>cy1&&sy<cy2&&tries<30);
-
-  const word=copyWords[Math.floor(Math.random()*copyWords.length)];
-  const c=wordColors[Math.floor(Math.random()*wordColors.length)];
-  const alpha=rand(0.55,0.85);
-  const size=rand(12,17);
-  // MUY lento
-  const totalDur=rand(14000,22000);
-  const fadeIn=rand(2000,3000);
-  const fadeOut=rand(2000,3000);
-  const driftX=rand(-60,60);
-  const driftY=rand(-80,-20);
-
-  const el=document.createElement('div');
-  el.className='copy-word';
-  el.textContent=word;
-  el.style.cssText=`left:${sx}px;top:${sy}px;font-size:${size}px;color:rgba(${c.r},${c.g},${c.b},0);`;
-  container.appendChild(el);
-  wordsActive.push(el);
-
-  let start=null,phase='in';
-  function tick(ts){
-    if(!start)start=ts;
-    const e=ts-start;
-    if(phase==='in'){
-      const p=Math.min(e/fadeIn,1);
-      el.style.color=`rgba(${c.r},${c.g},${c.b},${alpha*p})`;
-      el.style.transform=`translate(${driftX*0.03*p}px,${driftY*0.03*p}px)`;
-      if(p>=1){phase='hold';start=ts;}
-    } else if(phase==='hold'){
-      const hold=totalDur-fadeIn-fadeOut;
-      const p=Math.min(e/hold,1);
-      el.style.transform=`translate(${driftX*(0.03+0.7*p)}px,${driftY*(0.03+0.7*p)}px)`;
-      if(e>=hold){phase='out';start=ts;}
-    } else {
-      const p=Math.min(e/fadeOut,1);
-      el.style.color=`rgba(${c.r},${c.g},${c.b},${alpha*(1-p)})`;
-      if(p>=1){
-        el.remove();
-        const i=wordsActive.indexOf(el);
-        if(i>-1)wordsActive.splice(i,1);
-        return;
-      }
-    }
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
+function getCenterSafe(){
+  const rp = document.getElementById('empty-state');
+  const box = rp ? rp.querySelector('.empty-box') : null;
+  if(!box) return {x1:300,x2:600,y1:150,y2:350};
+  const rr = rp.getBoundingClientRect();
+  const bb = box.getBoundingClientRect();
+  return {x1:bb.left-rr.left-30,x2:bb.right-rr.left+30,y1:bb.top-rr.top-30,y2:bb.bottom-rr.top+30};
 }
 
-// Arrancar — lento y pausado
-for(let i=0;i<8;i++) setTimeout(spawnCopyWord,i*600);
-setInterval(spawnCopyWord,2000);
+function isOverlapSafe(x,y,w,h,safe){
+  return x<safe.x2&&x+w>safe.x1&&y<safe.y2&&y+h>safe.y1;
+}
+
+function spawnFloatCard(){
+  const emptyState = document.getElementById('empty-state');
+  if(!emptyState || emptyState.style.display==='none') return;
+  if(fcActive.length >= FC_MAX) return;
+
+  const safe = getCenterSafe();
+  const pw = emptyState.offsetWidth || 800;
+  const ph = emptyState.offsetHeight || 500;
+  const cW = 210, cH = 88;
+
+  let x,y,tries=0;
+  do{
+    x = randF(20, pw-cW-20);
+    y = randF(20, ph-cH-20);
+    tries++;
+  } while(isOverlapSafe(x,y,cW,cH,safe) && tries<40);
+
+  const card = floatCards[Math.floor(Math.random()*floatCards.length)];
+  const el = document.createElement('div');
+  el.style.cssText = `position:absolute;left:${x}px;top:${y}px;background:#fff;border:1px solid #e0dbd0;border-left:3px solid ${card.color};border-radius:8px;padding:14px 18px;width:${cW}px;box-shadow:0 4px 20px rgba(0,0,0,0.07);pointer-events:none;user-select:none;opacity:0;transform:translateY(10px) scale(0.96);transition:opacity 0.9s ease,transform 0.9s ease;z-index:5;`;
+  el.innerHTML = `<div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:${card.color};margin-bottom:7px;">${card.icon} ${card.label}</div><div style="font-size:11px;color:#0e0d0a;line-height:1.55;">${card.text}</div>`;
+  emptyState.appendChild(el);
+  fcActive.push(el);
+
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    el.style.opacity='1';
+    el.style.transform='translateY(0) scale(1)';
+  }));
+
+  // Float animation
+  const amp = randF(5,10);
+  const speed = randF(0.0003,0.0006);
+  const offset = Math.random()*Math.PI*2;
+  const baseY = y;
+  function floatTick(ts){
+    if(!el.parentNode) return;
+    el.style.top = `${baseY + Math.sin(ts*speed+offset)*amp}px`;
+    requestAnimationFrame(floatTick);
+  }
+  requestAnimationFrame(floatTick);
+
+  // Remove after lifetime
+  const life = randF(8000,14000);
+  setTimeout(()=>{
+    el.style.opacity='0';
+    el.style.transform='translateY(-8px) scale(0.96)';
+    setTimeout(()=>{
+      if(el.parentNode) el.remove();
+      const i=fcActive.indexOf(el);
+      if(i>-1) fcActive.splice(i,1);
+    },900);
+  },life);
+}
+
+for(let i=0;i<5;i++) setTimeout(spawnFloatCard,i*800);
+setInterval(spawnFloatCard,2800);
 
 // Init
 document.addEventListener('DOMContentLoaded',()=>{
