@@ -926,11 +926,38 @@ function showTab(tab) {
   document.getElementById('tab-'+tab).classList.add('on');
 }
 function fmt(data) {
-  if(!data)return'';
-  if(typeof data==='string')return data;
-  if(Array.isArray(data))return data.map(fmt).join('\n\n');
-  if(typeof data==='object')return Object.entries(data).map(([k,v])=>k+': '+fmt(v)).join('\n\n');
+  if(!data) return '';
+  if(typeof data==='string') return data;
+  if(Array.isArray(data)) return data.map(fmt).join('\n\n');
+  if(typeof data==='object') return Object.entries(data).map(([k,v])=>k+': '+fmt(v)).join('\n\n');
   return String(data);
+}
+
+function renderContent(el, text) {
+  if(!el || !text) return;
+  // Split by double newline or numbered items or lines starting with emoji/bullet
+  const raw = typeof text === 'string' ? text : fmt(text);
+  // Split into blocks by blank lines
+  const blocks = raw.split(/\n{2,}/);
+  if(blocks.length <= 1) {
+    // Single block — split by single newlines
+    const lines = raw.split('\n').filter(l => l.trim());
+    if(lines.length <= 1) {
+      el.innerHTML = `<p style="margin:0;line-height:1.7;">${escHtml(raw)}</p>`;
+    } else {
+      el.innerHTML = lines.map(l =>
+        `<p style="margin:0 0 10px 0;line-height:1.7;padding-bottom:10px;border-bottom:1px solid var(--border);">${escHtml(l.trim())}</p>`
+      ).join('');
+    }
+  } else {
+    el.innerHTML = blocks.map(b =>
+      `<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);line-height:1.7;">${escHtml(b.trim()).replace(/\n/g,'<br>')}</div>`
+    ).join('');
+  }
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 // ── IMAGEN DEL PRODUCTO ────────────────────
 let imgBase64 = null;
@@ -1017,12 +1044,13 @@ async function generateContent() {
       'image-prompts':'image_prompts','image-overlay':'image_overlay','ugc-ideas':'ugc_ideas',
       'extra-email':'extra_email','extra-objeciones':'extra_objeciones','extra-desc':'extra_desc','extra-seo':'extra_seo'
     };
-    Object.entries(map).forEach(([elId,key])=>{const el=document.getElementById(elId);if(el)el.textContent=fmt(parsed[key]);});
+    Object.entries(map).forEach(([elId,key])=>{const el=document.getElementById(elId);if(el)renderContent(el,parsed[key]);});
     // Vision / image results
     if(parsed.vision_analysis || parsed.benefit_transform) {
       document.getElementById('tab-btn-vision').style.display='block';
       if(parsed.vision_analysis) {
-        document.getElementById('vision-analysis').textContent=parsed.vision_analysis;
+        const vaEl = document.getElementById('vision-analysis');
+        renderContent(vaEl, parsed.vision_analysis);
         document.getElementById('vision-analysis-card').style.display='block';
         document.getElementById('vision-banner-wrap').innerHTML=`
           <div class="vision-banner">
@@ -1063,7 +1091,7 @@ async function generateContent() {
     steps.forEach(s=>document.getElementById(s).classList.remove('done','active'));
   }
 }
-function copySection(id){const t=document.getElementById(id).textContent;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓';b.classList.add('copied');setTimeout(()=>{b.textContent='Copiar';b.classList.remove('copied');},2000);});}
+function copySection(id){const el=document.getElementById(id);const t=el.innerText||el.textContent;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓';b.classList.add('copied');setTimeout(()=>{b.textContent='Copiar';b.classList.remove('copied');},2000);});}
 function copyAll(){const t=Object.entries(allContent).map(([k,v])=>`=== ${k.toUpperCase()} ===\n${v}`).join('\n\n');navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ Copiado';setTimeout(()=>{b.textContent='📋 Copiar todo';},2000);});}
 
 // ── VIDEO STUDIO ────────────────────────────
