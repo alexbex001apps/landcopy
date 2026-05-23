@@ -1008,7 +1008,16 @@ async function generateContent() {
       country:selCountry,tone:selTone,
       image: imgBase64 || null,
       imageMime: imgBase64 ? imgMimeType : null,
-      outputs:{landing:document.getElementById('gen-landing').checked,whatsapp:document.getElementById('gen-whatsapp').checked,social:document.getElementById('gen-social').checked,email:genEmail,objeciones:genObj}
+      outputs:{
+        landing:document.getElementById('gen-landing').checked,
+        whatsapp:document.getElementById('gen-whatsapp').checked,
+        social:document.getElementById('gen-social').checked,
+        meta:document.getElementById('gen-meta').checked,
+        images:document.getElementById('gen-images').checked,
+        email:genEmail,
+        objeciones:genObj,
+        extras:document.getElementById('gen-extras').checked
+      }
     })});
     clearInterval(iv);
     steps.forEach(s=>{document.getElementById(s).classList.remove('active');document.getElementById(s).classList.add('done');});
