@@ -1167,7 +1167,7 @@ function vsUpdateInputs(){document.getElementById('vs-si').value=vsTime(vsStart)
 function vsUpdateInfo(){const d=vsEnd-vsStart;document.getElementById('vs-sel-info').textContent=vsTime(vsStart)+' → '+vsTime(vsEnd)+' · '+vsTime(d);document.getElementById('vs-ci').innerHTML='Duración: <strong>'+vsTime(d)+'</strong>';}
 function vsFromInput(w){const s=vsParse(document.getElementById('vs-si').value),e=vsParse(document.getElementById('vs-ei').value);if(w==='start'&&s>=0&&s<vsEnd)vsStart=s;if(w==='end'&&e>vsStart&&e<=vsDur)vsEnd=e;vsUpdateHandles();vsUpdateInfo();}
 
-document.addEventListener('DOMContentLoaded',()=>{
+if(VIDEO_ENABLED) document.addEventListener('DOMContentLoaded',()=>{
   const track=document.getElementById('vs-track');if(!track)return;
   document.getElementById('vs-hs').addEventListener('mousedown',e=>{e.preventDefault();vsDrag='start';});
   document.getElementById('vs-he').addEventListener('mousedown',e=>{e.preventDefault();vsDrag='end';});
@@ -2984,7 +2984,7 @@ async function mstExport(ratio) {
 function mstFT(s){if(!s||isNaN(s))return'0:00';return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');}
 
 // ── INICIALIZACIÓN ────────────────────────────
-document.addEventListener('DOMContentLoaded',()=>{
+if(VIDEO_ENABLED) document.addEventListener('DOMContentLoaded',()=>{
   // Botón en Video Studio
   const nav=document.querySelector('.vs-nav');
   if(nav){
