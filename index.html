@@ -1478,17 +1478,20 @@ function spawnFloatCard(){
   },life);
 }
 
-for(let i=0;i<5;i++) setTimeout(spawnFloatCard,i*800);
-setInterval(spawnFloatCard,2800);
-
 // Init
 document.addEventListener('DOMContentLoaded',()=>{
-  vsRenderClips();
-  vsUpdateArchCount();
+  // Solo inicializar funciones de video si está activo
+  if(VIDEO_ENABLED) {
+    vsRenderClips();
+    vsUpdateArchCount();
+  }
   // Controlar visibilidad de video según VIDEO_ENABLED
   document.querySelectorAll('[data-video]').forEach(el => {
     el.style.display = VIDEO_ENABLED ? '' : 'none';
   });
+  // Arrancar tarjetas flotantes
+  for(let i=0;i<5;i++) setTimeout(spawnFloatCard,i*800);
+  setInterval(spawnFloatCard,2800);
 });
 </script>
 
