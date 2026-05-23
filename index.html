@@ -966,18 +966,33 @@ let imgMimeType = 'image/jpeg';
 function imgLoad(e) {
   const file = e.target.files[0];
   if (!file) return;
-  imgMimeType = file.type || 'image/jpeg';
+  imgMimeType = 'image/jpeg';
   const reader = new FileReader();
   reader.onload = (ev) => {
-    imgBase64 = ev.target.result.split(',')[1];
-    document.getElementById('img-thumb').src = ev.target.result;
-    document.getElementById('img-filename').textContent = file.name;
-    document.getElementById('img-drop-empty').style.display = 'none';
-    document.getElementById('img-preview-wrap').classList.add('visible');
-    document.getElementById('ia-reading-note').classList.add('visible');
-    document.getElementById('gen-btn-icon').textContent = '👁️';
-    document.getElementById('gen-btn-text').textContent = 'Generar con imagen';
-    document.getElementById('gen-note').textContent = 'GPT-4o analiza la imagen · copy visual real · LandCopy Pro';
+    // Comprimir imagen antes de enviar — máximo 800px, calidad 0.7
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 800;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL('image/jpeg', 0.7);
+      imgBase64 = compressed.split(',')[1];
+      document.getElementById('img-thumb').src = compressed;
+      document.getElementById('img-filename').textContent = file.name;
+      document.getElementById('img-drop-empty').style.display = 'none';
+      document.getElementById('img-preview-wrap').classList.add('visible');
+      document.getElementById('ia-reading-note').classList.add('visible');
+      document.getElementById('gen-btn-icon').textContent = '👁️';
+      document.getElementById('gen-btn-text').textContent = 'Generar con imagen';
+      document.getElementById('gen-note').textContent = 'GPT-4o analiza la imagen · copy visual real · LandCopy Pro';
+    };
+    img.src = ev.target.result;
   };
   reader.readAsDataURL(file);
 }
