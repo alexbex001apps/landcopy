@@ -93,7 +93,7 @@ Responde SOLO con este JSON sin markdown:
     jsonFields.push(`"landing_trust_bar":"🚚 ENVIOS A TODO ${co.name} | ⭐ +[N] CLIENTES SATISFECHOS | 💳 PAGAS AL RECIBIR | ✅ GARANTIA DE ENTREGA"`);
     jsonFields.push(`"landing_hero":"[TITULAR POTENTE QUE ATACA EL DOLOR]\\n\\n[SUBTITULAR CON BENEFICIO PRINCIPAL]\\n\\n[BENEFICIO RAPIDO EN 1 LINEA]"`);
     jsonFields.push(`"landing_problem":"[TITULAR EMPATICO]\\n\\n❌ [sintoma o frustracion 1]\\n\\n❌ [sintoma 2]\\n\\n❌ [sintoma 3]\\n\\n❌ [sintoma 4]\\n\\n❌ [sintoma 5]\\n\\n❌ [sintoma 6]"`);
-    jsonFields.push(`"landing_solution":"[STORYTELLING COMPLETO minimo 120 palabras: empieza con empatia, explica por que ocurre el problema, presenta el producto como solucion natural, muestra el resultado]"`);
+    jsonFields.push(`"landing_solution":"Parrafo introductorio empatico de 2 oraciones que conecta con el dolor del cliente.\\n\\n✅ [Solucion 1 — beneficio concreto en 1 oracion]\\n\\n✅ [Solucion 2 — beneficio concreto en 1 oracion]\\n\\n✅ [Solucion 3 — beneficio concreto en 1 oracion]\\n\\n✅ [Solucion 4 — beneficio concreto en 1 oracion]\\n\\nParrafo final de cierre que invita a la accion."`);
     jsonFields.push(`"landing_benefits":"✅ [beneficio emocional 1 — lo que el cliente GANA]\\n\\n✅ [beneficio 2]\\n\\n✅ [beneficio 3]\\n\\n✅ [beneficio 4]\\n\\n✅ [beneficio 5]\\n\\n✅ [beneficio 6]"`);
     jsonFields.push(`"landing_testimonials":"⭐⭐⭐⭐⭐\\n\\"[Historia real: problema que tenia, experiencia con el producto, resultado obtenido — minimo 3 oraciones].\\"\\n— [Nombre comun], [Ciudad]\\n\\n⭐⭐⭐⭐⭐\\n\\"[Testimonio 2 completo].\\n— [Nombre], [Ciudad]\\n\\n⭐⭐⭐⭐⭐\\n\\"[Testimonio 3 completo].\\"\\n— [Nombre], [Ciudad]"`);
     jsonFields.push(`"landing_uses":"[Titulo introductorio]\\n\\n✅ [perfil o uso ideal 1]\\n\\n✅ [perfil 2]\\n\\n✅ [perfil 3]\\n\\n✅ [perfil 4]\\n\\n✅ [perfil 5]\\n\\n✅ [perfil 6]"`);
@@ -139,7 +139,7 @@ Responde SOLO con este JSON sin markdown:
     jsonFields.push(`"extra_seo":"[keyword corta 1]\\n\\n[keyword de cola larga 2]\\n\\n[pregunta que busca el cliente 3]\\n\\n(continua hasta 20 keywords en español para ${co.name})"`);
   }
 
-  if(hasChars) {
+  if(hasChars && (o.landing || o.images)) {
     jsonFields.push(`"benefit_transform":[{"char":"[caracteristica original del producto]","benefit":"[beneficio emocional que recibe el cliente]"}]`);
   }
 
