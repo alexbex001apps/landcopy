@@ -2,21 +2,21 @@
 import https from 'https';
 
 const countryData = {
-  colombia:  { name:'Colombia',      pay:'pago contra entrega', currency:'pesos colombianos (COP)', slang:'Usa expresiones colombianas naturales: "parcero/a", "bacano", "chimba", "listo", "uy". Adapta precios a COP.' },
-  costarica: { name:'Costa Rica',    pay:'pago contra entrega', currency:'colones (CRC)',            slang:'Usa expresiones costarricenses: "mae", "tuanis", "pura vida", "diay". Adapta precios a CRC.' },
-  mexico:    { name:'México',        pay:'pago contra entrega', currency:'pesos mexicanos (MXN)',    slang:'Usa expresiones mexicanas: "wey", "chido", "órale", "chingón", "¿qué onda?". Adapta precios a MXN.' },
-  venezuela: { name:'Venezuela',     pay:'pago contra entrega', currency:'dólares (USD)',            slang:'Usa expresiones venezolanas: "chamo/a", "chévere", "pana", "arrecho", "verga". Adapta precios a USD.' },
-  ecuador:   { name:'Ecuador',       pay:'pago contra entrega', currency:'dólares (USD)',            slang:'Usa expresiones ecuatorianas: "ñaño/a", "bacán", "causa", "chévere". Adapta precios a USD.' },
-  general:   { name:'Latinoamérica', pay:'pago contra entrega', currency:'dólares (USD)',            slang:'Usa español neutro latinoamericano, sin regionalismos.' },
+  colombia:  { name:'Colombia',      pay:'pago contra entrega', slang:'Usa expresiones colombianas: "parcero/a", "bacano", "chimba", "listo". Precios en COP.' },
+  costarica: { name:'Costa Rica',    pay:'pago contra entrega', slang:'Usa expresiones costarricenses: "mae", "tuanis", "pura vida", "diay". Precios en CRC.' },
+  mexico:    { name:'México',        pay:'pago contra entrega', slang:'Usa expresiones mexicanas: "wey", "chido", "órale", "chingón". Precios en MXN.' },
+  venezuela: { name:'Venezuela',     pay:'pago contra entrega', slang:'Usa expresiones venezolanas: "chamo/a", "chévere", "pana". Precios en USD.' },
+  ecuador:   { name:'Ecuador',       pay:'pago contra entrega', slang:'Usa expresiones ecuatorianas: "ñaño/a", "bacán", "causa". Precios en USD.' },
+  general:   { name:'Latinoamérica', pay:'pago contra entrega', slang:'Usa español neutro latinoamericano.' },
 };
 
 const toneInstructions = {
-  urgente:   'TONO URGENTE: Crea escasez real. Usa frases como "Solo hoy", "Últimas unidades", "La oferta termina pronto", "No esperes más". Genera FOMO (miedo a perderse algo). Frases cortas y directas. Muchos signos de exclamación. El cliente debe sentir que si no compra ahora pierde la oportunidad.',
-  emocional: 'TONO EMOCIONAL: Conecta con el dolor profundo del cliente. Cuenta historias reales de personas que sufrieron y encontraron la solución. Usa empatía total: "Sabemos lo que sientes", "No estás solo/a", "Mereces sentirte mejor". Apela a sueños, familia, calidad de vida. El cliente debe sentir que lo entiendes.',
-  racional:  'TONO RACIONAL: Usa datos, estadísticas y hechos concretos. Incluye porcentajes, estudios, comparaciones con la competencia. Ejemplo: "El 87% de nuestros clientes reportó mejora en 7 días". Explica el mecanismo de acción. El cliente escéptico debe quedar convencido con evidencia.',
-  casual:    'TONO CASUAL: Habla como un amigo que da un consejo. Informal, cercano, sin presión. Usa humor ligero cuando aplique. Evita palabras de vendedor. Ejemplo: "Mira, esto me funcionó a mí y creo que a ti también te va a ir bien". El cliente debe sentir que le estás hablando de corazón.',
-  confianza: 'TONO CONFIANZA: Construye credibilidad con prueba social masiva. Menciona número de clientes, años en el mercado, garantías sólidas, certificaciones. Usa testimonios específicos con nombres y ciudades. El cliente desconfiado debe sentir que es seguro comprar.',
-  premium:   'TONO PREMIUM: Posiciona el producto como exclusivo y de alta calidad. Evita hablar de precio bajo — habla de valor e inversión. Usa palabras como "selecto", "exclusivo", "para quienes exigen lo mejor", "formulación avanzada". El cliente debe sentir que está comprando lo mejor del mercado.',
+  urgente:   'TONO URGENTE: Crea escasez. Usa "Solo hoy", "Últimas unidades", "No esperes más". Frases cortas. Mucho signo de exclamación. El cliente debe sentir que si no compra ahora pierde la oportunidad.',
+  emocional: 'TONO EMOCIONAL: Conecta con el dolor profundo. Cuenta historias reales. Usa "Sabemos lo que sientes", "No estás solo/a". Apela a familia y calidad de vida.',
+  racional:  'TONO RACIONAL: Usa datos y estadísticas concretas. Incluye porcentajes y comparaciones. Ejemplo: "El 87% reportó mejora en 7 días". El escéptico debe quedar convencido.',
+  casual:    'TONO CASUAL: Habla como amigo dando un consejo. Informal, sin presión. Evita palabras de vendedor. El cliente debe sentir que le hablas de corazón.',
+  confianza: 'TONO CONFIANZA: Construye credibilidad con prueba social. Menciona número de clientes, garantías, certificaciones. El desconfiado debe sentir que es seguro comprar.',
+  premium:   'TONO PREMIUM: Posiciona como exclusivo y de alta calidad. Usa "selecto", "exclusivo", "para quienes exigen lo mejor". Habla de valor, no de precio.',
 };
 
 function callOpenAI(apiKey, body) {
@@ -58,76 +58,73 @@ export default async function handler(req, res) {
   const hasChars = !!(chars && chars.trim());
   const o = outputs || {};
 
-  // Build JSON fields dynamically based on selected outputs
-  const fields = {};
+  // Build JSON fields as string — avoids double-escaping
+  const jsonFields = [];
 
   if(o.landing) {
-    fields.landing_trust_bar = `🚚 ENVIOS A TODO ${co.name} | ⭐ +CLIENTES SATISFECHOS | 💳 PAGAS AL RECIBIR | ✅ GARANTIA`;
-    fields.landing_hero = `titular potente atacando el dolor\\n\\nsubtitular con beneficio\\n\\nbeneficio rapido`;
-    fields.landing_problem = `titular empatico\\n\\n❌ sintoma 1\\n\\n❌ sintoma 2\\n\\n❌ sintoma 3\\n\\n❌ sintoma 4\\n\\n❌ sintoma 5\\n\\n❌ sintoma 6`;
-    fields.landing_solution = `storytelling completo minimo 120 palabras con empatia solucion y resultado`;
-    fields.landing_benefits = `✅ beneficio emocional 1\\n\\n✅ beneficio emocional 2\\n\\n✅ beneficio emocional 3\\n\\n✅ beneficio emocional 4\\n\\n✅ beneficio emocional 5\\n\\n✅ beneficio emocional 6`;
-    fields.landing_testimonials = `⭐⭐⭐⭐⭐\\n"testimonio completo 1 con historia real"\\n— Nombre, Ciudad\\n\\n⭐⭐⭐⭐⭐\\n"testimonio completo 2"\\n— Nombre, Ciudad\\n\\n⭐⭐⭐⭐⭐\\n"testimonio completo 3"\\n— Nombre, Ciudad`;
-    fields.landing_uses = `Titulo introductorio\\n\\n✅ perfil ideal 1\\n\\n✅ perfil ideal 2\\n\\n✅ perfil ideal 3\\n\\n✅ perfil ideal 4\\n\\n✅ perfil ideal 5\\n\\n✅ perfil ideal 6`;
-    fields.landing_whats_included = `✅ item 1\\n\\n✅ item 2\\n\\n✅ item 3\\n\\n✅ item 4\\n\\n✅ item 5`;
-    fields.landing_faq = `¿Pregunta 1?\\nRespuesta completa 1.\\n\\n¿Pregunta 2?\\nRespuesta completa 2.\\n\\n¿Pregunta 3?\\nRespuesta completa 3.\\n\\n¿Pregunta 4?\\nRespuesta completa 4.\\n\\n¿Pregunta 5?\\nRespuesta completa 5.\\n\\n¿Pregunta 6?\\nRespuesta completa 6.`;
-    fields.landing_cta = `CTA urgente con precio garantia metodo de pago y boton de accion`;
+    jsonFields.push(`"landing_trust_bar":"🚚 ENVIOS A TODO ${co.name} | ⭐ +[N] CLIENTES SATISFECHOS | 💳 PAGAS AL RECIBIR | ✅ GARANTIA DE ENTREGA"`);
+    jsonFields.push(`"landing_hero":"[TITULAR POTENTE QUE ATACA EL DOLOR]\\n\\n[SUBTITULAR CON BENEFICIO PRINCIPAL]\\n\\n[BENEFICIO RAPIDO EN 1 LINEA]"`);
+    jsonFields.push(`"landing_problem":"[TITULAR EMPATICO]\\n\\n❌ [sintoma o frustracion 1]\\n\\n❌ [sintoma 2]\\n\\n❌ [sintoma 3]\\n\\n❌ [sintoma 4]\\n\\n❌ [sintoma 5]\\n\\n❌ [sintoma 6]"`);
+    jsonFields.push(`"landing_solution":"[STORYTELLING COMPLETO minimo 120 palabras: empieza con empatia, explica por que ocurre el problema, presenta el producto como solucion natural, muestra el resultado]"`);
+    jsonFields.push(`"landing_benefits":"✅ [beneficio emocional 1 — lo que el cliente GANA]\\n\\n✅ [beneficio 2]\\n\\n✅ [beneficio 3]\\n\\n✅ [beneficio 4]\\n\\n✅ [beneficio 5]\\n\\n✅ [beneficio 6]"`);
+    jsonFields.push(`"landing_testimonials":"⭐⭐⭐⭐⭐\\n\\"[Historia real: problema que tenia, experiencia con el producto, resultado obtenido — minimo 3 oraciones].\\"\\n— [Nombre comun], [Ciudad]\\n\\n⭐⭐⭐⭐⭐\\n\\"[Testimonio 2 completo].\\n— [Nombre], [Ciudad]\\n\\n⭐⭐⭐⭐⭐\\n\\"[Testimonio 3 completo].\\"\\n— [Nombre], [Ciudad]"`);
+    jsonFields.push(`"landing_uses":"[Titulo introductorio]\\n\\n✅ [perfil o uso ideal 1]\\n\\n✅ [perfil 2]\\n\\n✅ [perfil 3]\\n\\n✅ [perfil 4]\\n\\n✅ [perfil 5]\\n\\n✅ [perfil 6]"`);
+    jsonFields.push(`"landing_whats_included":"✅ [producto principal]\\n\\n✅ [accesorio o complemento]\\n\\n✅ [garantia]\\n\\n✅ [soporte]\\n\\n🎁 [bonus]"`);
+    jsonFields.push(`"landing_faq":"¿[Pregunta 1 sobre uso]?\\n[Respuesta completa y tranquilizadora.]\\n\\n¿[Pregunta 2 sobre seguridad]?\\n[Respuesta.]\\n\\n¿[Pregunta 3 sobre resultados]?\\n[Respuesta.]\\n\\n¿[Pregunta 4 sobre garantia]?\\n[Respuesta.]\\n\\n¿[Pregunta 5 sobre pago]?\\n[Respuesta.]\\n\\n¿[Pregunta 6 sobre envio]?\\n[Respuesta.]"`);
+    jsonFields.push(`"landing_cta":"[CTA URGENTE con precio oferta${priceOld ? ', precio anterior tachado' : ''}, metodo de pago (${co.pay}), garantia y boton de accion]"`);
   }
 
   if(o.whatsapp) {
-    fields.wa_cold = `mensaje contacto frio 6 lineas empaticas sin vender directo`;
-    fields.wa_followup = `mensaje seguimiento con urgencia 8 lineas`;
-    fields.wa_close = `mensaje cierre con escasez garantia e instruccion de compra`;
+    jsonFields.push(`"wa_cold":"[Mensaje WhatsApp contacto frio — maximo 6 lineas, empatico, NO vende directo, despierta curiosidad]"`);
+    jsonFields.push(`"wa_followup":"[Mensaje WhatsApp seguimiento — crea urgencia sin presionar, menciona testimonios, maximo 8 lineas]"`);
+    jsonFields.push(`"wa_close":"[Mensaje WhatsApp cierre — escasez, garantia, instruccion clara de como pedir, maximo 8 lineas]"`);
   }
 
   if(o.social) {
-    fields.social_post = `post completo Instagram Facebook con emojis minimo 100 palabras`;
-    fields.social_tiktok = `[0-3s] gancho\\n\\n[3-10s] problema\\n\\n[10-20s] solucion\\n\\n[20-30s] CTA`;
-    fields.social_hashtags = `#hashtag1\\n\\n#hashtag2\\n\\n(25 hashtags en español para ${co.name})`;
+    jsonFields.push(`"social_post":"[Post completo Instagram/Facebook con gancho + historia + beneficios + CTA + emojis, minimo 100 palabras]"`);
+    jsonFields.push(`"social_tiktok":"[0-3s] [gancho visual que para el scroll]\\n\\n[3-10s] [presentar el problema]\\n\\n[10-20s] [mostrar solucion y resultado]\\n\\n[20-30s] [CTA claro]"`);
+    jsonFields.push(`"social_hashtags":"#[hashtag1]\\n\\n#[hashtag2]\\n\\n#[hashtag3]\\n\\n(continua hasta 25 hashtags en español para ${co.name})"`);
   }
 
   if(o.meta) {
-    fields.meta_campaign = `Objetivo:\\n\\nAudiencia detallada (edad intereses comportamientos):\\n\\nPresupuesto sugerido:\\n\\nEstructura de campana (fases):`;
-    fields.meta_ads = `ANUNCIO 1 — Dolor\\nTITULAR: ...\\nDESCRIPCION: ...\\nCTA: ...\\n\\nANUNCIO 2 — Beneficio\\nTITULAR: ...\\nDESCRIPCION: ...\\nCTA: ...\\n\\nANUNCIO 3 — Testimonial\\nTITULAR: ...\\nDESCRIPCION: ...\\nCTA: ...\\n\\nANUNCIO 4 — Urgencia\\nTITULAR: ...\\nDESCRIPCION: ...\\nCTA: ...\\n\\nANUNCIO 5 — Precio\\nTITULAR: ...\\nDESCRIPCION: ...\\nCTA: ...`;
-    fields.ad_hooks = `1. hook\\n\\n2. hook\\n\\n3. hook\\n\\n4. hook\\n\\n5. hook\\n\\n6. hook\\n\\n7. hook\\n\\n8. hook\\n\\n9. hook\\n\\n10. hook`;
+    jsonFields.push(`"meta_campaign":"Objetivo: [objetivo recomendado]\\n\\nAudiencia: [edad, intereses, comportamientos detallados]\\n\\nPresupuesto sugerido: [monto y estructura]\\n\\nEstructura: [fases trafico frio, retargeting, lookalike]"`);
+    jsonFields.push(`"meta_ads":"ANUNCIO 1 — Angulo dolor\\nTITULAR: [maximo 40 caracteres]\\nDESCRIPCION: [maximo 125 caracteres]\\nCTA: [boton]\\n\\nANUNCIO 2 — Angulo beneficio\\nTITULAR: [...]\\nDESCRIPCION: [...]\\nCTA: [...]\\n\\nANUNCIO 3 — Angulo testimonial\\nTITULAR: [...]\\nDESCRIPCION: [...]\\nCTA: [...]\\n\\nANUNCIO 4 — Angulo urgencia\\nTITULAR: [...]\\nDESCRIPCION: [...]\\nCTA: [...]\\n\\nANUNCIO 5 — Angulo precio\\nTITULAR: [...]\\nDESCRIPCION: [...]\\nCTA: [...]"`);
+    jsonFields.push(`"ad_hooks":"1. [hook de pregunta]\\n\\n2. [hook de dato sorprendente]\\n\\n3. [hook de situacion cotidiana]\\n\\n4. [hook de dolor]\\n\\n5. [hook de resultado]\\n\\n6. [hook de urgencia]\\n\\n7. [hook de testimonio]\\n\\n8. [hook de comparacion]\\n\\n9. [hook de transformacion]\\n\\n10. [hook de curiosidad]"`);
   }
 
   if(o.images) {
-    fields.image_prompts = `1. descripcion escena imagen 1 en español\\n\\n2. descripcion escena imagen 2\\n\\n3. descripcion escena imagen 3\\n\\n4. descripcion escena imagen 4\\n\\n5. descripcion escena imagen 5`;
-    fields.image_overlay = `Texto 1\\n\\nTexto 2\\n\\nTexto 3\\n\\nTexto 4\\n\\nTexto 5\\n\\nTexto 6\\n\\nTexto 7\\n\\nTexto 8\\n\\nTexto 9\\n\\nTexto 10`;
-    fields.ugc_ideas = `IDEA 1\\nPerfil: ...\\nEscena: ...\\nGuion: ...\\n\\nIDEA 2\\nPerfil: ...\\nEscena: ...\\nGuion: ...\\n\\nIDEA 3\\nPerfil: ...\\nEscena: ...\\nGuion: ...\\n\\nIDEA 4\\nPerfil: ...\\nEscena: ...\\nGuion: ...\\n\\nIDEA 5\\nPerfil: ...\\nEscena: ...\\nGuion: ...`;
+    jsonFields.push(`"image_prompts":"1. [descripcion completa de escena para imagen IA en español]\\n\\n2. [escena 2]\\n\\n3. [escena 3]\\n\\n4. [escena 4]\\n\\n5. [escena 5]"`);
+    jsonFields.push(`"image_overlay":"[Texto corto 1 maximo 5 palabras]\\n\\n[Texto 2]\\n\\n[Texto 3]\\n\\n[Texto 4]\\n\\n[Texto 5]\\n\\n[Texto 6]\\n\\n[Texto 7]\\n\\n[Texto 8]\\n\\n[Texto 9]\\n\\n[Texto 10]"`);
+    jsonFields.push(`"ugc_ideas":"IDEA 1\\nPerfil: [tipo de persona]\\nEscena: [descripcion]\\nGuion: [3 momentos clave]\\n\\nIDEA 2\\nPerfil: [...]\\nEscena: [...]\\nGuion: [...]\\n\\nIDEA 3\\nPerfil: [...]\\nEscena: [...]\\nGuion: [...]\\n\\nIDEA 4\\nPerfil: [...]\\nEscena: [...]\\nGuion: [...]\\n\\nIDEA 5\\nPerfil: [...]\\nEscena: [...]\\nGuion: [...]"`);
   }
 
   if(o.email) {
-    fields.extra_email = `Asunto: ...\\n\\nCuerpo completo del email minimo 150 palabras con historia beneficios testimonial y CTA`;
+    jsonFields.push(`"extra_email":"Asunto: [linea de asunto persuasiva]\\n\\n[Cuerpo completo del email minimo 200 palabras: saludo, historia empatica, presentacion del producto, 3 beneficios clave, testimonial corto, CTA claro, firma]"`);
   }
 
   if(o.objeciones) {
-    fields.extra_objeciones = `Objecion: el precio es alto.\\nRespuesta: respuesta completa persuasiva.\\n\\nObjecion: no confio en el producto.\\nRespuesta: respuesta completa.\\n\\nObjecion: ya probe otras cosas.\\nRespuesta: respuesta completa.\\n\\nObjecion: no creo que me llegue.\\nRespuesta: respuesta completa.\\n\\nObjecion: mi caso es diferente.\\nRespuesta: respuesta completa.\\n\\nObjecion: lo voy a pensar.\\nRespuesta: respuesta completa.`;
+    jsonFields.push(`"extra_objeciones":"Objecion: El precio es muy alto.\\nRespuesta: [respuesta completa y persuasiva que derriba esta objecion — minimo 3 oraciones].\\n\\nObjecion: No confio en este producto.\\nRespuesta: [respuesta completa].\\n\\nObjecion: Ya probe otras cosas y no funcionaron.\\nRespuesta: [respuesta completa].\\n\\nObjecion: No creo que me llegue el pedido.\\nRespuesta: [respuesta completa].\\n\\nObjecion: Mi caso es diferente, creo que no funcionara para mi.\\nRespuesta: [respuesta completa].\\n\\nObjecion: Lo voy a pensar.\\nRespuesta: [respuesta completa con urgencia]."`);
   }
 
   if(o.extras) {
-    fields.extra_desc = `descripcion SEO completa para tienda minimo 150 palabras`;
-    fields.extra_seo = `keyword 1\\n\\nkeyword 2\\n\\nkeyword 3\\n\\n(20 keywords en español para ${co.name})`;
+    jsonFields.push(`"extra_desc":"[Descripcion SEO completa para tienda Shopify o ecommerce — minimo 200 palabras con beneficios, para quien es, que incluye, garantia, optimizada para busquedas en ${co.name}]"`);
+    jsonFields.push(`"extra_seo":"[keyword corta 1]\\n\\n[keyword de cola larga 2]\\n\\n[pregunta que busca el cliente 3]\\n\\n(continua hasta 20 keywords en español para ${co.name})"`);
   }
 
   if(hasChars) {
-    fields.benefit_transform = `[{"char":"caracteristica original","benefit":"beneficio emocional que recibe el cliente"}]`;
+    jsonFields.push(`"benefit_transform":[{"char":"[caracteristica original del producto]","benefit":"[beneficio emocional que recibe el cliente]"}]`);
   }
 
   if(hasImage) {
-    fields.vision_analysis = `descripcion detallada de lo que ves en la imagen del producto`;
-    fields.vision_summary = `resumen en una sola oracion del producto segun la imagen`;
+    jsonFields.push(`"vision_analysis":"[Descripcion detallada de lo que ves en la imagen: tipo de producto, colores, presentacion, empaque, percepcion de marca]"`);
+    jsonFields.push(`"vision_summary":"[Resumen en una sola oracion del producto segun la imagen]"`);
   }
-
-  const jsonTemplate = JSON.stringify(fields, null, 0)
-    .replace(/"benefit_transform":"(\[.*?\])"/g, '"benefit_transform":$1');
 
   const prompt = `Eres el mejor experto en copywriting persuasivo para ecommerce latinoamericano.
 
-REGLA DE ORO: BENEFICIO siempre mayor que CARACTERISTICA. Habla de lo que el cliente GANA, EVITA o MEJORA.
-IDIOMA: Todo en ESPAÑOL. Adapta al pais y tono indicados.
-SEPARACION: Cada item separado por linea en blanco (\\n\\n).
+REGLA DE ORO: BENEFICIO siempre mayor que CARACTERISTICA. Habla de lo que el cliente GANA, EVITA o MEJORA — nunca de especificaciones tecnicas.
+IDIOMA: Todo en ESPAÑOL.
+SEPARACION OBLIGATORIA: Cada item, beneficio, objecion, anuncio, hook o testimonio DEBE estar separado del siguiente con una linea en blanco.
 
 ${toneDesc}
 
@@ -138,12 +135,14 @@ PRODUCTO:
 - Nombre: ${name}
 - Problema: ${problem}
 - Beneficio principal: ${benefit}
-- Precio: ${price}${priceOld ? ` (antes ${priceOld})` : ''}${clients ? `\n- Clientes actuales: ${clients}` : ''}${hasChars ? `\n- Caracteristicas: ${chars}` : ''}
+- Precio: ${price}${priceOld ? ` (antes ${priceOld})` : ''}${clients ? `\n- Clientes: ${clients}` : ''}${hasChars ? `\n- Caracteristicas: ${chars}` : ''}
 ${hasImage ? '\nANALIZA LA IMAGEN adjunta e integra lo que ves al copy.' : ''}
 
-Responde SOLO con JSON valido sin markdown. Rellena cada campo con contenido real y completo siguiendo exactamente el formato indicado:
+INSTRUCCION CRITICA: Reemplaza cada [texto entre corchetes] con contenido REAL, COMPLETO y PERSUASIVO para este producto especifico. No uses corchetes en tu respuesta.
 
-${jsonTemplate}`;
+Responde SOLO con este JSON valido sin markdown ni texto adicional:
+
+{${jsonFields.join(',')}}`;
 
   try {
     const messages = hasImage
