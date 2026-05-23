@@ -56,9 +56,10 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 .divider{border:none;border-top:1px solid var(--border);margin:18px 0;}
 .checks{display:flex;flex-direction:column;}
 .chk{display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:13px;color:var(--text);padding:14px 12px;border:1px solid var(--border);border-radius:4px;margin-bottom:8px;background:var(--surface2);transition:background 0.2s;}
+.chk span{flex:1;padding-right:20px;}
 .chk:hover{background:var(--surface);}
 .chk:last-child{margin-bottom:0;}
-.chk input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);flex-shrink:0;cursor:pointer;margin:0;order:2;}
+.chk input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);flex-shrink:0;cursor:pointer;margin:0;}
 .gen-btn{width:100%;padding:14px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;cursor:pointer;border-radius:3px;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;text-shadow:0 0 10px rgba(255,255,255,0.8),0 0 20px rgba(255,255,255,0.4);box-shadow:0 0 25px rgba(232,66,10,0.5),0 0 50px rgba(232,66,10,0.2);transition:all 0.2s;}
 .gen-btn:hover{background:var(--neon-orange);box-shadow:0 0 30px rgba(255,85,32,0.5);}
 .gen-btn:disabled{background:#bbb;cursor:not-allowed;box-shadow:none;text-shadow:none;}
@@ -473,7 +474,7 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 
       <div class="field"><label>Qué generar</label>
         <div class="checks">
-          <label class="chk"><span>Landing page completa</span><input type="checkbox" id="gen-landing" checked></label>
+          <label class="chk"><span>Landing page ganadora</span><input type="checkbox" id="gen-landing" checked></label>
           <label class="chk"><span>WhatsApp (3 versiones)</span><input type="checkbox" id="gen-whatsapp" checked></label>
           <label class="chk"><span>Copy redes sociales</span><input type="checkbox" id="gen-social" checked></label>
           <label class="chk"><span>Meta Ads</span><input type="checkbox" id="gen-meta" checked></label>
