@@ -155,7 +155,7 @@ Responde SOLO con este JSON sin markdown:
   }
 
   if(o.images) {
-    jsonFields.push(`"image_prompts":"1. [descripcion completa de escena para imagen IA en español]\\n\\n2. [escena 2]\\n\\n3. [escena 3]\\n\\n4. [escena 4]\\n\\n5. [escena 5]"`);
+    jsonFields.push(`"image_prompts":"1. [Prompt profesional para IA: descripcion detallada de escena, persona usando el producto, ambiente, iluminacion cinematografica, estilo fotografico realista, camara DSLR, alta resolucion, colores vibrantes, composicion regla de tercios]\\n\\n2. [Prompt profesional: close-up del producto, fondo limpio, iluminacion de producto estudio, reflexos controlados, fotografia comercial profesional, hiperealista]\\n\\n3. [Prompt profesional: persona mostrando resultado o beneficio del producto, emocion de satisfaccion, ambiente cotidiano autentico, luz natural, fotografia lifestyle]\\n\\n4. [Prompt profesional: antes y despues implicito, transformacion del cliente, ambiente aspiracional, fotografia editorial]\\n\\n5. [Prompt profesional: flat lay del producto con accesorios complementarios, fondo de textura premium, composicion simetrica, fotografia de producto ecommerce]"`);
     jsonFields.push(`"image_overlay":"[Texto corto 1 maximo 5 palabras]\\n\\n[Texto 2]\\n\\n[Texto 3]\\n\\n[Texto 4]\\n\\n[Texto 5]\\n\\n[Texto 6]\\n\\n[Texto 7]\\n\\n[Texto 8]\\n\\n[Texto 9]\\n\\n[Texto 10]"`);
     jsonFields.push(`"ugc_ideas":"IDEA 1\\nPerfil: [tipo de persona]\\nEscena: [descripcion]\\nGuion: [3 momentos clave]\\n\\nIDEA 2\\nPerfil: [...]\\nEscena: [...]\\nGuion: [...]\\n\\nIDEA 3\\nPerfil: [...]\\nEscena: [...]\\nGuion: [...]\\n\\nIDEA 4\\nPerfil: [...]\\nEscena: [...]\\nGuion: [...]\\n\\nIDEA 5\\nPerfil: [...]\\nEscena: [...]\\nGuion: [...]"`);
   }
