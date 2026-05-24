@@ -132,14 +132,36 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 .sh-link{color:var(--accent);font-weight:500;}
 
 /* Loading */
-.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:20px;}
-.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--dark);text-align:center;}
-.loading-steps{display:flex;flex-direction:column;gap:8px;width:100%;max-width:440px;}
-.ls{font-size:14px;color:var(--muted);opacity:0.3;transition:all 0.4s ease;padding:10px 16px;border-radius:6px;border-left:3px solid transparent;}
-.ls.active{opacity:1;color:var(--dark);font-weight:600;background:rgba(232,66,10,0.05);border-left-color:var(--accent);font-size:15px;}
-.ls.done{opacity:0.6;color:var(--success);border-left-color:var(--success);}
+.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:16px;padding:20px;}
+.loading-title-text{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--dark);text-align:center;}
+.loading-dot{display:inline-block;animation:ldotPulse 1.4s infinite;}
+.loading-dot:nth-child(2){animation-delay:0.2s;}
+.loading-dot:nth-child(3){animation-delay:0.4s;}
+@keyframes ldotPulse{0%,80%,100%{opacity:0;transform:translateY(0);}40%{opacity:1;transform:translateY(-3px);}}
+.loading-progress-wrap{width:100%;max-width:600px;background:var(--border);border-radius:20px;height:3px;overflow:hidden;}
+.loading-progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),#ff8c00,#ffe600);border-radius:20px;transition:width 0.5s ease;width:0%;}
+.loading-counter{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-align:center;}
+.loading-steps{display:grid;grid-template-columns:1fr 1fr;gap:5px 16px;width:100%;max-width:640px;}
+.ls{display:flex;flex-direction:column;gap:3px;padding:7px 10px;border-radius:6px;opacity:0.2;transition:all 0.4s ease;}
+.ls-row{display:flex;align-items:center;gap:7px;}
+.ls-icon{font-size:12px;flex-shrink:0;width:16px;text-align:center;}
+.ls-text{font-size:11px;color:var(--muted);font-weight:400;line-height:1.3;}
+.ls-stat{display:flex;align-items:center;gap:5px;margin-left:23px;}
+.ls-bar{flex:1;height:2px;background:var(--border);border-radius:2px;overflow:hidden;}
+.ls-bar-fill{height:100%;width:0%;border-radius:2px;background:linear-gradient(90deg,#00d4ff,var(--accent),#ffe600);}
+.ls-pct{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);width:24px;text-align:right;opacity:0;}
+.ls.done{opacity:0.55;}
+.ls.done .ls-text{color:var(--success);}
+.ls.done .ls-bar-fill{width:100%;background:var(--success);}
+.ls.done .ls-pct{color:var(--success);opacity:1;}
+.ls.active{opacity:1;background:rgba(232,66,10,0.04);animation:lsGlow 2s ease-in-out infinite;}
+.ls.active .ls-text{color:var(--dark);font-weight:600;font-size:12px;}
+.ls.active .ls-text::after{content:'|';margin-left:1px;color:var(--accent);animation:lsBlink 0.7s step-end infinite;}
+.ls.active .ls-bar-fill{animation:lsFill 1.9s ease-out forwards;}
+.ls.active .ls-pct{opacity:1;color:var(--accent);}
+@keyframes lsGlow{0%,100%{background:rgba(232,66,10,0.04);}50%{background:rgba(232,66,10,0.09);}}
+@keyframes lsBlink{0%,100%{opacity:1;}50%{opacity:0;}}
+@keyframes lsFill{from{width:0%;}to{width:100%;}}
 
 /* Output */
 .value-banner{background:var(--dark);border-radius:8px;padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
@@ -534,16 +556,22 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
       <div id="loading-state" style="display:none;">
         <div class="loading-state">
           <div class="spinner"></div>
-          <div class="loading-text">Generando contenido...</div>
+          <div class="loading-title-text">Generando contenido<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></div>
+          <div class="loading-progress-wrap"><div class="loading-progress-bar" id="loading-progress"></div></div>
+          <div class="loading-counter" id="loading-counter">Paso 1 de 12</div>
           <div class="loading-steps">
-            <div class="ls active" id="step-1">⚡ Analizando producto y mercado</div>
-            <div class="ls" id="step-2">🎯 Identificando puntos de dolor del cliente</div>
-            <div class="ls" id="step-3">🧠 Pensando estrategia de conversión</div>
-            <div class="ls" id="step-4">✍️ Escribiendo copy persuasivo profesional</div>
-            <div class="ls" id="step-5">🚀 Aplicando técnicas de ventas poderosas</div>
-            <div class="ls" id="step-6">📱 Adaptando para cada canal de marketing</div>
-            <div class="ls" id="step-7">💰 Optimizando para máximo rendimiento</div>
-            <div class="ls" id="step-8">✅ Finalizando tu landing ganadora</div>
+            <div class="ls" id="step-1"><div class="ls-row"><span class="ls-icon">⚡</span><span class="ls-text">Analizando producto y mercado</span></div><div class="ls-stat"><div class="ls-bar"><div class="ls-bar-fill" id="lsfill-1"></div></div><span class="ls-pct" id="lspct-1">0%</span></div></div>
+            <div class="ls" id="step-2"><div class="ls-row"><span class="ls-icon">🤖</span><span class="ls-text">Usando IA entrenada para tu nicho</span></div><div class="ls-stat"><div class="ls-bar"><div class="ls-bar-fill" id="lsfill-2"></div></div><span class="ls-pct" id="lspct-2">0%</span></div></div>
+            <div class="ls" id="step-3"><div class="ls-row"><span class="ls-icon">🎯</span><span class="ls-text">Identificando puntos de dolor</span></div><div class="ls-stat"><div class="ls-bar"><div class="ls-bar-fill" id="lsfill-3"></div></div><span class="ls-pct" id="lspct-3">0%</span></div></div>
+            <div class="ls" id="step-4"><div class="ls-row"><span class="ls-icon">❤️</span><span class="ls-text">Estudio emocional de compra</span></div><div class="ls-stat"><div class="ls-bar"><div class="ls-bar-fill" id="lsfill-4"></div></div><span class="ls-pct" id="lspct-4">0%</span></div></div>
+            <div class="ls" id="step-5"><div class="ls-row"><span class="ls-icon">🌎</span><span class="ls-text">Análisis por país elegido</span></div><div class="ls-stat"><div class="ls-bar"><div class="ls-bar-fill" id="lsfill-5"></div></div><span class="ls-pct" id="lspct-5">0%</span></div></div>
+            <div class="ls" id="step-6"><div class="ls-row"><span class="ls-icon">🎭</span><span class="ls-text">Análisis por tono elegido</span></div><div class="ls-stat"><div class="ls-bar"><div class="ls-bar-fill" id="lsfill-6"></div></div><span class="ls-pct" id="lspct-6">0%</span></div></div>
+            <div class="ls" id="step-7"><div class="ls-row"><span class="ls-icon">🧠</span><span class="ls-text">Pensando estrategia de conversión</span></div><div class="ls-stat"><div class="ls-bar"><div class="ls-bar-fill" id="lsfill-7"></div></div><span class="ls-pct" id="lspct-7">0%</span></div></div>
+            <div class="ls" id="step-8"><div class="ls-row"><span class="ls-icon">✍️</span><span class="ls-text">Escribiendo copy persuasivo</span></div><div class="ls-stat"><div class="ls-bar"><div class="ls-bar-fill" id="lsfill-8"></div></div><span class="ls-pct" id="lspct-8">0%</span></div></div>
+            <div class="ls" id="step-9"><div class="ls-row"><span class="ls-icon">🚀</span><span class="ls-text">Técnicas de ventas poderosas</span></div><div class="ls-stat"><div class="ls-bar"><div class="ls-bar-fill" id="lsfill-9"></div></div><span class="ls-pct" id="lspct-9">0%</span></div></div>
+            <div class="ls" id="step-10"><div class="ls-row"><span class="ls-icon">📱</span><span class="ls-text">Adaptando para cada canal</span></div><div class="ls-stat"><div class="ls-bar"><div class="ls-bar-fill" id="lsfill-10"></div></div><span class="ls-pct" id="lspct-10">0%</span></div></div>
+            <div class="ls" id="step-11"><div class="ls-row"><span class="ls-icon">💰</span><span class="ls-text">Optimizando rendimiento</span></div><div class="ls-stat"><div class="ls-bar"><div class="ls-bar-fill" id="lsfill-11"></div></div><span class="ls-pct" id="lspct-11">0%</span></div></div>
+            <div class="ls" id="step-12"><div class="ls-row"><span class="ls-icon">✅</span><span class="ls-text">Finalizando landing ganadora</span></div><div class="ls-stat"><div class="ls-bar"><div class="ls-bar-fill" id="lsfill-12"></div></div><span class="ls-pct" id="lspct-12">0%</span></div></div>
           </div>
         </div>
       </div>
@@ -1263,13 +1291,12 @@ async function generateContent() {
   document.getElementById('vision-banner-wrap').innerHTML='';
   document.getElementById('benefit-transform-wrap').style.display='none';
   document.getElementById('vision-analysis-card').style.display='none';
-  const steps=['step-1','step-2','step-3','step-4','step-5','step-6','step-7','step-8'];
+  const steps=['step-1','step-2','step-3','step-4','step-5','step-6','step-7','step-8','step-9','step-10','step-11','step-12'];
   let si=0;
-  const iv=setInterval(()=>{
-    if(si>0){document.getElementById(steps[si-1]).classList.remove('active');document.getElementById(steps[si-1]).classList.add('done');}
-    if(si<steps.length){document.getElementById(steps[si]).classList.add('active');si++;}
-    else clearInterval(iv);
-  },650);
+  function lsAnimatePct(num,dur){const el=document.getElementById(`lspct-${num}`);if(!el)return;const start=Date.now();function upd(){const e=Date.now()-start;const p=Math.min(Math.round((e/dur)*100),100);el.textContent=p+'%';if(p<100)requestAnimationFrame(upd);}requestAnimationFrame(upd);}
+  function lsAdvance(){if(si<steps.length){if(si>0){const prev=document.getElementById(steps[si-1]);if(prev){prev.classList.remove('active');prev.classList.add('done');}const prevPct=document.getElementById(`lspct-${si}`);if(prevPct)prevPct.textContent='100%';}const cur=document.getElementById(steps[si]);if(cur){cur.classList.add('active');const fill=document.getElementById(`lsfill-${si+1}`);if(fill){fill.style.animation='none';fill.offsetHeight;fill.style.animation='';}lsAnimatePct(si+1,1900);}const pct=Math.round(((si+1)/steps.length)*100);const pb=document.getElementById('loading-progress');if(pb)pb.style.width=pct+'%';const lc=document.getElementById('loading-counter');if(lc)lc.textContent=`Paso ${si+1} de ${steps.length}`;si++;}}
+  lsAdvance();
+  const iv=setInterval(()=>{if(si<steps.length){lsAdvance();}else{clearInterval(iv);}},1900);
   try {
     const resp=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       name,problem:document.getElementById('product-problem').value.trim(),
