@@ -419,7 +419,9 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
       <div class="dh-tag">LandCopy · v4.0</div>
       <button class="dh-btn dh-studio" data-video onclick="goTo('page-studio')">🎬 Video Studio</button>
       <button class="dh-btn dh-ghost" onclick="goTo('page-pricing')">Planes</button>
-      <button class="dh-btn dh-outline" onclick="goTo('page-login')">Iniciar sesión</button>
+      <div id="header-auth">
+  <button class="dh-btn dh-outline" onclick="goTo('page-login')">Iniciar sesión</button>
+</div>
     </div>
   </div>
 
@@ -3272,7 +3274,32 @@ async function handleLogin() {
     btn.textContent = 'Entrar a LandCopy';
     btn.disabled = false;
   }
-}</script>
+}function checkSession() {
+  const user = localStorage.getItem('lc_user');
+  const token = localStorage.getItem('lc_token');
+  const headerAuth = document.getElementById('header-auth');
+  if (!headerAuth) return;
+
+  if (user && token) {
+    const u = JSON.parse(user);
+    const email = u.email || '';
+    const plan = u.plan || 'basico';
+    headerAuth.innerHTML = `
+      <span style="color:var(--accent);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;">${plan.toUpperCase()}</span>
+      <span style="color:#888;font-size:12px;margin:0 8px;">${email}</span>
+      <button class="dh-btn dh-outline" onclick="logout()">Salir</button>
+    `;
+  }
+}
+
+function logout() {
+  localStorage.removeItem('lc_token');
+  localStorage.removeItem('lc_user');
+  goTo('page-login');
+}
+
+checkSession();
+</script>
 
 
 </body>
