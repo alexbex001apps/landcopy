@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -841,7 +842,7 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
   <div class="login-box">
     <div class="login-tabs">
       <div class="login-tab on" id="lt-login">Iniciar sesión</div>
-      <div class="login-tab" id="lt-register" onclick="showRegister()">Crear cuenta</div>
+      <div class="login-tab" id="lt-register" onclick="document.getElementById('lt-login').classList.remove('on');this.classList.add('on');">Crear cuenta</div>
     </div>
     <div class="login-head">
       <div class="login-logo">Land<span>Copy</span></div>
