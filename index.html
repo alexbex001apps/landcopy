@@ -3324,6 +3324,50 @@ if (!token) {
     goTo('page-main');
   }
 }
+  async function handleRegister() {
+  const nombre = document.getElementById('reg-nombre').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const btn = document.getElementById('register-btn');
+
+  if (!nombre || !email || !password) {
+    alert('Por favor completa todos los campos');
+    return;
+  }
+  if (password.length < 8) {
+    alert('La contraseña debe tener mínimo 8 caracteres');
+    return;
+  }
+
+  btn.textContent = 'Creando cuenta...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'register', email, password })
+    });
+
+    const data = await res.json();
+
+    if (data.error) {
+      alert('Error: ' + data.error);
+      btn.textContent = 'Crear cuenta y entrar';
+      btn.disabled = false;
+      return;
+    }
+
+    localStorage.setItem('lc_token', data.session?.access_token || '');
+    localStorage.setItem('lc_user', JSON.stringify({ email, plan: 'basico' }));
+    goTo('page-main');
+
+  } catch (err) {
+    alert('Error de conexión');
+    btn.textContent = 'Crear cuenta y entrar';
+    btn.disabled = false;
+  }
+}
   function showLogin() {
   document.getElementById('lt-login').classList.add('on');
   document.getElementById('lt-register').classList.remove('on');
