@@ -4,167 +4,3204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loading v2</title>
+<title>LandCopy — Generador de Contenido IA</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f8f7f3;--accent:#e8420a;--dark:#0e0d0a;--muted:#7a7060;--border:#e0dbd0;--success:#1a7a3a;--neon-blue:#00d4ff;--neon-orange:#ff5520;}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);display:flex;align-items:center;justify-content:center;min-height:100vh;}
+:root{
+  --bg:#f8f7f3;--surface:#fff;--surface2:#f0ede5;--border:#e0dbd0;
+  --dark:#0e0d0a;--accent:#e8420a;--accent2:#ff5520;--text:#0e0d0a;--muted:#7a7060;--success:#1a7a3a;
+  --sbg:#060504;--ss:#0e0c0a;--ss2:#181410;--sb:#2a2420;
+  --neon-blue:#00d4ff;--neon-yellow:#ffe600;--neon-red:#ff2255;--neon-orange:#ff5520;
+}
+body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overflow-x:hidden;}
 
-.loading-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;max-width:520px;width:100%;padding:40px;}
+/* ══ PAGES ══ */
+.page{display:none;min-height:100vh;}
+.page.active{display:flex;flex-direction:column;}
 
-.spinner{width:38px;height:38px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+/* ══ HEADER PRINCIPAL ══ */
+.dh{background:var(--dark);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:200;flex-shrink:0;}
+.dh-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;cursor:pointer;display:flex;align-items:center;}
+.logo-copy{display:inline-block;color:var(--neon-orange) !important;text-shadow:0 0 12px rgba(255,85,32,0.9);animation:logoSlideIn 4s cubic-bezier(0.22,1,0.36,1) 1.6s both;}
+.logo-land{display:inline-block;color:#ffffff !important;animation:logoSlideIn 4s cubic-bezier(0.22,1,0.36,1) both;}
+@keyframes logoSlideIn{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:translateX(0);}}
+.dh-right{display:flex;align-items:center;gap:10px;}
+.dh-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#fff;background:rgba(255,255,255,0.05);padding:4px 10px;border:1px solid rgba(255,255,255,0.08);}
+.dh-btn{padding:7px 14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all 0.2s;}
+.dh-ghost{background:transparent;border:1px solid rgba(0,212,255,0.25);color:rgba(0,212,255,0.7);text-shadow:0 0 6px rgba(0,212,255,0.4);}
+.dh-ghost:hover{border-color:var(--neon-blue);color:var(--neon-blue);text-shadow:0 0 10px rgba(0,212,255,0.9);box-shadow:0 0 12px rgba(0,212,255,0.2);}
+.dh-outline{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.35);color:#fff;text-shadow:0 0 6px rgba(255,255,255,0.4);box-shadow:0 0 8px rgba(255,255,255,0.05);}
+.dh-studio{background:rgba(255,85,32,0.18);border:1px solid rgba(255,85,32,0.6);color:var(--neon-orange);text-shadow:0 0 12px rgba(255,85,32,0.9),0 0 24px rgba(255,85,32,0.5);box-shadow:0 0 16px rgba(255,85,32,0.3),inset 0 0 10px rgba(255,85,32,0.05);}
+.dh-studio:hover{background:var(--neon-orange);color:#fff;text-shadow:0 0 12px rgba(255,255,255,0.9);box-shadow:0 0 30px rgba(255,85,32,0.7),0 0 60px rgba(255,85,32,0.3);}
+
+/* ══ MAIN LAYOUT ══ */
+.main-layout{display:grid;grid-template-columns:400px 1fr;flex:1;min-height:0;}
+
+/* ══ LEFT PANEL ══ */
+.lp{background:var(--surface);border-right:1px solid var(--border);padding:28px;padding-bottom:80px;overflow-y:auto;}
+.lp-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--dark);margin-bottom:3px;}
+.lp-sub{font-size:12px;color:var(--muted);margin-bottom:22px;line-height:1.5;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.field input,.field select,.field textarea{width:100%;background:var(--surface2);border:1px solid var(--border);padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color 0.2s;border-radius:3px;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);}
+.field textarea{resize:vertical;min-height:70px;}
+.field select{appearance:none;cursor:pointer;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{padding:6px 10px;border:1px solid var(--border);background:var(--surface2);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);border-radius:3px;cursor:pointer;transition:all 0.2s;}
+.chip.on{background:var(--dark);border-color:var(--dark);color:#fff;}
+.divider{border:none;border-top:1px solid var(--border);margin:18px 0;}
+.checks{display:flex;flex-direction:column;}
+.chk{display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:13px;color:var(--text);padding:14px 12px;border:1px solid var(--border);border-radius:4px;margin-bottom:8px;background:var(--surface2);transition:background 0.2s;}
+.chk span{flex:1;padding-right:20px;}
+.chk:hover{background:var(--surface);}
+.chk:last-child{margin-bottom:0;}
+.chk input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);flex-shrink:0;cursor:pointer;margin:0;}
+.gen-btn{width:100%;padding:14px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;cursor:pointer;border-radius:3px;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;text-shadow:0 0 10px rgba(255,255,255,0.8),0 0 20px rgba(255,255,255,0.4);box-shadow:0 0 25px rgba(232,66,10,0.5),0 0 50px rgba(232,66,10,0.2);transition:all 0.2s;}
+.gen-btn:hover{background:var(--neon-orange);box-shadow:0 0 30px rgba(255,85,32,0.5);}
+.gen-btn:disabled{background:#bbb;cursor:not-allowed;box-shadow:none;text-shadow:none;}
+.gen-note{margin-top:8px;font-size:10px;color:var(--muted);text-align:center;}
+
+/* ══ IMAGE UPLOAD ══ */
+.img-upload-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:flex;align-items:center;gap:8px;}
+.img-pro-badge{background:var(--neon-orange);color:#fff;padding:2px 7px;border-radius:20px;font-size:7px;letter-spacing:1px;text-shadow:none;}
+.img-drop-empty{border:2px dashed var(--border);border-radius:6px;padding:20px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--surface2);margin-bottom:4px;}
+.img-drop-empty:hover{border-color:rgba(232,66,10,0.4);background:rgba(232,66,10,0.03);}
+.img-drop-icon{font-size:28px;margin-bottom:6px;opacity:0.35;}
+.img-drop-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--dark);margin-bottom:3px;}
+.img-drop-sub{font-size:11px;color:var(--muted);line-height:1.5;}
+.img-drop-btn{display:inline-block;margin-top:10px;padding:7px 14px;background:var(--dark);color:#fff;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border-radius:3px;cursor:pointer;}
+.img-formats{display:flex;gap:6px;justify-content:center;margin-top:8px;}
+.img-fmt{padding:2px 7px;border:1px solid var(--border);border-radius:2px;font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);}
+.img-preview-wrap{border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:4px;display:none;}
+.img-preview-wrap.visible{display:block;}
+.img-thumb{width:100%;height:140px;object-fit:contain;display:block;background:var(--surface2);}
+.img-preview-bar{padding:7px 12px;background:var(--surface2);display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);}
+.img-filename{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px;}
+.img-analyzed{display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:8px;color:#1a7a3a;letter-spacing:1px;}
+.img-analyzed-dot{width:5px;height:5px;background:#1a7a3a;border-radius:50%;}
+.img-change-btn{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;}
+.ia-reading-note{background:rgba(232,66,10,0.05);border:1px solid rgba(232,66,10,0.12);border-radius:4px;padding:8px 10px;font-size:10px;color:var(--muted);line-height:1.5;display:none;}
+.ia-reading-note.visible{display:block;}
+.ia-reading-note strong{color:var(--accent);}
+
+/* ══ CHARACTERISTICS ══ */
+.chars-hint-tag{font-size:8px;color:rgba(0,212,255,0.7);background:rgba(0,212,255,0.06);padding:2px 8px;border:1px solid rgba(0,212,255,0.15);border-radius:20px;letter-spacing:1px;}
+.chars-sub{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5;}
+
+/* ══ VISION BANNER ══ */
+.vision-banner{background:var(--dark);border-radius:6px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:flex-start;gap:12px;border-left:3px solid var(--neon-blue);}
+.vb-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.vb-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;}
+.vb-body{font-size:11px;color:rgba(255,255,255,0.5);line-height:1.5;}
+.vb-tag{display:inline-block;margin-top:5px;padding:2px 8px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);color:var(--neon-blue);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;border-radius:20px;}
+
+/* ══ BENEFIT TRANSFORM TABLE ══ */
+.bt-table{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:12px;}
+.bt-table-header{padding:9px 14px;background:var(--surface2);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.bt-row{display:grid;grid-template-columns:1fr 20px 1fr;border-bottom:1px solid var(--border);}
+.bt-row:last-child{border-bottom:none;}
+.bt-char{padding:9px 12px;font-size:11px;color:var(--muted);background:rgba(255,34,85,0.02);}
+.bt-arr{display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--accent);background:var(--surface2);}
+.bt-ben{padding:9px 12px;font-size:11px;color:var(--text);}
+
+.hero-var-tab{padding:7px 14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:transparent;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+.hero-var-tab.on{color:var(--accent);border-bottom-color:var(--accent);}
+.hero-var-tab:hover{color:var(--text);}
+.improve-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:14px;}
+.improve-tab{padding:7px 14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:transparent;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+.improve-tab.on{color:var(--accent);border-bottom-color:var(--accent);}
+
+.tab.has-content::before{content:'●';font-size:6px;margin-right:5px;color:var(--accent);vertical-align:middle;}
+.tab.no-content::before{content:'○';font-size:6px;margin-right:5px;color:var(--border);vertical-align:middle;}
+
+/* ══ RIGHT PANEL ══ */
+.rp{padding:28px;padding-bottom:80px;overflow-y:auto;background:var(--bg);}
+.empty-state{position:relative;overflow:hidden;min-height:calc(100vh - 120px);display:flex;align-items:center;justify-content:center;background:var(--bg);}
+.empty-state::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(232,66,10,0.06),transparent 60%),radial-gradient(ellipse at 80% 30%,rgba(0,212,255,0.04),transparent 50%),radial-gradient(ellipse at 50% 80%,rgba(255,230,0,0.03),transparent 50%);animation:bgPulse 6s ease-in-out infinite alternate;}
+@keyframes bgPulse{from{opacity:0.5;}to{opacity:1;}}
+.empty-box{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:28px 36px;border:1px solid rgba(14,13,10,0.1);border-radius:4px;background:rgba(248,247,243,0.88);backdrop-filter:blur(6px);max-width:320px;}
+.empty-icon{font-size:28px;opacity:0.25;margin-bottom:2px;}
+.empty-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--dark);}
+.empty-sub{font-size:11px;color:var(--muted);max-width:240px;line-height:1.7;}
+.empty-badge{margin-top:4px;padding:5px 14px;border:1px solid rgba(232,66,10,0.2);border-radius:20px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;}
+.copy-word{position:absolute;font-family:'DM Mono',monospace;letter-spacing:2px;text-transform:uppercase;pointer-events:none;white-space:nowrap;user-select:none;font-weight:500;z-index:1;}
+.sh-text{font-size:12px;color:var(--muted);}
+.sh-link{color:var(--accent);font-weight:500;}
+
+/* Loading */
+.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:20px;}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--dark);text-align:center;}
+.loading-steps{display:flex;flex-direction:column;gap:8px;width:100%;max-width:440px;}
+.ls{font-size:14px;color:var(--muted);opacity:0.3;transition:all 0.4s ease;padding:10px 16px;border-radius:6px;border-left:3px solid transparent;}
+.ls.active{opacity:1;color:var(--dark);font-weight:600;background:rgba(232,66,10,0.05);border-left-color:var(--accent);font-size:15px;}
+.ls.done{opacity:0.6;color:var(--success);border-left-color:var(--success);}
 
-.loading-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--dark);text-align:center;}
-.dot{display:inline-block;animation:dotPulse 1.4s infinite;}
-.dot:nth-child(2){animation-delay:0.2s;}
-.dot:nth-child(3){animation-delay:0.4s;}
-@keyframes dotPulse{0%,80%,100%{opacity:0;transform:translateY(0);}40%{opacity:1;transform:translateY(-3px);}}
+/* Output */
+.value-banner{background:var(--dark);border-radius:8px;padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.vb-left{display:flex;align-items:center;gap:12px;}
+.vb-emoji{font-size:20px;}
+.vb-text{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;}
+.vb-text strong{color:#fff;font-weight:600;}
+.vb-stats{display:flex;gap:16px;flex-shrink:0;}
+.vb-stat{text-align:center;}
+.vb-stat-num{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--neon-orange);}
+.vb-stat-label{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;color:rgba(255,255,255,0.3);text-transform:uppercase;}
 
-/* Global progress */
-.progress-wrap{width:100%;background:var(--border);border-radius:20px;height:3px;overflow:hidden;}
-.progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),#ff8c00);border-radius:20px;transition:width 0.5s ease;width:0%;}
-.step-counter{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-align:center;}
+.out-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.out-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--dark);}
+.copy-all{padding:6px 14px;background:var(--dark);border:none;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#fff;cursor:pointer;border-radius:3px;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:5px;overflow:hidden;margin-bottom:16px;}
+.stat{background:var(--surface);padding:10px;text-align:center;}
+.stat-n{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--accent);}
+.stat-l{font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;}
+.tabs{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);padding:3px;border-radius:5px;margin-bottom:16px;}
+.tab{flex:1;padding:7px 10px;text-align:center;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:3px;color:var(--muted);transition:all 0.2s;}
+.tab.on{background:var(--dark);color:#fff;}
+.tc{display:none;}
+.tc.on{display:block;}
+.ocard{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:12px;}
+.ocard-h{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface2);}
+.ocard-t{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.copy-btn{padding:3px 10px;background:transparent;border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-radius:2px;transition:all 0.2s;}
+.copy-btn:hover{background:var(--dark);border-color:var(--dark);color:#fff;}
+.copy-btn.copied{background:var(--success);border-color:var(--success);color:#fff;}
+.ocard-b{padding:14px;}
+.otext{font-size:12px;color:var(--text);line-height:1.7;white-space:pre-wrap;word-wrap:break-word;}
 
-/* Steps */
-.steps{display:flex;flex-direction:column;gap:6px;width:100%;}
+/* ══ VIDEO STUDIO ══ */
+#page-studio{background:var(--sbg);}
+.vs-header{background:var(--ss);border-bottom:1px solid var(--sb);padding:0 20px;height:50px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.vs-back{display:flex;align-items:center;gap:6px;padding:5px 12px;border:1px solid var(--neon-blue);background:transparent;color:var(--neon-blue);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;text-shadow:0 0 8px rgba(0,212,255,0.7);transition:all 0.2s;}
+.vs-back:hover{background:rgba(0,212,255,0.1);box-shadow:0 0 10px rgba(0,212,255,0.3);}
+.vs-header-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--neon-blue);text-shadow:0 0 12px rgba(0,212,255,0.8);display:flex;align-items:center;gap:8px;}
+.vs-dot{width:7px;height:7px;border-radius:50%;background:var(--neon-red);box-shadow:0 0 10px rgba(255,34,85,0.9);}
+.vs-nav{display:flex;gap:6px;}
+.vs-nav-btn{padding:4px 12px;border-radius:2px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:1px solid var(--sb);color:var(--neon-blue);background:transparent;transition:all 0.2s;text-shadow:0 0 5px rgba(0,212,255,0.4);}
+.vs-nav-btn.on{background:rgba(0,212,255,0.12);border-color:rgba(0,212,255,0.4);text-shadow:0 0 8px rgba(0,212,255,0.8);}
+.vs-new{padding:4px 12px;background:rgba(255,85,32,0.15);border:1px solid rgba(255,85,32,0.4);color:var(--neon-orange);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;text-shadow:0 0 6px rgba(255,85,32,0.7);margin-left:6px;}
+.vs-new:hover{background:rgba(255,85,32,0.25);box-shadow:0 0 12px rgba(255,85,32,0.4);}
 
-.step{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  padding:10px 16px;
-  border-radius:6px;
-  opacity:0.2;
-  transition:all 0.4s ease;
-}
-.step-row{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.step-icon{font-size:14px;flex-shrink:0;width:20px;text-align:center;}
-.step-text{font-size:13px;color:var(--muted);font-weight:400;}
+/* Upload zone */
+.vs-upload{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;}
+.vs-drop{width:100%;max-width:600px;border:2px dashed rgba(0,212,255,0.3);border-radius:12px;padding:60px 32px;display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;}
+.vs-drop:hover{border-color:rgba(0,212,255,0.7);box-shadow:0 0 30px rgba(0,212,255,0.1);}
+.vs-drop::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 50%,rgba(0,212,255,0.03) 0%,transparent 70%);}
+.vs-drop-icon{font-size:48px;opacity:0.4;}
+.vs-drop-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--neon-blue);text-shadow:0 0 14px rgba(0,212,255,0.8);text-align:center;}
+.vs-drop-sub{font-size:12px;color:rgba(0,212,255,0.6);text-align:center;line-height:1.6;max-width:320px;}
+.vs-fmts{display:flex;gap:6px;margin-top:4px;}
+.vs-fmt{padding:2px 10px;border:1px solid rgba(255,230,0,0.3);border-radius:20px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--neon-yellow);text-shadow:0 0 5px rgba(255,230,0,0.5);}
+.vs-upload-btn{padding:10px 26px;background:rgba(255,85,32,0.15);border:1px solid rgba(255,85,32,0.5);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--neon-orange);cursor:pointer;border-radius:5px;margin-top:4px;position:relative;z-index:1;text-shadow:0 0 8px rgba(255,85,32,0.7);box-shadow:0 0 20px rgba(255,85,32,0.2);transition:all 0.2s;}
+.vs-upload-btn:hover{background:rgba(255,85,32,0.3);box-shadow:0 0 30px rgba(255,85,32,0.4);}
+.vs-hints{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%;max-width:600px;margin-top:16px;}
+.vs-hint{background:var(--ss);border:1px solid var(--sb);border-radius:8px;padding:14px;display:flex;align-items:flex-start;gap:8px;}
+.vs-hi{font-size:16px;flex-shrink:0;}
+.vs-ht{font-size:11px;color:var(--neon-blue);text-shadow:0 0 5px rgba(0,212,255,0.5);margin-bottom:2px;font-weight:500;}
+.vs-hb{font-size:10px;color:rgba(0,212,255,0.5);line-height:1.5;}
 
-/* Step line bar */
-.step-line{
-  height:2px;
-  background:var(--border);
-  border-radius:2px;
-  margin-left:30px;
-  overflow:hidden;
-}
-.step-line-fill{
-  height:100%;
-  width:0%;
-  border-radius:2px;
-  background:linear-gradient(90deg,var(--accent),#ff8c00,#ffe600);
-}
+/* Editor */
+.vs-editor{flex:1;display:none;grid-template-columns:1fr 280px;min-height:0;}
+.vs-editor.on{display:grid;}
+.vs-center{display:flex;flex-direction:column;border-right:1px solid var(--sb);min-height:0;}
+.vs-video-wrap{flex:0 0 auto;background:#000;display:flex;align-items:center;justify-content:center;height:42vh;position:relative;overflow:hidden;}
+.vs-video{max-width:100%;max-height:42vh;width:100%;object-fit:contain;display:block;}
+.vs-vcontrols{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;}
+.vs-vc{padding:5px 12px;border:1px solid rgba(0,212,255,0.25);background:rgba(0,0,0,0.7);color:var(--neon-blue);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;border-radius:2px;cursor:pointer;text-shadow:0 0 5px rgba(0,212,255,0.5);transition:all 0.2s;}
+.vs-vc:hover{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.5);}
+.vs-vc.play{border-color:rgba(255,85,32,0.4);background:rgba(255,85,32,0.12);color:var(--neon-orange);text-shadow:0 0 6px rgba(255,85,32,0.7);}
+.vs-processing{display:none;position:absolute;inset:0;background:rgba(6,5,4,0.88);z-index:10;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.vs-processing.on{display:flex;}
+.vs-spin{width:36px;height:36px;border:3px solid var(--sb);border-top-color:var(--neon-orange);border-radius:50%;animation:spin 0.7s linear infinite;}
+.vs-proc-txt{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--neon-red);text-shadow:0 0 10px rgba(255,34,85,0.8);}
 
-/* DONE */
-.step.done{opacity:0.5;}
-.step.done .step-text{color:var(--success);}
-.step.done .step-line-fill{width:100%;background:var(--success);}
+/* Timeline */
+.vs-tl{background:var(--ss);border-top:1px solid var(--sb);padding:14px 18px;flex-shrink:0;}
+.vs-tl-top{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--neon-yellow);text-shadow:0 0 7px rgba(255,230,0,0.6);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.vs-tl-sel{color:var(--neon-red);text-shadow:0 0 8px rgba(255,34,85,0.7);}
+.vs-track{background:var(--ss2);border:1px solid rgba(0,212,255,0.15);border-radius:4px;height:44px;position:relative;cursor:pointer;overflow:hidden;}
+.vs-selected{position:absolute;top:0;bottom:0;background:rgba(255,34,85,0.15);border:2px solid var(--neon-red);box-shadow:0 0 8px rgba(255,34,85,0.3);pointer-events:none;}
+.vs-playhead{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,0.5);pointer-events:none;}
+.vs-handle{position:absolute;top:0;bottom:0;width:4px;background:var(--neon-red);box-shadow:0 0 8px rgba(255,34,85,0.8);cursor:ew-resize;z-index:2;}
+.vs-handle::before{content:'';position:absolute;top:50%;transform:translateY(-50%);width:10px;height:20px;border-radius:2px;background:var(--neon-red);box-shadow:0 0 8px rgba(255,34,85,0.8);left:-3px;}
+.vs-marks{display:flex;justify-content:space-between;margin-top:4px;}
+.vs-mark{font-family:'DM Mono',monospace;font-size:8px;color:var(--neon-yellow);text-shadow:0 0 4px rgba(255,230,0,0.5);}
+.vs-cut-row{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.vs-lbl{font-family:'DM Mono',monospace;font-size:7px;color:var(--neon-yellow);text-shadow:0 0 5px rgba(255,230,0,0.6);letter-spacing:2px;margin-bottom:3px;}
+.vs-ti{background:var(--ss2);border:1px solid rgba(255,230,0,0.3);border-radius:3px;padding:6px 8px;font-family:'DM Mono',monospace;font-size:11px;color:var(--neon-yellow);text-shadow:0 0 6px rgba(255,230,0,0.7);width:80px;text-align:center;}
+.vs-sep{color:var(--neon-red);text-shadow:0 0 8px rgba(255,34,85,0.7);font-size:14px;}
+.vs-cut-info{flex:1;font-size:11px;color:#fff;text-shadow:0 0 4px rgba(255,255,255,0.4);min-width:100px;}
+.vs-cut-info strong{color:var(--neon-red);text-shadow:0 0 7px rgba(255,34,85,0.7);}
+.vs-btn{padding:7px 14px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all 0.2s;}
+.vs-ghost{background:transparent;border:1px solid rgba(0,212,255,0.3);color:var(--neon-blue);text-shadow:0 0 5px rgba(0,212,255,0.5);}
+.vs-ghost:hover{border-color:rgba(0,212,255,0.6);box-shadow:0 0 10px rgba(0,212,255,0.2);}
+.vs-cut{background:rgba(255,85,32,0.15);border:1px solid rgba(255,85,32,0.5);color:var(--neon-orange);text-shadow:0 0 6px rgba(255,85,32,0.7);box-shadow:0 0 10px rgba(255,85,32,0.2);}
+.vs-cut:hover{background:rgba(255,85,32,0.3);box-shadow:0 0 20px rgba(255,85,32,0.4);}
+.vs-cut:disabled{background:rgba(80,80,80,0.3);border-color:#333;color:#555;cursor:not-allowed;box-shadow:none;text-shadow:none;}
 
-/* ACTIVE */
-.step.active{
-  opacity:1;
-  background:rgba(232,66,10,0.04);
-  animation:stepGlow 2s ease-in-out infinite;
+/* Right panel studio */
+.vs-right{background:var(--ss);display:flex;flex-direction:column;overflow:hidden;}
+.vs-right-head{padding:14px 16px;border-bottom:1px solid var(--sb);flex-shrink:0;}
+.vs-right-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--neon-blue);text-shadow:0 0 10px rgba(0,212,255,0.7);margin-bottom:10px;}
+.vs-mf{margin-bottom:8px;}
+.vs-mf label{display:block;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--neon-yellow);text-shadow:0 0 6px rgba(255,230,0,0.6);margin-bottom:4px;}
+.vs-mf input,.vs-mf select{width:100%;background:var(--ss2);border:1px solid rgba(0,212,255,0.2);padding:7px 10px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--neon-blue);text-shadow:0 0 4px rgba(0,212,255,0.3);border-radius:3px;outline:none;}
+.vs-mf input:focus,.vs-mf select:focus{border-color:rgba(0,212,255,0.5);box-shadow:0 0 8px rgba(0,212,255,0.15);}
+.vs-save{width:100%;padding:9px;background:rgba(255,85,32,0.15);border:1px solid rgba(255,85,32,0.5);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--neon-orange);cursor:pointer;border-radius:3px;margin-top:8px;text-shadow:0 0 7px rgba(255,85,32,0.7);box-shadow:0 0 10px rgba(255,85,32,0.2);transition:all 0.2s;}
+.vs-save:hover{background:rgba(255,85,32,0.3);box-shadow:0 0 20px rgba(255,85,32,0.4);}
+.vs-save:disabled{background:rgba(60,60,60,0.3);border-color:#333;color:#555;cursor:not-allowed;box-shadow:none;text-shadow:none;}
+.vs-clips{flex:1;overflow-y:auto;padding:12px 16px;}
+.vs-clips-ttl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--neon-yellow);text-shadow:0 0 6px rgba(255,230,0,0.6);margin-bottom:8px;}
+.vs-clip{background:var(--ss2);border:1px solid var(--sb);border-radius:5px;padding:8px;margin-bottom:6px;display:flex;gap:8px;align-items:center;}
+.vs-ct{width:44px;height:32px;border-radius:3px;background:linear-gradient(135deg,#1a1a1a,#2a2520);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;}
+.vs-ci{flex:1;min-width:0;}
+.vs-cn{font-size:11px;color:#fff;text-shadow:0 0 4px rgba(255,255,255,0.4);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vs-cm{font-family:'DM Mono',monospace;font-size:8px;color:var(--neon-blue);text-shadow:0 0 4px rgba(0,212,255,0.4);margin-top:2px;}
+.vs-ctag{display:inline-block;padding:1px 5px;background:rgba(255,85,32,0.12);border:1px solid rgba(255,85,32,0.3);border-radius:20px;font-family:'DM Mono',monospace;font-size:7px;color:var(--neon-orange);text-shadow:0 0 4px rgba(255,85,32,0.5);margin-top:2px;}
+.vs-clip-acts{display:flex;gap:3px;flex-shrink:0;}
+.vs-ca{width:24px;height:24px;border-radius:2px;border:1px solid var(--sb);background:transparent;color:rgba(255,34,85,0.6);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all 0.2s;}
+.vs-ca:hover{border-color:var(--neon-red);color:var(--neon-red);text-shadow:0 0 6px rgba(255,34,85,0.7);}
+.vs-empty{text-align:center;padding:20px 0;font-size:11px;color:var(--neon-yellow);text-shadow:0 0 5px rgba(255,230,0,0.5);line-height:1.6;}
+
+/* Archive view */
+.vs-archive{flex:1;display:none;padding:20px;overflow-y:auto;}
+.vs-archive.on{display:block;}
+.vs-arch-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.vs-arch-ttl{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--neon-blue);text-shadow:0 0 12px rgba(0,212,255,0.7);}
+.vs-arch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;}
+.vs-ac{background:var(--ss);border:1px solid var(--sb);border-radius:8px;overflow:hidden;cursor:pointer;transition:all 0.2s;}
+.vs-ac:hover{border-color:rgba(0,212,255,0.3);box-shadow:0 0 14px rgba(0,212,255,0.1);}
+.vs-ac-thumb{height:90px;background:linear-gradient(135deg,#0a0806,#1a1410);display:flex;align-items:center;justify-content:center;position:relative;}
+.vs-ac-play{width:28px;height:28px;background:rgba(255,85,32,0.8);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(255,85,32,0.5);}
+.vs-ac-pi{width:0;height:0;border-style:solid;border-width:5px 0 5px 9px;border-color:transparent transparent transparent #fff;margin-left:2px;}
+.vs-ac-dur{position:absolute;bottom:5px;right:5px;background:rgba(0,0,0,0.8);font-family:'DM Mono',monospace;font-size:8px;color:var(--neon-yellow);text-shadow:0 0 4px rgba(255,230,0,0.5);padding:1px 6px;border-radius:2px;}
+.vs-ac-info{padding:9px;}
+.vs-ac-name{font-size:11px;color:#fff;text-shadow:0 0 4px rgba(255,255,255,0.3);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.vs-ac-tag{display:inline-block;padding:1px 6px;background:rgba(255,85,32,0.1);border:1px solid rgba(255,85,32,0.25);border-radius:20px;font-family:'DM Mono',monospace;font-size:7px;color:var(--neon-orange);text-shadow:0 0 3px rgba(255,85,32,0.5);}
+.vs-ac-date{font-family:'DM Mono',monospace;font-size:8px;color:var(--neon-blue);text-shadow:0 0 3px rgba(0,212,255,0.4);margin-top:3px;}
+.vs-ac-acts{display:flex;gap:4px;margin-top:6px;}
+.vs-acb{flex:1;padding:4px;border:1px solid var(--sb);background:transparent;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;color:rgba(0,212,255,0.5);cursor:pointer;border-radius:2px;transition:all 0.2s;}
+.vs-acb:hover{color:var(--neon-blue);border-color:rgba(0,212,255,0.4);}
+.vs-acb.p{background:rgba(255,85,32,0.1);border-color:rgba(255,85,32,0.3);color:var(--neon-orange);}
+
+/* ══ LOGIN PAGE ══ */
+#page-login{background:var(--sbg);align-items:center;justify-content:center;position:relative;overflow:hidden;}
+#page-login::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(0,212,255,0.05) 0%,transparent 70%);pointer-events:none;}
+.login-box{width:400px;background:var(--ss);border:1px solid rgba(0,212,255,0.15);border-radius:12px;overflow:hidden;position:relative;z-index:1;box-shadow:0 0 40px rgba(0,212,255,0.05);}
+.login-back{position:absolute;top:14px;left:14px;display:flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid rgba(0,212,255,0.25);background:transparent;color:var(--neon-blue);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;text-shadow:0 0 5px rgba(0,212,255,0.5);}
+.login-tabs{display:flex;background:var(--ss2);}
+.login-tab{flex:1;padding:10px;text-align:center;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:rgba(0,212,255,0.4);border-bottom:2px solid transparent;transition:all 0.2s;}
+.login-tab.on{color:var(--neon-blue);text-shadow:0 0 8px rgba(0,212,255,0.7);border-bottom-color:var(--neon-blue);}
+.login-head{padding:24px 28px 18px;border-bottom:1px solid var(--sb);text-align:center;}
+.login-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:3px;}
+.login-logo span{color:var(--neon-orange);text-shadow:0 0 10px rgba(255,85,32,0.8);}
+.login-sub{font-size:11px;color:rgba(0,212,255,0.5);}
+.login-body{padding:24px 28px;}
+.lf{margin-bottom:12px;}
+.lf label{display:block;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--neon-yellow);text-shadow:0 0 5px rgba(255,230,0,0.5);margin-bottom:5px;}
+.lf input{width:100%;background:var(--ss2);border:1px solid rgba(0,212,255,0.2);padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--neon-blue);text-shadow:0 0 3px rgba(0,212,255,0.3);border-radius:4px;outline:none;}
+.lf input:focus{border-color:rgba(0,212,255,0.5);box-shadow:0 0 10px rgba(0,212,255,0.1);}
+.login-opts{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.login-opts label{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(0,212,255,0.5);cursor:pointer;}
+.login-opts a{font-size:11px;color:var(--neon-orange);text-shadow:0 0 5px rgba(255,85,32,0.5);cursor:pointer;}
+.login-btn{width:100%;padding:12px;background:rgba(255,85,32,0.15);border:1px solid rgba(255,85,32,0.5);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--neon-orange);cursor:pointer;border-radius:5px;text-shadow:0 0 8px rgba(255,85,32,0.7);box-shadow:0 0 15px rgba(255,85,32,0.2);transition:all 0.2s;}
+.login-btn:hover{background:rgba(255,85,32,0.3);box-shadow:0 0 25px rgba(255,85,32,0.4);}
+.login-div{display:flex;align-items:center;gap:10px;margin:16px 0;}
+.login-div-line{flex:1;height:1px;background:var(--sb);}
+.login-div-txt{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,212,255,0.3);}
+.login-google{width:100%;padding:10px;background:transparent;border:1px solid rgba(0,212,255,0.2);font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(0,212,255,0.6);cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;}
+.login-google:hover{border-color:rgba(0,212,255,0.4);color:var(--neon-blue);}
+.login-foot{text-align:center;padding:0 28px 20px;font-size:11px;color:rgba(0,212,255,0.4);}
+.login-foot a{color:var(--neon-orange);text-shadow:0 0 5px rgba(255,85,32,0.5);cursor:pointer;}
+
+/* ══ PRICING PAGE ══ */
+#page-pricing{background:var(--sbg);overflow-y:auto;position:relative;}
+#page-pricing::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:700px;height:350px;background:radial-gradient(ellipse,rgba(255,85,32,0.04) 0%,transparent 70%);pointer-events:none;}
+.pr-back{position:absolute;top:14px;left:14px;display:flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid rgba(0,212,255,0.25);background:transparent;color:var(--neon-blue);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;text-shadow:0 0 5px rgba(0,212,255,0.5);}
+.pr-body{padding:60px 40px 80px;max-width:960px;margin:0 auto;}
+.pr-head{text-align:center;margin-bottom:40px;}
+.pr-title{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--neon-blue);text-shadow:0 0 16px rgba(0,212,255,0.7);margin-bottom:6px;}
+.pr-sub{font-size:13px;color:rgba(0,212,255,0.5);max-width:420px;margin:0 auto;line-height:1.6;}
+.pr-toggle{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;}
+.pr-tl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,212,255,0.5);}
+.pr-track{width:38px;height:20px;background:rgba(255,85,32,0.3);border-radius:20px;position:relative;cursor:pointer;border:1px solid rgba(255,85,32,0.4);}
+.pr-thumb{width:14px;height:14px;background:var(--neon-orange);border-radius:50%;position:absolute;top:2px;right:2px;box-shadow:0 0 8px rgba(255,85,32,0.7);}
+.pr-save{background:rgba(255,230,0,0.1);border:1px solid rgba(255,230,0,0.3);color:var(--neon-yellow);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;padding:3px 9px;border-radius:20px;text-shadow:0 0 5px rgba(255,230,0,0.5);}
+.pr-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.pr-card{background:var(--ss);border:1px solid var(--sb);border-radius:12px;padding:24px;position:relative;}
+.pr-card.feat{border-color:rgba(255,85,32,0.35);background:linear-gradient(135deg,rgba(255,85,32,0.04) 0%,var(--ss) 100%);box-shadow:0 0 30px rgba(255,85,32,0.08);}
+.pr-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:rgba(255,85,32,0.2);border:1px solid rgba(255,85,32,0.5);color:var(--neon-orange);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:3px 12px;border-radius:20px;white-space:nowrap;text-shadow:0 0 6px rgba(255,85,32,0.6);}
+.pr-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--neon-blue);text-shadow:0 0 8px rgba(0,212,255,0.5);margin-bottom:3px;}
+.pr-desc{font-size:11px;color:rgba(0,212,255,0.4);margin-bottom:16px;line-height:1.5;}
+.pr-price{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:#fff;text-shadow:0 0 8px rgba(255,255,255,0.3);line-height:1;}
+.pr-price.accent{color:var(--neon-orange);text-shadow:0 0 12px rgba(255,85,32,0.7);}
+.pr-price sup{font-size:14px;vertical-align:top;margin-top:6px;display:inline-block;color:rgba(255,255,255,0.4);}
+.pr-price sub{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:1px;}
+.pr-feats{display:flex;flex-direction:column;gap:7px;margin:18px 0;}
+.pr-feat{display:flex;align-items:flex-start;gap:7px;font-size:11px;color:rgba(0,212,255,0.6);}
+.pr-feat.ok{color:rgba(255,255,255,0.7);}
+.pr-feat.off{color:rgba(255,255,255,0.2);}
+.pf-ok{color:#00ff88;text-shadow:0 0 6px rgba(0,255,136,0.7);font-size:12px;flex-shrink:0;}
+.pf-x{color:rgba(255,255,255,0.15);font-size:12px;flex-shrink:0;}
+.pr-cta{width:100%;padding:10px;border:none;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border-radius:6px;margin-top:6px;transition:all 0.2s;}
+.pr-cta.primary{background:rgba(255,85,32,0.15);border:1px solid rgba(255,85,32,0.5);color:var(--neon-orange);text-shadow:0 0 7px rgba(255,85,32,0.7);box-shadow:0 0 12px rgba(255,85,32,0.2);}
+.pr-cta.primary:hover{background:rgba(255,85,32,0.3);box-shadow:0 0 20px rgba(255,85,32,0.4);}
+.pr-cta.ghost{background:transparent;border:1px solid rgba(0,212,255,0.2);color:rgba(0,212,255,0.5);}
+.pr-cta.dark{background:var(--ss2);border:1px solid var(--sb);color:rgba(255,255,255,0.4);}
+.pr-guarantee{text-align:center;margin-top:32px;}
+.pr-g-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:3px;}
+.pr-g-sub{font-size:11px;color:rgba(255,255,255,0.25);line-height:1.5;}
+
+
+
+/* Waveform */
+.vs-waveform{position:absolute;inset:0;display:flex;align-items:center;gap:2px;padding:4px 6px;}
+.vs-wb{flex:1;border-radius:1px;background:rgba(255,85,32,0.25);transition:background 0.2s;}
+.vs-wb.active{background:rgba(255,85,32,0.7);}
+
+/* ══ BOTTOM NAV BAR ══ */
+.dh-studio{display:none !important;}
+.bottom-nav{display:none;}
+.bnav-btn{display:none;}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:768px){
+  .main-layout{grid-template-columns:1fr;}
+  .rp{margin-top:16px;}
+  .pr-grid{grid-template-columns:1fr;}
+  .vs-hints{grid-template-columns:1fr;}
+  .vs-arch-grid{grid-template-columns:repeat(2,1fr);}
+  .lp{padding-bottom:90px;}
+  .gen-btn{position:fixed;bottom:0;left:0;right:0;border-radius:0;z-index:500;margin-top:0;box-shadow:0 -4px 20px rgba(232,66,10,0.3);}
+  .gen-note{display:none;}
+  .dh{padding:0 16px;}
+  .dh-tag{display:none;}
+  .chips{gap:4px;}
+  .chip{font-size:8px;padding:5px 8px;}
 }
-.step.active .step-text{
-  color:var(--dark);
-  font-weight:600;
-  font-size:14px;
-}
-.step.active .step-text::after{
-  content:'|';
-  margin-left:2px;
-  color:var(--accent);
-  animation:blink 0.7s step-end infinite;
-}
-.step.active .step-line-fill{
-  animation:fillLine 1.8s ease-out forwards;
-}
-@keyframes fillLine{from{width:0%;}to{width:100%;}}
-@keyframes stepGlow{0%,100%{background:rgba(232,66,10,0.04);}50%{background:rgba(232,66,10,0.09);}}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
 </style>
 </head>
 <body>
 
-<div class="loading-wrap">
-  <div class="spinner"></div>
-  <div class="loading-title">Generando contenido<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
-  <div class="progress-wrap"><div class="progress-bar" id="progress"></div></div>
-  <div class="step-counter" id="counter">Paso 1 de 12</div>
+<!-- ══════════════════════════
+     PAGE: MAIN — GENERADOR
+══════════════════════════ -->
+<div class="page active" id="page-main">
+  <div class="dh">
+    <div class="dh-logo" onclick="goTo('page-main')"><span class="logo-land">Land</span><span class="logo-copy">Copy</span></div>
+    <div class="dh-right">
+      <div class="dh-tag">LandCopy · v4.0</div>
+      <button class="dh-btn dh-studio" data-video onclick="goTo('page-studio')">🎬 Video Studio</button>
+      <button class="dh-btn dh-ghost" onclick="goTo('page-pricing')">Planes</button>
+      <button class="dh-btn dh-outline" onclick="goTo('page-login')">Iniciar sesión</button>
+    </div>
+  </div>
 
-  <div class="steps" id="steps-wrap"></div>
+  <div class="main-layout">
+    <!-- LEFT -->
+    <div class="lp">
+      <div class="lp-title">Genera en segundos.</div>
+      <div class="lp-sub">Completa los datos del producto y la IA genera landing, WhatsApp, Meta Ads y más.</div>
+
+      <!-- ── IMAGEN DEL PRODUCTO ── -->
+      <div class="field">
+        <div class="img-upload-label">
+          Imagen del producto
+          <span class="img-pro-badge">PRO</span>
+        </div>
+        <input type="file" id="img-file-input" accept="image/*" style="display:none;" onchange="imgLoad(event)">
+        <div class="img-drop-empty" id="img-drop-empty"
+          onclick="document.getElementById('img-file-input').click()"
+          ondragover="event.preventDefault();this.style.borderColor='rgba(232,66,10,0.5)'"
+          ondragleave="this.style.borderColor=''"
+          ondrop="event.preventDefault();this.style.borderColor='';imgLoad({target:{files:[event.dataTransfer.files[0]]}})">
+          <div class="img-drop-icon">🖼️</div>
+          <div class="img-drop-title">Foto del producto</div>
+          <div class="img-drop-sub">Arrastra o selecciona la imagen.<br>La IA la analiza y genera copy visual.</div>
+          <div class="img-drop-btn" onclick="event.stopPropagation();document.getElementById('img-file-input').click()">Seleccionar imagen</div>
+          <div class="img-formats">
+            <div class="img-fmt">JPG</div><div class="img-fmt">PNG</div><div class="img-fmt">WEBP</div>
+          </div>
+        </div>
+        <div class="img-preview-wrap" id="img-preview-wrap">
+          <img id="img-thumb" class="img-thumb" src="" alt="Producto"/>
+          <div class="img-preview-bar">
+            <span class="img-filename" id="img-filename">imagen.jpg</span>
+            <span class="img-analyzed"><span class="img-analyzed-dot"></span> Lista</span>
+            <button class="img-change-btn" onclick="imgRemove()">Cambiar</button>
+          </div>
+        </div>
+        <div class="ia-reading-note" id="ia-reading-note">
+          👁️ La IA va a <strong>analizar la imagen</strong> — extrae tipo de producto, apariencia, colores y lo integra al copy generado.
+        </div>
+      </div>
+
+      <!-- ── CARACTERÍSTICAS ── -->
+      <div class="field">
+        <label style="display:flex;align-items:center;gap:8px;">
+          Características del producto
+          <span class="chars-hint-tag">Pega de Amazon · MeLi · etc.</span>
+        </label>
+        <textarea id="product-chars" style="min-height:90px;" placeholder="Ejemplo:
+• Gel con glucosamina y colágeno marino
+• Absorción rápida en 3 minutos
+• Frasco 90ml — uso 30 días
+• Sin parabenos ni fragancias
+• Certificado GMP
+..."></textarea>
+        <div class="chars-sub">✦ La IA convierte cada característica en beneficio emocional para el cliente.</div>
+      </div>
+      <div class="field"><label>Nombre del producto</label><input type="text" id="product-name" placeholder="Ej: Masajeador eléctrico cervical"/></div>
+      <div class="field"><label>¿Qué problema resuelve?</label><textarea id="product-problem" placeholder="Ej: Alivia el dolor de cuello en personas que trabajan frente al computador"></textarea></div>
+      <div class="field"><label>Beneficio principal</label><input type="text" id="product-benefit" placeholder="Ej: Alivio en 10 minutos, sin pastillas"/></div>
+      <div class="field-row">
+        <div class="field"><label>Precio oferta</label><input type="text" id="product-price" placeholder="Ej: 45.000"/></div>
+        <div class="field"><label>Precio anterior</label><input type="text" id="product-price-old" placeholder="Ej: 79.000"/></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Categoría</label>
+          <select id="product-category">
+            <option value="salud">Salud y bienestar</option><option value="hogar">Hogar</option>
+            <option value="tecnologia">Tecnología</option><option value="belleza">Belleza</option>
+            <option value="deporte">Deporte</option><option value="cocina">Cocina</option>
+            <option value="moda">Moda</option><option value="ninos">Niños</option>
+            <option value="mascotas">Mascotas</option><option value="otro">Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Clientes actuales (aprox.)</label><input type="text" id="product-clients" placeholder="Ej: 17.000+ clientes satisfechos"/></div>
+
+      <hr class="divider">
+
+      <div class="field"><label>País objetivo</label>
+        <div class="chips">
+          <div class="chip on" onclick="selChip(this,'colombia','country')">🇨🇴 Colombia</div>
+          <div class="chip" onclick="selChip(this,'costarica','country')">🇨🇷 Costa Rica</div>
+          <div class="chip" onclick="selChip(this,'mexico','country')">🇲🇽 México</div>
+          <div class="chip" onclick="selChip(this,'venezuela','country')">🇻🇪 Venezuela</div>
+          <div class="chip" onclick="selChip(this,'ecuador','country')">🇪🇨 Ecuador</div>
+          <div class="chip" onclick="selChip(this,'general','country')">🌎 General</div>
+        </div>
+      </div>
+
+      <div class="field"><label>Tono de comunicación</label>
+        <div class="chips">
+          <div class="chip on" onclick="selChip(this,'urgente','tone')">🔥 Urgente</div>
+          <div class="chip" onclick="selChip(this,'emocional','tone')">❤️ Emocional</div>
+          <div class="chip" onclick="selChip(this,'racional','tone')">🧠 Racional</div>
+          <div class="chip" onclick="selChip(this,'casual','tone')">😎 Casual</div>
+          <div class="chip" onclick="selChip(this,'confianza','tone')">🤝 Confianza</div>
+          <div class="chip" onclick="selChip(this,'premium','tone')">✨ Premium</div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="field"><label>Qué generar</label>
+        <div class="checks">
+          <label class="chk"><span>Landing page ganadora</span><input type="checkbox" id="gen-landing" checked></label>
+          <label class="chk"><span>WhatsApp (3 versiones)</span><input type="checkbox" id="gen-whatsapp" checked></label>
+          <label class="chk"><span>Copy redes sociales</span><input type="checkbox" id="gen-social" checked></label>
+          <label class="chk"><span>Meta Ads</span><input type="checkbox" id="gen-meta" checked></label>
+          <label class="chk"><span>Imágenes IA</span><input type="checkbox" id="gen-images"></label>
+          <label class="chk"><span>Email de seguimiento</span><input type="checkbox" id="gen-email"></label>
+          <label class="chk"><span>Manejo de objeciones</span><input type="checkbox" id="gen-objeciones"></label>
+          <label class="chk"><span>Extras y SEO</span><input type="checkbox" id="gen-extras"></label>
+        </div>
+      </div>
+
+      <button class="gen-btn" id="gen-btn" onclick="generateContent()">
+        <span id="gen-btn-icon">⚡</span> <span id="gen-btn-text">Generar todo ahora</span>
+      </button>
+      <div class="gen-note" id="gen-note">Generado con IA · Backend seguro · LandCopy</div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="rp" id="right-panel">
+      <div id="empty-state" style="position:relative;overflow:hidden;min-height:400px;display:flex;align-items:center;justify-content:center;">
+        <div class="empty-box" style="position:relative;z-index:10;">
+          <div class="empty-icon">⚡</div>
+          <div class="empty-title">Listo para generar</div>
+          <div class="empty-sub">Completa los datos y presiona Generar. En segundos tendrás landing, WhatsApp y redes listo para publicar.</div>
+          <div class="empty-badge">IA · Copy profesional · LandCopy</div>
+        </div>
+      </div>
+
+      <div id="loading-state" style="display:none;">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <div class="loading-text">Generando contenido...</div>
+          <div class="loading-steps">
+            <div class="ls active" id="step-1">⚡ Analizando producto y mercado</div>
+            <div class="ls" id="step-2">🎯 Identificando puntos de dolor del cliente</div>
+            <div class="ls" id="step-3">🧠 Pensando estrategia de conversión</div>
+            <div class="ls" id="step-4">✍️ Escribiendo copy persuasivo profesional</div>
+            <div class="ls" id="step-5">🚀 Aplicando técnicas de ventas poderosas</div>
+            <div class="ls" id="step-6">📱 Adaptando para cada canal de marketing</div>
+            <div class="ls" id="step-7">💰 Optimizando para máximo rendimiento</div>
+            <div class="ls" id="step-8">✅ Finalizando tu landing ganadora</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="output-state" style="display:none;">
+        <div id="value-banner" class="value-banner" style="display:none;"></div>
+        <div class="out-header">
+          <div class="out-title" id="output-product-name">Contenido generado</div>
+          <button class="copy-all" onclick="copyAll()">📋 Copiar todo</button>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="stat-n" id="stat-words">0</div><div class="stat-l">Palabras</div></div>
+          <div class="stat"><div class="stat-n" id="stat-chars">0</div><div class="stat-l">Caracteres</div></div>
+          <div class="stat"><div class="stat-n" id="stat-pieces">0</div><div class="stat-l">Piezas</div></div>
+          <div class="stat"><div class="stat-n" id="stat-country">COL</div><div class="stat-l">País</div></div>
+        </div>
+        <div class="tabs">
+          <div class="tab" id="tab-btn-vision" onclick="showTab('vision')" style="display:none;color:var(--neon-blue);">👁️ Visión IA</div>
+          <div class="tab on" id="tab-btn-landing" onclick="showTab('landing')">Landing</div>
+          <div class="tab" id="tab-btn-ads" onclick="showTab('ads')">Meta Ads</div>
+          <div class="tab" id="tab-btn-imagenes" onclick="showTab('imagenes')">Imágenes</div>
+          <div class="tab" id="tab-btn-whatsapp" onclick="showTab('whatsapp')">WhatsApp</div>
+          <div class="tab" id="tab-btn-social" onclick="showTab('social')">Redes</div>
+          <div class="tab" id="tab-btn-extras" onclick="showTab('extras')">Extras</div>
+        </div>
+        <!-- VISION TAB -->
+        <div class="tc" id="tab-vision">
+          <div id="vision-banner-wrap"></div>
+          <div class="bt-table" id="benefit-transform-wrap" style="display:none;">
+            <div class="bt-table-header">⚡ Características → Beneficios (conversión automática)</div>
+            <div id="benefit-transform-rows"></div>
+          </div>
+          <div class="ocard" id="vision-analysis-card" style="display:none;">
+            <div class="ocard-h"><span class="ocard-t">👁️ Análisis de imagen</span><button class="copy-btn" onclick="copySection('vision-analysis')">Copiar</button></div>
+            <div class="ocard-b"><div class="otext" id="vision-analysis"></div></div>
+          </div>
+        </div>
+        <div class="tc on" id="tab-landing">
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">🏷️ Top Bar de Confianza</span><button class="copy-btn" onclick="copySection('landing-trust-bar')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-trust-bar"></div></div></div>
+          <div class="ocard" id="card-hero">
+            <div class="ocard-h">
+              <span class="ocard-t">🏠 Hero — Titular</span>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <button class="copy-btn" id="regen-hero-btn" onclick="regenerarHero()" style="background:rgba(232,66,10,0.08);border-color:rgba(232,66,10,0.3);color:var(--accent);">↻ Regenerar Hero</button>
+                <button class="copy-btn" onclick="copySection('landing-hero')">Copiar</button>
+              </div>
+            </div>
+            <div class="ocard-b">
+              <!-- Original hero -->
+              <div id="hero-original"><div class="otext" id="landing-hero"></div></div>
+              <!-- Variantes (se muestran después de regenerar) -->
+              <div id="hero-variantes" style="display:none;">
+                <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:14px;">
+                  <button class="hero-var-tab on" onclick="showHeroVar(0,this)">❤️ Emocional</button>
+                  <button class="hero-var-tab" onclick="showHeroVar(1,this)">🧠 Racional</button>
+                  <button class="hero-var-tab" onclick="showHeroVar(2,this)">🔥 Urgente</button>
+                  <button class="hero-var-tab" onclick="showHeroVar(3,this)" style="margin-left:auto;color:var(--muted);">← Original</button>
+                </div>
+                <div id="hero-var-0" class="otext hero-var-content"></div>
+                <div id="hero-var-1" class="otext hero-var-content" style="display:none;"></div>
+                <div id="hero-var-2" class="otext hero-var-content" style="display:none;"></div>
+                <div style="margin-top:10px;display:flex;justify-content:flex-end;">
+                  <button class="copy-btn" onclick="copyHeroVar()" style="background:var(--dark);color:#fff;border-color:var(--dark);">Copiar variante activa</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">😰 El problema</span><div style="display:flex;gap:6px"><button class="copy-btn" style="background:rgba(232,66,10,0.08);border-color:rgba(232,66,10,0.3);color:var(--accent)" onclick="hacerMasVendedor('landing-problem','El Problema',this)">↑ Mejorar</button><button class="copy-btn" onclick="copySection('landing-problem')">Copiar</button></div></div><div class="ocard-b"><div class="otext" id="landing-problem"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">✅ La solución</span><div style="display:flex;gap:6px"><button class="copy-btn" style="background:rgba(232,66,10,0.08);border-color:rgba(232,66,10,0.3);color:var(--accent)" onclick="hacerMasVendedor('landing-solution','La Solución',this)">↑ Mejorar</button><button class="copy-btn" onclick="copySection('landing-solution')">Copiar</button></div></div><div class="ocard-b"><div class="otext" id="landing-solution"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">💪 Beneficios reales</span><div style="display:flex;gap:6px"><button class="copy-btn" style="background:rgba(232,66,10,0.08);border-color:rgba(232,66,10,0.3);color:var(--accent)" onclick="hacerMasVendedor('landing-benefits','Beneficios',this)">↑ Mejorar</button><button class="copy-btn" onclick="copySection('landing-benefits')">Copiar</button></div></div><div class="ocard-b"><div class="otext" id="landing-benefits"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">⭐ Testimonios</span><div style="display:flex;gap:6px"><button class="copy-btn" style="background:rgba(232,66,10,0.08);border-color:rgba(232,66,10,0.3);color:var(--accent)" onclick="hacerMasVendedor('landing-testimonials','Testimonios',this)">↑ Mejorar</button><button class="copy-btn" onclick="copySection('landing-testimonials')">Copiar</button></div></div><div class="ocard-b"><div class="otext" id="landing-testimonials"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">🎯 Ideal para / Usos</span><button class="copy-btn" onclick="copySection('landing-uses')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-uses"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">📦 ¿Qué incluye?</span><button class="copy-btn" onclick="copySection('landing-whats-included')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-whats-included"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">❓ FAQ — Preguntas frecuentes</span><button class="copy-btn" onclick="copySection('landing-faq')">Copiar</button></div><div class="ocard-b"><div class="otext" id="landing-faq"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">🚀 CTA Final</span><div style="display:flex;gap:6px"><button class="copy-btn" style="background:rgba(232,66,10,0.08);border-color:rgba(232,66,10,0.3);color:var(--accent)" onclick="hacerMasVendedor('landing-cta','CTA Final',this)">↑ Mejorar</button><button class="copy-btn" onclick="copySection('landing-cta')">Copiar</button></div></div><div class="ocard-b"><div class="otext" id="landing-cta"></div></div></div>
+        </div>
+        <div class="tc" id="tab-ads">
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">🎯 Campaña completa</span><button class="copy-btn" onclick="copySection('meta-campaign')">Copiar</button></div><div class="ocard-b"><div class="otext" id="meta-campaign"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">📢 5 anuncios diferentes</span><div style="display:flex;gap:6px"><button class="copy-btn" style="background:rgba(232,66,10,0.08);border-color:rgba(232,66,10,0.3);color:var(--accent)" onclick="hacerMasVendedor('meta-ads','Meta Ads',this)">↑ Mejorar</button><button class="copy-btn" onclick="copySection('meta-ads')">Copiar</button></div></div><div class="ocard-b"><div class="otext" id="meta-ads"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">🧲 Hooks para anuncios</span><button class="copy-btn" onclick="copySection('ad-hooks')">Copiar</button></div><div class="ocard-b"><div class="otext" id="ad-hooks"></div></div></div>
+        </div>
+        <div class="tc" id="tab-imagenes">
+          <div class="ocard">
+            <div class="ocard-h">
+              <span class="ocard-t">🖼️ Prompts para imágenes</span>
+              <div style="display:flex;gap:6px;">
+                <button class="copy-btn" id="regen-prompts-btn" onclick="regenerarImagePrompts()" style="background:rgba(232,66,10,0.08);border-color:rgba(232,66,10,0.3);color:var(--accent);">⚡ Prompts profesionales</button>
+                <button class="copy-btn" onclick="copySection('image-prompts')">Copiar</button>
+              </div>
+            </div>
+            <div class="ocard-b"><div class="otext" id="image-prompts"></div></div>
+          </div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">✍️ Texto sobre imagen</span><button class="copy-btn" onclick="copySection('image-overlay')">Copiar</button></div><div class="ocard-b"><div class="otext" id="image-overlay"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">🎬 Ideas UGC</span><button class="copy-btn" onclick="copySection('ugc-ideas')">Copiar</button></div><div class="ocard-b"><div class="otext" id="ugc-ideas"></div></div></div>
+        </div>
+        <div class="tc" id="tab-whatsapp">
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">💬 Primer contacto frío</span><div style="display:flex;gap:6px"><button class="copy-btn" style="background:rgba(232,66,10,0.08);border-color:rgba(232,66,10,0.3);color:var(--accent)" onclick="hacerMasVendedor('wa-cold','WhatsApp Frío',this)">↑ Mejorar</button><button class="copy-btn" onclick="copySection('wa-cold')">Copiar</button></div></div><div class="ocard-b"><div class="otext" id="wa-cold"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">💬 Seguimiento</span><div style="display:flex;gap:6px"><button class="copy-btn" style="background:rgba(232,66,10,0.08);border-color:rgba(232,66,10,0.3);color:var(--accent)" onclick="hacerMasVendedor('wa-followup','WhatsApp Seguimiento',this)">↑ Mejorar</button><button class="copy-btn" onclick="copySection('wa-followup')">Copiar</button></div></div><div class="ocard-b"><div class="otext" id="wa-followup"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">💬 Cierre de venta</span><div style="display:flex;gap:6px"><button class="copy-btn" style="background:rgba(232,66,10,0.08);border-color:rgba(232,66,10,0.3);color:var(--accent)" onclick="hacerMasVendedor('wa-close','WhatsApp Cierre',this)">↑ Mejorar</button><button class="copy-btn" onclick="copySection('wa-close')">Copiar</button></div></div><div class="ocard-b"><div class="otext" id="wa-close"></div></div></div>
+        </div>
+        <div class="tc" id="tab-social">
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">📸 Instagram / Facebook</span><div style="display:flex;gap:6px"><button class="copy-btn" style="background:rgba(232,66,10,0.08);border-color:rgba(232,66,10,0.3);color:var(--accent)" onclick="hacerMasVendedor('social-post','Post Instagram',this)">↑ Mejorar</button><button class="copy-btn" onclick="copySection('social-post')">Copiar</button></div></div><div class="ocard-b"><div class="otext" id="social-post"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">🎬 Guión TikTok</span><button class="copy-btn" onclick="copySection('social-tiktok')">Copiar</button></div><div class="ocard-b"><div class="otext" id="social-tiktok"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">#️⃣ Hashtags</span><button class="copy-btn" onclick="copySection('social-hashtags')">Copiar</button></div><div class="ocard-b"><div class="otext" id="social-hashtags"></div></div></div>
+        </div>
+        <div class="tc" id="tab-extras">
+          <div class="ocard" id="card-email" style="display:none;"><div class="ocard-h"><span class="ocard-t">📧 Email</span><button class="copy-btn" onclick="copySection('extra-email')">Copiar</button></div><div class="ocard-b"><div class="otext" id="extra-email"></div></div></div>
+          <div class="ocard" id="card-objeciones" style="display:none;"><div class="ocard-h"><span class="ocard-t">🛡️ Objeciones</span><button class="copy-btn" onclick="copySection('extra-objeciones')">Copiar</button></div><div class="ocard-b"><div class="otext" id="extra-objeciones"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">📦 Descripción tienda</span><button class="copy-btn" onclick="copySection('extra-desc')">Copiar</button></div><div class="ocard-b"><div class="otext" id="extra-desc"></div></div></div>
+          <div class="ocard"><div class="ocard-h"><span class="ocard-t">🔑 SEO Keywords</span><button class="copy-btn" onclick="copySection('extra-seo')">Copiar</button></div><div class="ocard-b"><div class="otext" id="extra-seo"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     PAGE: VIDEO STUDIO
+══════════════════════════ -->
+<div class="page" id="page-studio">
+  <div class="vs-header">
+    <button class="vs-back" onclick="goTo('page-main')">← Volver a LandCopy</button>
+    <div class="vs-header-title">
+      <div class="vs-dot"></div>
+      Video Studio
+      <span id="vs-filename" style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,230,0,0.7);font-weight:400;text-shadow:0 0 5px rgba(255,230,0,0.4);"></span>
+    </div>
+    <div class="vs-nav">
+      <button class="vs-nav-btn on" id="vs-btn-editor" onclick="vsShowEditor()">Editor</button>
+      <button class="vs-nav-btn" id="vs-btn-archive" onclick="vsShowArchive()">Archivo (<span id="vs-arch-count">0</span>)</button>
+      <button class="vs-new" onclick="vsNewVideo()">+ Nuevo video</button>
+    </div>
+  </div>
+
+  <!-- Upload -->
+  <div class="vs-upload" id="vs-upload">
+    <div class="vs-drop" id="vs-drop" onclick="document.getElementById('vs-file-input').click()">
+      <div class="vs-drop-icon">🎬</div>
+      <div class="vs-drop-title">Sube tu video para empezar</div>
+      <div class="vs-drop-sub">Arrastra el video aquí o haz clic para seleccionarlo desde tu computador</div>
+      <div class="vs-fmts">
+        <div class="vs-fmt">MP4</div><div class="vs-fmt">MOV</div><div class="vs-fmt">AVI</div><div class="vs-fmt">MKV</div>
+      </div>
+      <button class="vs-upload-btn" onclick="event.stopPropagation();document.getElementById('vs-file-input').click()">Seleccionar video</button>
+    </div>
+    <div class="vs-hints">
+      <div class="vs-hint"><div class="vs-hi">✂️</div><div><div class="vs-ht">Corta con precisión</div><div class="vs-hb">Selecciona inicio y fin exacto. Las veces que quieras.</div></div></div>
+      <div class="vs-hint"><div class="vs-hi">📁</div><div><div class="vs-ht">Organiza por landing</div><div class="vs-hb">Cada clip se archiva con título y landing asociada.</div></div></div>
+      <div class="vs-hint"><div class="vs-hi">⬇️</div><div><div class="vs-ht">Descarga y publica</div><div class="vs-hb">Exporta listo para Meta Ads, TikTok o Instagram.</div></div></div>
+    </div>
+    <input type="file" id="vs-file-input" accept="video/*" style="display:none;" onchange="vsLoadVideo(event)">
+  </div>
+
+  <!-- Editor -->
+  <div class="vs-editor" id="vs-editor">
+    <div class="vs-center">
+      <div class="vs-video-wrap" id="vs-vwrap">
+        <!-- Drop zone dentro del editor -->
+        <div id="vs-editor-drop" onclick="document.getElementById('vs-file-input2').click()"
+          style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;width:100%;height:100%;cursor:pointer;border:2px dashed rgba(0,212,255,0.3);border-radius:8px;margin:16px;transition:all 0.3s;"
+          ondragover="event.preventDefault();this.style.borderColor='rgba(0,212,255,0.7)'"
+          ondragleave="this.style.borderColor='rgba(0,212,255,0.3)'"
+          ondrop="event.preventDefault();this.style.borderColor='rgba(0,212,255,0.3)';if(event.dataTransfer.files[0])vsLoadVideo({target:{files:[event.dataTransfer.files[0]]}})">
+          <div style="font-size:40px;opacity:0.4;">🎬</div>
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--neon-blue);text-shadow:0 0 12px rgba(0,212,255,0.8);">Sube tu video aquí</div>
+          <div style="font-size:11px;color:rgba(0,212,255,0.5);">Arrastra o haz clic para seleccionar</div>
+          <button style="padding:8px 20px;background:rgba(255,85,32,0.15);border:1px solid rgba(255,85,32,0.5);color:var(--neon-orange);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;border-radius:4px;cursor:pointer;text-shadow:0 0 6px rgba(255,85,32,0.6);" onclick="event.stopPropagation();document.getElementById('vs-file-input2').click()">Seleccionar video</button>
+          <input type="file" id="vs-file-input2" accept="video/*" style="display:none;" onchange="vsLoadVideo(event)">
+        </div>
+        <!-- Video player -->
+        <div id="vs-video-wrap-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;position:relative;">
+          <video id="vs-video" class="vs-video" preload="metadata"></video>
+          <div class="vs-vcontrols">
+            <button class="vs-vc" onclick="vsSeek(-5)">⏮ -5s</button>
+            <button class="vs-vc play" id="vs-play-btn" onclick="vsTogglePlay()">▶ Reproducir</button>
+            <button class="vs-vc" onclick="vsSeek(5)">+5s ⏭</button>
+          </div>
+        </div>
+        <div class="vs-processing" id="vs-processing">
+          <div class="vs-spin"></div>
+          <div class="vs-proc-txt" id="vs-proc-txt">Procesando clip...</div>
+        </div>
+      </div>
+      <div class="vs-tl">
+        <div class="vs-tl-top">
+          <span>🎚 Timeline — arrastra los handles para seleccionar</span>
+          <span class="vs-tl-sel" id="vs-sel-info">Selecciona un fragmento</span>
+        </div>
+        <div class="vs-track" id="vs-track">
+          <div class="vs-waveform" id="vs-waveform"></div>
+          <div class="vs-selected" id="vs-selected" style="left:20%;width:45%;"></div>
+          <div class="vs-playhead" id="vs-playhead" style="left:0%;"></div>
+          <div class="vs-handle" id="vs-hs" style="left:20%;"></div>
+          <div class="vs-handle" id="vs-he" style="left:65%;"></div>
+        </div>
+        <div class="vs-marks" id="vs-marks">
+          <span class="vs-mark">0:00</span><span class="vs-mark">--</span><span class="vs-mark">--</span><span class="vs-mark">--</span><span class="vs-mark">0:00</span>
+        </div>
+        <div class="vs-cut-row">
+          <div>
+            <div class="vs-lbl">Inicio</div>
+            <input class="vs-ti" id="vs-si" value="00:00" onchange="vsFromInput('start')"/>
+          </div>
+          <div class="vs-sep">→</div>
+          <div>
+            <div class="vs-lbl">Fin</div>
+            <input class="vs-ti" id="vs-ei" value="00:00" onchange="vsFromInput('end')"/>
+          </div>
+          <div class="vs-cut-info" id="vs-ci">Carga un video</div>
+          <button class="vs-btn vs-ghost" onclick="vsPreview()">▶ Ver selección</button>
+          <button class="vs-btn vs-cut" id="vs-cut-btn" onclick="vsCut()" disabled>⚡ Exportar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="vs-right">
+      <div class="vs-right-head">
+        <div class="vs-right-title">Guardar clip en archivo</div>
+        <div class="vs-mf"><label>Nombre del clip</label><input type="text" id="vs-clip-name" placeholder="Ej: Gancho principal 30s"/></div>
+        <div class="vs-mf"><label>Landing asociada</label>
+          <input type="text" id="vs-clip-landing" 
+            placeholder="Escribe o elige una landing..."
+            list="vs-landings-list"
+            autocomplete="off"/>
+          <datalist id="vs-landings-list">
+            <option value="Masajeador cervical — Colombia">
+            <option value="Candado moto — Costa Rica">
+            <option value="Casco protector — México">
+            <option value="Rodillax — Colombia">
+            <option value="Lumbrax — Colombia">
+            <option value="Relaxpie — Colombia">
+          </datalist>
+        </div>
+        <div class="vs-mf"><label>Uso del clip</label>
+          <select id="vs-clip-use">
+            <option>Meta Ads</option><option>TikTok / Reels</option>
+            <option>WhatsApp</option><option>Historia</option><option>Otro</option>
+          </select>
+        </div>
+        <button class="vs-save" id="vs-save-btn" onclick="vsSave()" disabled>💾 Cortar y guardar</button>
+      </div>
+      <div class="vs-clips">
+        <div class="vs-clips-ttl">Clips guardados (<span id="vs-clips-count">0</span>)</div>
+        <div id="vs-clips-container"><div class="vs-empty">Aún no hay clips.<br>Corta tu primer clip.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Archive -->
+  <div class="vs-archive" id="vs-archive">
+    <div class="vs-arch-h">
+      <div class="vs-arch-ttl">Mis clips <span id="vs-arch-ttl-count" style="color:rgba(0,212,255,0.4);font-size:14px;font-weight:400;">(0 clips)</span></div>
+    </div>
+    <div class="vs-arch-grid" id="vs-arch-grid">
+      <div style="grid-column:1/-1;text-align:center;padding:40px;color:rgba(0,212,255,0.3);font-size:12px;">Aún no hay clips. Corta tu primer video.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     PAGE: LOGIN
+══════════════════════════ -->
+<div class="page" id="page-login">
+  <button class="login-back" onclick="goTo('page-main')">← Volver</button>
+  <div class="login-box">
+    <div class="login-tabs">
+      <div class="login-tab on" id="lt-login">Iniciar sesión</div>
+      <div class="login-tab" id="lt-register" onclick="document.getElementById('lt-login').classList.remove('on');this.classList.add('on');">Crear cuenta</div>
+    </div>
+    <div class="login-head">
+      <div class="login-logo">Land<span>Copy</span></div>
+      <div class="login-sub">Accede a tu generador de contenido IA</div>
+    </div>
+    <div class="login-body">
+      <div class="lf"><label>Correo electrónico</label><input type="email" placeholder="tu@email.com"/></div>
+      <div class="lf"><label>Contraseña</label><input type="password" placeholder="••••••••"/></div>
+      <div class="login-opts">
+        <label><input type="checkbox" style="accent-color:var(--neon-orange);"/> Recordarme</label>
+        <a>¿Olvidaste tu contraseña?</a>
+      </div>
+      <button class="login-btn" onclick="goTo('page-main')">Entrar a LandCopy</button>
+      <div class="login-div"><div class="login-div-line"></div><div class="login-div-txt">o continúa con</div><div class="login-div-line"></div></div>
+      <button class="login-google">
+        <svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.17z"/><path fill="#34A353" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.3z"/></svg>
+        Continuar con Google
+      </button>
+    </div>
+    <div class="login-foot">¿No tienes cuenta? <a onclick="goTo('page-pricing')">Ver planes y registrarte →</a></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     PAGE: PRICING
+══════════════════════════ -->
+<div class="page" id="page-pricing">
+  <button class="pr-back" onclick="goTo('page-main')">← Volver</button>
+  <div class="pr-body">
+    <div class="pr-head">
+      <div class="pr-title">Elige tu plan</div>
+      <div class="pr-sub">Genera contenido profesional, corta videos y organiza tu marketing desde un solo lugar.</div>
+      <div class="pr-toggle">
+        <span class="pr-tl">Mensual</span>
+        <div class="pr-track"><div class="pr-thumb"></div></div>
+        <span class="pr-tl">Anual</span>
+        <span class="pr-save">Ahorra 30%</span>
+      </div>
+    </div>
+    <div class="pr-grid">
+      <div class="pr-card">
+        <div class="pr-name">Básico</div>
+        <div class="pr-desc">Para empezar a generar copy profesional</div>
+        <div class="pr-price"><sup>$</sup>9<sub>/mes</sub></div>
+        <div class="pr-feats">
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>30 generaciones al mes</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Landing, WhatsApp y redes</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>3 países disponibles</div>
+          <div class="pr-feat off"><span class="pf-x">✗</span>Meta Ads e imágenes IA</div>
+          <div class="pr-feat off"><span class="pf-x">✗</span>Soporte por WhatsApp</div>
+        </div>
+        <button class="pr-cta dark" onclick="goTo('page-login')">Empezar — $9/mes</button>
+      </div>
+      <div class="pr-card feat">
+        <div class="pr-badge">⭐ Más popular</div>
+        <div class="pr-name">Pro</div>
+        <div class="pr-desc">Para vendedores activos que quieren escalar</div>
+        <div class="pr-price accent"><sup style="color:rgba(255,85,32,0.5);">$</sup>14<sub style="color:rgba(255,85,32,0.4);">/mes</sub></div>
+        <div class="pr-feats">
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Generaciones ilimitadas</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Todos los módulos activos</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Los 5 países + General</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Meta Ads + imágenes IA</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Soporte por WhatsApp</div>
+        </div>
+        <button class="pr-cta primary" onclick="goTo('page-login')">Suscribirse — $14/mes</button>
+        <div style="text-align:center;margin-top:7px;font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,85,32,0.4);">Cancela cuando quieras</div>
+      </div>
+      <div class="pr-card">
+        <div class="pr-name">Equipo</div>
+        <div class="pr-desc">Para tiendas con varios discípulos</div>
+        <div class="pr-price"><sup>$</sup>18<sub>/mes</sub></div>
+        <div class="pr-feats">
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Todo lo del plan Pro</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Hasta 3 usuarios</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Historial compartido</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Soporte prioritario</div>
+          <div class="pr-feat ok"><span class="pf-ok">✓</span>Onboarding personalizado</div>
+        </div>
+        <button class="pr-cta ghost" onclick="goTo('page-login')">Contactar para demo</button>
+      </div>
+    </div>
+    <div class="pr-guarantee">
+      <div style="font-size:20px;margin-bottom:6px;">🛡️</div>
+      <div class="pr-g-title">Garantía 7 días</div>
+      <div class="pr-g-sub">Si en los primeros 7 días no ves el valor, te devolvemos el dinero. Sin preguntas.</div>
+    </div>
+  </div>
 </div>
 
 <script>
-const stepsData = [
-  { icon:'⚡', text:'Analizando producto y mercado' },
-  { icon:'🤖', text:'Usando IA entrenada para tu nicho' },
-  { icon:'🎯', text:'Identificando puntos de dolor del cliente' },
-  { icon:'❤️', text:'Estudio emocional de compra' },
-  { icon:'🌎', text:'Análisis por país elegido' },
-  { icon:'🎭', text:'Análisis por tono elegido' },
-  { icon:'🧠', text:'Pensando estrategia de conversión' },
-  { icon:'✍️', text:'Escribiendo copy persuasivo profesional' },
-  { icon:'🚀', text:'Aplicando técnicas de ventas poderosas' },
-  { icon:'📱', text:'Adaptando para cada canal de marketing' },
-  { icon:'💰', text:'Optimizando para máximo rendimiento' },
-  { icon:'✅', text:'Finalizando tu landing ganadora' },
-];
+// ══ ACTIVAR/DESACTIVAR VIDEO — cambiar a true para reactivar ══
+const VIDEO_ENABLED = false;
 
-const wrap = document.getElementById('steps-wrap');
-stepsData.forEach((s, i) => {
-  wrap.innerHTML += `
-    <div class="step" id="s${i}">
-      <div class="step-row">
-        <span class="step-icon">${s.icon}</span>
-        <span class="step-text">${s.text}</span>
-      </div>
-      <div class="step-line"><div class="step-line-fill" id="fill${i}"></div></div>
-    </div>`;
-});
-
-let current = 0;
-const progress = document.getElementById('progress');
-const counter = document.getElementById('counter');
-const total = stepsData.length;
-
-function advance() {
-  if(current < total) {
-    if(current > 0) {
-      document.getElementById(`s${current-1}`).classList.remove('active');
-      document.getElementById(`s${current-1}`).classList.add('done');
-    }
-    document.getElementById(`s${current}`).classList.add('active');
-    // Reset and restart fill animation
-    const fill = document.getElementById(`fill${current}`);
-    fill.style.animation = 'none';
-    fill.offsetHeight; // reflow
-    fill.style.animation = '';
-    const pct = Math.round(((current+1)/total)*100);
-    progress.style.width = pct + '%';
-    counter.textContent = `Paso ${current+1} de ${total}`;
-    current++;
-  } else {
-    // Reset demo
-    document.querySelectorAll('.step').forEach(el => el.classList.remove('active','done'));
-    document.querySelectorAll('.step-line-fill').forEach(el => {el.style.animation='none';el.offsetHeight;el.style.animation='';});
-    document.getElementById('s0').classList.add('active');
-    current = 1;
-    progress.style.width = '8%';
-    counter.textContent = 'Paso 1 de 12';
+// ── NAVEGACIÓN ──────────────────────────────
+let currentPage = 'page-main';
+function goToStudio(view) {
+  goTo('page-studio');
+  setTimeout(() => {
+    if(view === 'upload') vsNewVideo();
+    else if(view === 'editor') vsShowEditor();
+    else if(view === 'archive') vsShowArchive();
+    // Update bottom nav
+    const map = {'upload':'bnav-upload','editor':'bnav-editor','archive':'bnav-archive'};
+    document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('on','studio-on','login-on','pricing-on'));
+    if(map[view]) document.getElementById(map[view]).classList.add('studio-on');
+  }, 50);
+}
+function goTo(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  currentPage = pageId;
+  window.scrollTo(0,0);
+  // Update bottom nav
+  document.querySelectorAll('.bnav-btn').forEach(b => {
+    b.classList.remove('on','studio-on','login-on','pricing-on');
+  });
+  const map = {
+    'page-main': ['bnav-main','on'],
+    'page-login': ['bnav-login','login-on'],
+    'page-pricing': ['bnav-pricing','pricing-on'],
+    'page-editor': ['bnav-advanced','on']
+  };
+  if(map[pageId]) {
+    document.getElementById(map[pageId][0]).classList.add(map[pageId][1]);
   }
 }
 
-advance();
-setInterval(advance, 1800);
+// ── GENERADOR ───────────────────────────────
+let selCountry = 'colombia', selTone = 'urgente', allContent = {};
+const countryData = {
+  colombia:{code:'COL',currency:'COP'},costarica:{code:'CRC',currency:'CRC'},
+  mexico:{code:'MEX',currency:'MXN'},venezuela:{code:'VEN',currency:'USD'},
+  ecuador:{code:'ECU',currency:'USD'},general:{code:'LAT',currency:'USD'}
+};
+function selChip(el, val, type) {
+  el.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  if(type==='country') selCountry=val;
+  else selTone=val;
+}
+function showTab(tab) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('on'));
+  document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('on');
+  document.getElementById('tab-'+tab).classList.add('on');
+}
+function fmt(data) {
+  if(!data) return '';
+  if(typeof data==='string') return data;
+  if(Array.isArray(data)) return data.map(fmt).join('\n\n');
+  if(typeof data==='object') return Object.entries(data).map(([k,v])=>k+': '+fmt(v)).join('\n\n');
+  return String(data);
+}
+
+function renderContent(el, text) {
+  if(!el || !text) return;
+  // Split by double newline or numbered items or lines starting with emoji/bullet
+  const raw = typeof text === 'string' ? text : fmt(text);
+  // Split into blocks by blank lines
+  const blocks = raw.split(/\n{2,}/);
+  if(blocks.length <= 1) {
+    // Single block — split by single newlines
+    const lines = raw.split('\n').filter(l => l.trim());
+    if(lines.length <= 1) {
+      el.innerHTML = `<p style="margin:0;line-height:1.7;">${escHtml(raw)}</p>`;
+    } else {
+      el.innerHTML = lines.map(l =>
+        `<p style="margin:0 0 10px 0;line-height:1.7;padding-bottom:10px;border-bottom:1px solid var(--border);">${escHtml(l.trim())}</p>`
+      ).join('');
+    }
+  } else {
+    el.innerHTML = blocks.map(b =>
+      `<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);line-height:1.7;">${escHtml(b.trim()).replace(/\n/g,'<br>')}</div>`
+    ).join('');
+  }
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+// ── IMAGEN DEL PRODUCTO ────────────────────
+let imgBase64 = null;
+let imgMimeType = 'image/jpeg';
+
+function imgLoad(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  imgMimeType = 'image/jpeg';
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    // Comprimir imagen antes de enviar — máximo 800px, calidad 0.7
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 800;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL('image/jpeg', 0.7);
+      imgBase64 = compressed.split(',')[1];
+      document.getElementById('img-thumb').src = compressed;
+      document.getElementById('img-filename').textContent = file.name;
+      document.getElementById('img-drop-empty').style.display = 'none';
+      document.getElementById('img-preview-wrap').classList.add('visible');
+      document.getElementById('ia-reading-note').classList.add('visible');
+      document.getElementById('gen-btn-icon').textContent = '👁️';
+      document.getElementById('gen-btn-text').textContent = 'Generar con imagen';
+      document.getElementById('gen-note').textContent = 'GPT-4o analiza la imagen · copy visual real · LandCopy Pro';
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function imgRemove() {
+  imgBase64 = null;
+  document.getElementById('img-file-input').value = '';
+  document.getElementById('img-drop-empty').style.display = 'block';
+  document.getElementById('img-preview-wrap').classList.remove('visible');
+  document.getElementById('ia-reading-note').classList.remove('visible');
+  document.getElementById('gen-btn-icon').textContent = '⚡';
+  document.getElementById('gen-btn-text').textContent = 'Generar todo ahora';
+  document.getElementById('gen-note').textContent = 'Generado con IA · Backend seguro · LandCopy';
+}
+
+// ── REGENERAR IMAGE PROMPTS ──────────────────
+async function regenerarImagePrompts() {
+  const name = document.getElementById('product-name').value.trim();
+  if(!name) { alert('Primero genera el copy principal.'); return; }
+
+  const btn = document.getElementById('regen-prompts-btn');
+  btn.textContent = '⏳ Generando...';
+  btn.disabled = true;
+
+  try {
+    const resp = await fetch('/api/imageprompts', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name,
+        problem: document.getElementById('product-problem').value.trim(),
+        benefit: document.getElementById('product-benefit').value.trim(),
+        category: document.getElementById('product-category').value,
+        country: selCountry
+      })
+    });
+    const data = await resp.json();
+    if(data.prompt1) {
+      const el = document.getElementById('image-prompts');
+      const text = [data.prompt1, data.prompt2, data.prompt3, data.prompt4, data.prompt5]
+        .filter(Boolean)
+        .map((p, i) => `${i+1}. ${p}`)
+        .join('\n\n');
+      renderContent(el, text);
+    }
+  } catch(err) {
+    console.error(err);
+  } finally {
+    btn.textContent = '⚡ Prompts profesionales';
+    btn.disabled = false;
+  }
+}
+
+// ── HAZLO MÁS VENDEDOR ──────────────────────
+async function hacerMasVendedor(cardId, sectionName, btnEl) {
+  const contentEl = document.getElementById(cardId);
+  if(!contentEl) return;
+  const originalText = contentEl.innerText || contentEl.textContent;
+  if(!originalText || originalText.trim().length < 10) return;
+
+  const country = selCountry;
+  btnEl.textContent = '⏳ Mejorando...';
+  btnEl.disabled = true;
+
+  try {
+    const resp = await fetch('/api/generate', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name: document.getElementById('product-name').value.trim(),
+        country,
+        improveOnly: true,
+        originalText,
+        sectionName
+      })
+    });
+    const data = await resp.json();
+    if(!data.improved) throw new Error('Sin respuesta');
+
+    // Guardar original y mostrar tabs
+    const parent = contentEl.closest('.ocard-b');
+    const originalHTML = contentEl.outerHTML;
+
+    // Crear estructura con tabs
+    parent.innerHTML = `
+      <div class="improve-tabs">
+        <button class="improve-tab on" onclick="switchImproveTab('original-${cardId}','improved-${cardId}',0,this.closest('.improve-tabs'))">📄 Original</button>
+        <button class="improve-tab" onclick="switchImproveTab('original-${cardId}','improved-${cardId}',1,this.closest('.improve-tabs'))">⚡ Mejorado</button>
+      </div>
+      <div id="original-${cardId}" class="otext"></div>
+      <div id="improved-${cardId}" class="otext" style="display:none;"></div>
+      <div style="margin-top:10px;display:flex;justify-content:flex-end;gap:8px;">
+        <button class="copy-btn" onclick="copyImproved('improved-${cardId}')" style="background:var(--dark);color:#fff;border-color:var(--dark);">Copiar versión mejorada</button>
+      </div>`;
+
+    // Renderizar contenido en ambos paneles
+    renderContent(document.getElementById(`original-${cardId}`), originalText);
+    renderContent(document.getElementById(`improved-${cardId}`), data.improved);
+
+    // Mostrar el ORIGINAL por defecto
+    switchImproveTab(`original-${cardId}`, `improved-${cardId}`, 0, parent.querySelector('.improve-tabs'));
+
+  } catch(err) {
+    console.error(err);
+    btnEl.textContent = '↑ Hazlo más vendedor';
+  } finally {
+    btnEl.disabled = false;
+    if(btnEl.textContent === '⏳ Mejorando...') btnEl.textContent = '↑ Hazlo más vendedor';
+  }
+}
+
+function switchImproveTab(originalId, improvedId, idx, tabsEl) {
+  tabsEl.querySelectorAll('.improve-tab').forEach(t => t.classList.remove('on'));
+  tabsEl.querySelectorAll('.improve-tab')[idx].classList.add('on');
+  document.getElementById(originalId).style.display = idx === 0 ? 'block' : 'none';
+  document.getElementById(improvedId).style.display = idx === 1 ? 'block' : 'none';
+}
+
+function copyImproved(elId) {
+  const el = document.getElementById(elId);
+  if(el) navigator.clipboard.writeText(el.innerText || el.textContent);
+}
+
+// ── REGENERAR HERO ──────────────────────────
+let heroVarActive = 0;
+
+function showHeroVar(idx, btn) {
+  document.querySelectorAll('.hero-var-tab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.hero-var-content').forEach(el => el.style.display = 'none');
+  if(idx === 3) {
+    // Volver al original
+    document.getElementById('hero-variantes').style.display = 'none';
+    document.getElementById('hero-original').style.display = 'block';
+  } else {
+    heroVarActive = idx;
+    document.getElementById(`hero-var-${idx}`).style.display = 'block';
+  }
+}
+
+function copyHeroVar() {
+  const el = document.getElementById(`hero-var-${heroVarActive}`);
+  if(el) navigator.clipboard.writeText(el.innerText || el.textContent);
+}
+
+async function regenerarHero() {
+  const name = document.getElementById('product-name').value.trim();
+  const problem = document.getElementById('product-problem').value.trim();
+  const benefit = document.getElementById('product-benefit').value.trim();
+  const price = document.getElementById('product-price').value.trim();
+  const country = selCountry;
+
+  if(!name) { alert('Primero genera el copy principal.'); return; }
+
+  const btn = document.getElementById('regen-hero-btn');
+  btn.textContent = '⏳ Generando...';
+  btn.disabled = true;
+
+  try {
+    const resp = await fetch('/api/generate', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name, problem, benefit, price, country,
+        tone: selTone,
+        heroOnly: true,
+        outputs: { landing: true }
+      })
+    });
+    const data = await resp.json();
+
+    if(data.hero_emocional && data.hero_racional && data.hero_urgente) {
+      document.getElementById('hero-var-0').textContent = data.hero_emocional;
+      document.getElementById('hero-var-1').textContent = data.hero_racional;
+      document.getElementById('hero-var-2').textContent = data.hero_urgente;
+      document.getElementById('hero-original').style.display = 'none';
+      document.getElementById('hero-variantes').style.display = 'block';
+      // Reset tabs
+      document.querySelectorAll('.hero-var-tab').forEach(b => b.classList.remove('on'));
+      document.querySelectorAll('.hero-var-content').forEach(el => el.style.display = 'none');
+      document.querySelector('.hero-var-tab').classList.add('on');
+      document.getElementById('hero-var-0').style.display = 'block';
+      heroVarActive = 0;
+    }
+  } catch(err) {
+    console.error(err);
+  } finally {
+    btn.textContent = '↻ Regenerar Hero';
+    btn.disabled = false;
+  }
+}
+
+async function generateContent() {
+  const name=document.getElementById('product-name').value.trim();
+  const problem=document.getElementById('product-problem').value.trim();
+
+  // ── VALIDACIÓN ──────────────────────────
+  if(!name) {
+    const nameField = document.getElementById('product-name');
+    nameField.style.borderColor = 'var(--accent)';
+    nameField.style.boxShadow = '0 0 0 3px rgba(232,66,10,0.15)';
+    nameField.placeholder = '⚠ Este campo es obligatorio';
+    nameField.focus();
+    setTimeout(()=>{
+      nameField.style.borderColor = '';
+      nameField.style.boxShadow = '';
+      nameField.placeholder = 'Ej: Masajeador eléctrico cervical';
+    }, 3000);
+    return;
+  }
+  if(!problem) {
+    const probField = document.getElementById('product-problem');
+    probField.style.borderColor = 'var(--accent)';
+    probField.style.boxShadow = '0 0 0 3px rgba(232,66,10,0.15)';
+    probField.placeholder = '⚠ Describe el problema que resuelve';
+    probField.focus();
+    setTimeout(()=>{
+      probField.style.borderColor = '';
+      probField.style.boxShadow = '';
+      probField.placeholder = 'Ej: Alivia el dolor de cuello en personas que trabajan frente al computador';
+    }, 3000);
+    return;
+  }
+  if(!name){alert('Por favor ingresa el nombre del producto');return;}
+  const co=countryData[selCountry];
+  const genEmail=document.getElementById('gen-email').checked;
+  const genObj=document.getElementById('gen-objeciones').checked;
+  document.getElementById('empty-state').style.display='none';
+  document.getElementById('loading-state').style.display='flex';
+  document.getElementById('output-state').style.display='none';
+  document.getElementById('gen-btn').disabled=true;
+  const _genStart = Date.now();
+  document.getElementById('tab-btn-vision').style.display='none';
+  document.getElementById('vision-banner-wrap').innerHTML='';
+  document.getElementById('benefit-transform-wrap').style.display='none';
+  document.getElementById('vision-analysis-card').style.display='none';
+  const steps=['step-1','step-2','step-3','step-4','step-5','step-6','step-7','step-8'];
+  let si=0;
+  const iv=setInterval(()=>{
+    if(si>0){document.getElementById(steps[si-1]).classList.remove('active');document.getElementById(steps[si-1]).classList.add('done');}
+    if(si<steps.length){document.getElementById(steps[si]).classList.add('active');si++;}
+    else clearInterval(iv);
+  },650);
+  try {
+    const resp=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      name,problem:document.getElementById('product-problem').value.trim(),
+      benefit:document.getElementById('product-benefit').value.trim(),
+      price:document.getElementById('product-price').value.trim(),
+      priceOld:document.getElementById('product-price-old').value.trim(),
+      clients:document.getElementById('product-clients').value.trim(),
+      chars:document.getElementById('product-chars').value.trim(),
+      category:document.getElementById('product-category').value,
+      country:selCountry,tone:selTone,
+      image: imgBase64 || null,
+      imageMime: imgBase64 ? imgMimeType : null,
+      outputs:{
+        landing:document.getElementById('gen-landing').checked,
+        whatsapp:document.getElementById('gen-whatsapp').checked,
+        social:document.getElementById('gen-social').checked,
+        meta:document.getElementById('gen-meta').checked,
+        images:document.getElementById('gen-images').checked,
+        email:genEmail,
+        objeciones:genObj,
+        extras:document.getElementById('gen-extras').checked
+      }
+    })});
+    clearInterval(iv);
+    steps.forEach(s=>{document.getElementById(s).classList.remove('active');document.getElementById(s).classList.add('done');});
+    const parsed=await resp.json();
+    if(!resp.ok)throw new Error(parsed.error||'Error al generar');
+    allContent=parsed;
+    const map={
+      'landing-hero':'landing_hero','landing-problem':'landing_problem','landing-solution':'landing_solution',
+      'landing-benefits':'landing_benefits','landing-testimonials':'landing_testimonials',
+      'landing-uses':'landing_uses','landing-whats-included':'landing_whats_included',
+      'landing-faq':'landing_faq','landing-cta':'landing_cta','landing-trust-bar':'landing_trust_bar',
+      'wa-cold':'wa_cold','wa-followup':'wa_followup','wa-close':'wa_close',
+      'social-post':'social_post','social-tiktok':'social_tiktok','social-hashtags':'social_hashtags',
+      'meta-campaign':'meta_campaign','meta-ads':'meta_ads','ad-hooks':'ad_hooks',
+      'image-prompts':'image_prompts','image-overlay':'image_overlay','ugc-ideas':'ugc_ideas',
+      'extra-email':'extra_email','extra-objeciones':'extra_objeciones','extra-desc':'extra_desc','extra-seo':'extra_seo'
+    };
+    Object.entries(map).forEach(([elId,key])=>{const el=document.getElementById(elId);if(el)renderContent(el,parsed[key]);});
+
+    // ── INDICADORES DE TABS ──────────────────
+    const tabMap = {
+      'tab-btn-landing':  ['landing-hero','landing-problem','landing-solution'],
+      'tab-btn-ads':      ['meta-ads','meta-campaign'],
+      'tab-btn-imagenes': ['image-prompts','image-overlay'],
+      'tab-btn-whatsapp': ['wa-cold','wa-followup','wa-close'],
+      'tab-btn-social':   ['social-post','social-tiktok'],
+      'tab-btn-extras':   ['extra-desc','extra-seo'],
+    };
+    Object.entries(tabMap).forEach(([tabId, contentIds]) => {
+      const tabEl = document.getElementById(tabId);
+      if(!tabEl) return;
+      const hasContent = contentIds.some(id => {
+        const el = document.getElementById(id);
+        return el && (el.innerText || el.textContent || '').trim().length > 5;
+      });
+      tabEl.classList.remove('has-content','no-content');
+      tabEl.classList.add(hasContent ? 'has-content' : 'no-content');
+    });
+    // Vision / image results
+    if(parsed.vision_analysis || parsed.benefit_transform) {
+      document.getElementById('tab-btn-vision').style.display='block';
+      if(parsed.vision_analysis) {
+        const vaEl = document.getElementById('vision-analysis');
+        renderContent(vaEl, parsed.vision_analysis);
+        document.getElementById('vision-analysis-card').style.display='block';
+        document.getElementById('vision-banner-wrap').innerHTML=`
+          <div class="vision-banner">
+            <div class="vb-icon">👁️</div>
+            <div>
+              <div class="vb-title">Image analyzed with trained AI</div>
+              <div class="vb-body">${parsed.vision_summary||'La IA analizó la imagen y generó copy visual real.'}</div>
+              <span class="vb-tag">AI VISION ACTIVE</span>
+            </div>
+          </div>`;
+      }
+      if(parsed.benefit_transform && Array.isArray(parsed.benefit_transform)) {
+        document.getElementById('benefit-transform-wrap').style.display='block';
+        document.getElementById('benefit-transform-rows').innerHTML=parsed.benefit_transform.map(r=>`
+          <div class="bt-row">
+            <div class="bt-char">${r.char}</div>
+            <div class="bt-arr">→</div>
+            <div class="bt-ben">${r.benefit}</div>
+          </div>`).join('');
+      }
+      showTab('vision');
+    }
+    document.getElementById('card-email').style.display=genEmail?'block':'none';
+    document.getElementById('card-objeciones').style.display=genObj?'block':'none';
+    const allText=Object.values(parsed).join(' ');
+    document.getElementById('stat-words').textContent=allText.split(/\s+/).filter(Boolean).length;
+    document.getElementById('stat-chars').textContent=allText.length;
+    document.getElementById('stat-pieces').textContent=Object.keys(parsed).length;
+    document.getElementById('stat-country').textContent=co.code;
+    document.getElementById('output-product-name').textContent=name;
+    setTimeout(()=>{
+      document.getElementById('loading-state').style.display='none';
+      document.getElementById('output-state').style.display='block';
+      document.getElementById('gen-btn').disabled=false;
+      steps.forEach(s=>document.getElementById(s).classList.remove('done','active'));
+      // Banner de valor
+      const elapsed = Math.round((Date.now() - _genStart) / 1000);
+      const banner = document.getElementById('value-banner');
+      banner.style.display='flex';
+      banner.innerHTML=`
+        <div class="vb-left">
+          <div class="vb-emoji">⚡</div>
+          <div class="vb-text">Generaste en <strong>${elapsed} segundos</strong> lo que un copywriter profesional haría en <strong>2-3 días</strong>.<br>Ahorraste aproximadamente <strong>$350 USD</strong> en servicios de marketing.</div>
+        </div>
+        <div class="vb-stats">
+          <div class="vb-stat"><div class="vb-stat-num">${elapsed}s</div><div class="vb-stat-label">Tiempo</div></div>
+          <div class="vb-stat"><div class="vb-stat-num">$350</div><div class="vb-stat-label">Ahorrado</div></div>
+        </div>`;
+    },400);
+  } catch(err) {
+    clearInterval(iv);
+    document.getElementById('loading-state').style.display='none';
+    document.getElementById('empty-state').style.display='flex';
+    document.getElementById('empty-state').innerHTML=`<div class="empty-icon">⚠️</div><div class="empty-title">Error al generar</div><div class="empty-sub">${err.message}</div>`;
+    document.getElementById('gen-btn').disabled=false;
+    steps.forEach(s=>document.getElementById(s).classList.remove('done','active'));
+  }
+}
+function copySection(id){const el=document.getElementById(id);const t=el.innerText||el.textContent;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓';b.classList.add('copied');setTimeout(()=>{b.textContent='Copiar';b.classList.remove('copied');},2000);});}
+function copyAll(){const t=Object.entries(allContent).map(([k,v])=>`=== ${k.toUpperCase()} ===\n${v}`).join('\n\n');navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ Copiado';setTimeout(()=>{b.textContent='📋 Copiar todo';},2000);});}
+
+// ── VIDEO STUDIO ────────────────────────────
+let vsFile=null,vsUrl=null,vsDur=0,vsStart=0,vsEnd=0,vsDrag=null;
+let vsClips=JSON.parse(localStorage.getItem('vs_clips')||'[]');
+
+function vsNewVideo(){
+  document.getElementById('vs-upload').style.display='flex';
+  document.getElementById('vs-editor').classList.remove('on');
+  document.getElementById('vs-archive').classList.remove('on');
+  document.getElementById('vs-btn-editor').classList.add('on');
+  document.getElementById('vs-btn-archive').classList.remove('on');
+}
+
+function vsLoadVideo(e){
+  const file=e.target.files[0];if(!file)return;
+  if(file.size>500*1024*1024){alert('El video no puede superar 500MB');return;}
+  vsFile=file;if(vsUrl)URL.revokeObjectURL(vsUrl);
+  vsUrl=URL.createObjectURL(file);
+  const vid=document.getElementById('vs-video');
+  vid.src=vsUrl;
+  vid.onloadedmetadata=()=>{
+    vsDur=vid.duration;vsStart=0;vsEnd=vsDur;
+    vsUpdateHandles();vsUpdateMarks();vsUpdateInputs();vsUpdateInfo();
+    document.getElementById('vs-filename').textContent='· '+file.name;
+    document.getElementById('vs-upload').style.display='none';
+    document.getElementById('vs-editor').classList.add('on');
+    document.getElementById('vs-cut-btn').disabled=false;
+    document.getElementById('vs-save-btn').disabled=false;
+    vsGenerateWaveform();
+    // Mostrar el video y ocultar el drop zone
+    document.getElementById('vs-editor-drop').style.display='none';
+    document.getElementById('vs-video-wrap-inner').style.display='flex';
+    // Asegurarse de que el editor esté visible
+    document.getElementById('vs-editor').classList.add('on');
+    document.getElementById('vs-upload').style.display='none';
+  };
+  // Drop
+  const drop=document.getElementById('vs-drop');
+  drop.ondragover=ev=>{ev.preventDefault();drop.style.borderColor='rgba(0,212,255,0.6)';};
+  drop.ondragleave=()=>{drop.style.borderColor='rgba(0,212,255,0.3)';};
+  drop.ondrop=ev=>{ev.preventDefault();drop.style.borderColor='rgba(0,212,255,0.3)';const f=ev.dataTransfer.files[0];if(f&&f.type.startsWith('video/'))vsLoadVideo({target:{files:[f]}});};
+}
+
+function vsTogglePlay(){
+  const vid=document.getElementById('vs-video'),btn=document.getElementById('vs-play-btn');
+  if(vid.paused){vid.play();btn.textContent='⏸ Pausar';requestAnimationFrame(vsPlayhead);}
+  else{vid.pause();btn.textContent='▶ Reproducir';}
+}
+function vsSeek(s){const v=document.getElementById('vs-video');v.currentTime=Math.max(0,Math.min(vsDur,v.currentTime+s));vsPlayhead();}
+function vsPlayhead(){const v=document.getElementById('vs-video');if(!v.paused)requestAnimationFrame(vsPlayhead);if(!vsDur)return;document.getElementById('vs-playhead').style.left=(v.currentTime/vsDur*100)+'%';}
+function vsPreview(){const v=document.getElementById('vs-video');v.currentTime=vsStart;v.play();document.getElementById('vs-play-btn').textContent='⏸ Pausar';requestAnimationFrame(vsPlayhead);const c=setInterval(()=>{if(v.currentTime>=vsEnd){v.pause();v.currentTime=vsStart;document.getElementById('vs-play-btn').textContent='▶ Reproducir';clearInterval(c);}},100);}
+function vsUpdateHandles(){if(!vsDur)return;const sp=vsStart/vsDur*100,ep=vsEnd/vsDur*100;document.getElementById('vs-hs').style.left=sp+'%';document.getElementById('vs-he').style.left=ep+'%';document.getElementById('vs-selected').style.left=sp+'%';document.getElementById('vs-selected').style.width=(ep-sp)+'%';}
+function vsUpdateMarks(){if(!vsDur)return;const m=document.querySelectorAll('#vs-marks .vs-mark'),s=vsDur/4;m.forEach((mk,i)=>mk.textContent=vsTime(s*i));}
+function vsUpdateInputs(){document.getElementById('vs-si').value=vsTime(vsStart);document.getElementById('vs-ei').value=vsTime(vsEnd);}
+function vsUpdateInfo(){const d=vsEnd-vsStart;document.getElementById('vs-sel-info').textContent=vsTime(vsStart)+' → '+vsTime(vsEnd)+' · '+vsTime(d);document.getElementById('vs-ci').innerHTML='Duración: <strong>'+vsTime(d)+'</strong>';}
+function vsFromInput(w){const s=vsParse(document.getElementById('vs-si').value),e=vsParse(document.getElementById('vs-ei').value);if(w==='start'&&s>=0&&s<vsEnd)vsStart=s;if(w==='end'&&e>vsStart&&e<=vsDur)vsEnd=e;vsUpdateHandles();vsUpdateInfo();}
+
+if(VIDEO_ENABLED) document.addEventListener('DOMContentLoaded',()=>{
+  const track=document.getElementById('vs-track');if(!track)return;
+  document.getElementById('vs-hs').addEventListener('mousedown',e=>{e.preventDefault();vsDrag='start';});
+  document.getElementById('vs-he').addEventListener('mousedown',e=>{e.preventDefault();vsDrag='end';});
+  document.addEventListener('mousemove',e=>{
+    if(!vsDrag||!vsDur)return;
+    const r=track.getBoundingClientRect(),p=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),t=p*vsDur;
+    if(vsDrag==='start')vsStart=Math.min(t,vsEnd-0.5);else vsEnd=Math.max(t,vsStart+0.5);
+    vsUpdateHandles();vsUpdateInputs();vsUpdateInfo();vsUpdateWaveformActive();
+  });
+  document.addEventListener('mouseup',()=>{vsDrag=null;});
+  track.addEventListener('click',e=>{if(!vsDur)return;const r=track.getBoundingClientRect();document.getElementById('vs-video').currentTime=((e.clientX-r.left)/r.width)*vsDur;vsPlayhead();});
+});
+
+const { createFFmpeg, fetchFile } = FFmpeg;
+const ffmpeg = createFFmpeg({ log: false });
+let ffmpegLoaded = false;
+
+async function vsCut(){
+  if(!vsFile)return;
+  const dur=vsEnd-vsStart;
+  if(dur<=0){alert('Selecciona un fragmento válido');return;}
+  const clipName=(document.getElementById('vs-clip-name').value.trim()||'clip').replace(/\s+/g,'-').toLowerCase();
+  vsShowProc('Cargando procesador de video...');
+  try{
+    if(!ffmpegLoaded){
+      await ffmpeg.load();
+      ffmpegLoaded=true;
+    }
+    vsShowProc('Cortando en MP4...');
+    ffmpeg.FS('writeFile','input.mp4', await fetchFile(vsFile));
+    await ffmpeg.run(
+      '-i','input.mp4',
+      '-ss', String(vsStart),
+      '-t', String(dur),
+      '-c:v','libx264',
+      '-c:a','aac',
+      '-movflags','faststart',
+      'output.mp4'
+    );
+    const data=ffmpeg.FS('readFile','output.mp4');
+    const blob=new Blob([data.buffer],{type:'video/mp4'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=clipName+'.mp4';a.click();
+    URL.revokeObjectURL(url);
+    ffmpeg.FS('unlink','input.mp4');
+    ffmpeg.FS('unlink','output.mp4');
+    vsHideProc();
+  }catch(err){
+    vsHideProc();
+    // Fallback a webm si falla FFmpeg
+    alert('FFmpeg no disponible, descargando en webm: '+err.message);
+    vsCutFallback(clipName);
+  }
+}
+
+async function vsCutFallback(clipName){
+  vsShowProc('Cortando video...');
+  try{
+    const vid=document.getElementById('vs-video');
+    vid.currentTime=vsStart;
+    await new Promise(r=>{vid.onseeked=r;});
+    const stream=vid.captureStream(),chunks=[];
+    const rec=new MediaRecorder(stream,{mimeType:MediaRecorder.isTypeSupported('video/webm;codecs=vp9')?'video/webm;codecs=vp9':'video/webm'});
+    rec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
+    rec.onstop=()=>{
+      const blob=new Blob(chunks,{type:'video/webm'}),url=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=url;a.download=(clipName||'clip')+'.webm';a.click();
+      URL.revokeObjectURL(url);vsHideProc();
+    };
+    const dur=vsEnd-vsStart;
+    vid.play();rec.start();setTimeout(()=>{rec.stop();vid.pause();},dur*1000);
+  }catch(err){vsHideProc();alert('Error: '+err.message);}
+}
+
+function vsSave(){
+  const name=document.getElementById('vs-clip-name').value.trim();
+  if(!name){alert('Ponle un nombre al clip');return;}
+  if((vsEnd-vsStart)<=0){alert('Selecciona un fragmento válido');return;}
+  const clipData = {
+    id:Date.now(),
+    name,
+    landing:document.getElementById('vs-clip-landing').value.trim()||'Sin landing',
+    use:document.getElementById('vs-clip-use').value,
+    duration:vsTime(vsEnd-vsStart),
+    date:new Date().toLocaleDateString('es-CO',{day:'numeric',month:'short'}),
+    cloudUrl: null
+  };
+  vsClips.unshift(clipData);
+  localStorage.setItem('vs_clips',JSON.stringify(vsClips));
+  vsRenderClips();vsUpdateArchCount();
+  document.getElementById('vs-clip-name').value='';
+  vsCut();
+}
+
+function vsRenderClips(){
+  const c=document.getElementById('vs-clips-container'),n=document.getElementById('vs-clips-count');n.textContent=vsClips.length;
+  if(vsClips.length===0){c.innerHTML='<div class="vs-empty">Aún no hay clips.<br>Corta tu primer clip.</div>';return;}
+  c.innerHTML=vsClips.map(cl=>`<div class="vs-clip"><div class="vs-ct">🎬</div><div class="vs-ci-info"><div class="vs-cn">${cl.name}</div><div class="vs-cm">${cl.duration} · ${cl.use}</div><div class="vs-ctag">${cl.landing}</div></div><div class="vs-clip-acts"><div class="vs-ca" title="Info">ℹ</div><div class="vs-ca" title="Reeditar">✂</div><div class="vs-ca" title="Eliminar" onclick="vsDelete(${cl.id})">🗑</div></div></div>`).join('');
+  vsRenderArch();
+}
+
+function vsRenderArch(){
+  const g=document.getElementById('vs-arch-grid'),t=document.getElementById('vs-arch-ttl-count');
+  t.textContent='('+vsClips.length+' clips)';
+  if(vsClips.length===0){g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:rgba(0,212,255,0.3);font-size:12px;">Aún no hay clips.</div>';return;}
+  g.innerHTML=vsClips.map(cl=>`<div class="vs-ac">
+    <div class="vs-ac-thumb" ${cl.cloudUrl ? `onclick="vsPlayCloud('${cl.cloudUrl}')" style="cursor:pointer;"` : ''}>
+      <div class="vs-ac-play"><div class="vs-ac-pi"></div></div>
+      <div class="vs-ac-dur">${cl.duration}</div>
+      ${cl.cloudUrl ? '<div style="position:absolute;top:5px;left:5px;background:rgba(0,212,255,0.8);border-radius:3px;padding:1px 6px;font-size:8px;font-family:DM Mono,monospace;color:#000;">☁ CLOUD</div>' : ''}
+    </div>
+    <div class="vs-ac-info">
+      <div class="vs-ac-name">${cl.name}</div>
+      <div class="vs-ac-tag">${cl.landing}</div>
+      <div class="vs-ac-date">${cl.date}</div>
+      <div class="vs-ac-acts">
+        ${cl.cloudUrl ? `<button class="vs-acb p" onclick="vsPlayCloud('${cl.cloudUrl}')">▶ Ver</button>` : ''}
+        <button class="vs-acb" onclick="vsDelete(${cl.id})">🗑 Borrar</button>
+      </div>
+    </div>
+  </div>`).join('');
+}
+
+async function vsUploadToCloud(blob, clipName) {
+  try {
+    vsShowProc('Subiendo a la nube...');
+    const filename = clipName.replace(/\s+/g,'-').toLowerCase() + '.mp4';
+    // Pedir URL firmada al servidor
+    const resp = await fetch('/api/upload', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({filename, contentType:'video/mp4'})
+    });
+    if(!resp.ok) throw new Error('Error obteniendo URL de subida');
+    const {signedUrl, publicUrl} = await resp.json();
+    // Subir el blob directamente a Backblaze
+    await fetch(signedUrl, {
+      method: 'PUT',
+      headers: {'Content-Type':'video/mp4'},
+      body: blob
+    });
+    vsHideProc();
+    return publicUrl;
+  } catch(err) {
+    vsHideProc();
+    console.error('Error subiendo a cloud:', err);
+    return null;
+  }
+}
+
+function vsDelete(id){if(!confirm('¿Eliminar?'))return;vsClips=vsClips.filter(c=>c.id!==id);localStorage.setItem('vs_clips',JSON.stringify(vsClips));vsRenderClips();vsUpdateArchCount();}
+function vsShowEditor(){
+  document.getElementById('vs-upload').style.display='none';
+  document.getElementById('vs-editor').classList.add('on');
+  document.getElementById('vs-archive').classList.remove('on');
+  document.getElementById('vs-btn-editor').classList.add('on');
+  document.getElementById('vs-btn-archive').classList.remove('on');
+  // Si no hay video, mostrar zona de drop dentro del editor
+  if(!vsFile){
+    document.getElementById('vs-editor-drop').style.display='flex';
+    document.getElementById('vs-video-wrap-inner').style.display='none';
+  } else {
+    document.getElementById('vs-editor-drop').style.display='none';
+    document.getElementById('vs-video-wrap-inner').style.display='flex';
+  }
+}
+function vsShowArchive(){document.getElementById('vs-archive').classList.add('on');document.getElementById('vs-editor').classList.remove('on');document.getElementById('vs-upload').style.display='none';document.getElementById('vs-btn-archive').classList.add('on');document.getElementById('vs-btn-editor').classList.remove('on');vsRenderArch();}
+function vsUpdateArchCount(){document.getElementById('vs-arch-count').textContent=vsClips.length;}
+function vsShowProc(t){document.getElementById('vs-proc-txt').textContent=t||'Procesando...';document.getElementById('vs-processing').classList.add('on');}
+function vsHideProc(){document.getElementById('vs-processing').classList.remove('on');}
+function vsGenerateWaveform(){
+  const wf=document.getElementById('vs-waveform');
+  if(!wf)return;
+  const bars=60;
+  wf.innerHTML=Array.from({length:bars},(_,i)=>{
+    const h=20+Math.random()*60;
+    return `<div class="vs-wb" style="height:${h}%"></div>`;
+  }).join('');
+}
+function vsUpdateWaveformActive(){
+  if(!vsDur)return;
+  const bars=document.querySelectorAll('.vs-wb');
+  const total=bars.length;
+  const sp=Math.floor(vsStart/vsDur*total);
+  const ep=Math.floor(vsEnd/vsDur*total);
+  bars.forEach((b,i)=>{
+    if(i>=sp&&i<=ep)b.classList.add('active');
+    else b.classList.remove('active');
+  });
+}
+function vsPlayCloud(url) {
+  // Crear modal para reproducir video desde cloud
+  const existing = document.getElementById('vs-cloud-modal');
+  if(existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'vs-cloud-modal';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;';
+  modal.innerHTML = `
+    <div style="position:relative;width:80vw;max-width:900px;">
+      <video src="${url}" controls autoplay style="width:100%;border-radius:8px;max-height:70vh;"></video>
+    </div>
+    <button onclick="document.getElementById('vs-cloud-modal').remove()" 
+      style="padding:8px 24px;background:rgba(255,34,85,0.2);border:1px solid rgba(255,34,85,0.5);color:#ff2255;font-family:DM Mono,monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:3px;">
+      ✕ Cerrar
+    </button>`;
+  modal.onclick = (e) => { if(e.target === modal) modal.remove(); };
+  document.body.appendChild(modal);
+}
+
+function vsTime(s){if(isNaN(s))return'0:00';return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');}
+function vsParse(str){const p=str.split(':');return p.length===2?parseInt(p[0])*60+parseFloat(p[1]):parseFloat(str)||0;}
+
+// Init
+document.addEventListener('DOMContentLoaded',()=>{
+  if(VIDEO_ENABLED) {
+    vsRenderClips();
+    vsUpdateArchCount();
+  }
+  document.querySelectorAll('[data-video]').forEach(el => {
+    el.style.display = VIDEO_ENABLED ? '' : 'none';
+  });
+});
 </script>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav" id="bottom-nav">
+  <button class="bnav-btn on" onclick="goTo('page-main')" id="bnav-main">LandCopy</button>
+  <button class="bnav-btn" onclick="goTo('page-login')" id="bnav-login">Login</button>
+  <button class="bnav-btn" onclick="goTo('page-pricing')" id="bnav-pricing">Planes</button>
+  <button class="bnav-btn" data-video onclick="goToStudio('upload')" id="bnav-upload">1·Upload</button>
+  <button class="bnav-btn" data-video onclick="goToStudio('editor')" id="bnav-editor">2·Editor</button>
+  <button class="bnav-btn" data-video onclick="goToStudio('archive')" id="bnav-archive">3·Archivo</button>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     EDITOR AVANZADO v2 — MARKETING STUDIO
+════════════════════════════════════════════ -->
+<style>
+
+
+/* ══ NEON EXTRA — TODO VISIBLE ══ */
+#page-editor .mst-pos-btn {
+  color:#ffffff !important;
+  text-shadow:0 0 8px rgba(255,255,255,1), 0 0 16px rgba(255,255,255,0.6) !important;
+  border-color:rgba(255,255,255,0.2) !important;
+}
+#page-editor .mst-pos-btn.on {
+  color:#00d4ff !important;
+  text-shadow:0 0 10px rgba(0,212,255,1), 0 0 20px rgba(0,212,255,0.8) !important;
+  border-color:rgba(0,212,255,0.6) !important;
+  background:rgba(0,212,255,0.15) !important;
+}
+#page-editor .mst-anim-btn {
+  color:#ffe600 !important;
+  text-shadow:0 0 8px rgba(255,230,0,1), 0 0 16px rgba(255,230,0,0.6) !important;
+  border-color:rgba(255,230,0,0.25) !important;
+}
+#page-editor .mst-anim-btn.on {
+  color:#ffe600 !important;
+  text-shadow:0 0 12px rgba(255,230,0,1), 0 0 24px rgba(255,230,0,0.8) !important;
+  border-color:rgba(255,230,0,0.6) !important;
+  background:rgba(255,230,0,0.12) !important;
+}
+#page-editor .mst-tl-hint {
+  color:#ffffff !important;
+  text-shadow:0 0 6px rgba(255,255,255,0.9), 0 0 12px rgba(255,255,255,0.5) !important;
+  opacity:1 !important;
+}
+#page-editor .mst-tl-add {
+  color:#ffe600 !important;
+  text-shadow:0 0 6px rgba(255,230,0,0.9) !important;
+  border-color:rgba(255,230,0,0.4) !important;
+}
+#page-editor .mst-upload-btn {
+  border-color:rgba(0,212,255,0.4) !important;
+}
+#page-editor .mst-upload-icon {
+  opacity:1 !important;
+  filter:drop-shadow(0 0 8px rgba(0,212,255,0.8)) !important;
+}
+#page-editor .mst-upload-txt {
+  color:#ffffff !important;
+  text-shadow:0 0 8px rgba(255,255,255,0.9), 0 0 16px rgba(255,255,255,0.5) !important;
+  font-weight:700 !important;
+  letter-spacing:2px !important;
+}
+#page-editor .mst-empty-icon {
+  opacity:1 !important;
+  filter:drop-shadow(0 0 12px rgba(0,212,255,0.8)) !important;
+}
+#page-editor .mst-empty-txt {
+  color:#ffffff !important;
+  text-shadow:0 0 10px rgba(255,255,255,1), 0 0 20px rgba(255,255,255,0.6) !important;
+  font-size:11px !important;
+}
+#page-editor .mst-font-btn {
+  color:#ffffff !important;
+  text-shadow:0 0 6px rgba(255,255,255,0.8) !important;
+  border-color:rgba(255,255,255,0.15) !important;
+}
+#page-editor .mst-font-btn.on {
+  color:#00d4ff !important;
+  text-shadow:0 0 10px rgba(0,212,255,1), 0 0 20px rgba(0,212,255,0.7) !important;
+  border-color:rgba(0,212,255,0.5) !important;
+  background:rgba(0,212,255,0.12) !important;
+}
+#page-editor .mst-pfield label {
+  color:#ffe600 !important;
+  text-shadow:0 0 6px rgba(255,230,0,0.9) !important;
+  font-weight:700 !important;
+}
+#page-editor .mst-pfield textarea,
+#page-editor .mst-pfield select,
+#page-editor .mst-pfield input[type=text] {
+  color:#ffffff !important;
+  text-shadow:0 0 4px rgba(255,255,255,0.5) !important;
+  border-color:rgba(0,212,255,0.3) !important;
+}
+#page-editor .mst-pfield textarea::placeholder,
+#page-editor .mst-pfield input[type=text]::placeholder {
+  color:rgba(255,255,255,0.3) !important;
+}
+#page-editor .mst-ltab:not(.on),
+#page-editor .mst-rtab:not(.on) {
+  color:#ffffff !important;
+  text-shadow:0 0 4px rgba(255,255,255,0.5) !important;
+  opacity:0.7 !important;
+}
+#page-editor .mst-ltab.on,
+#page-editor .mst-rtab.on {
+  color:#00d4ff !important;
+  text-shadow:0 0 10px rgba(0,212,255,1), 0 0 20px rgba(0,212,255,0.7) !important;
+  opacity:1 !important;
+}
+#page-editor .mst-vload {
+  color:#ffe600 !important;
+  text-shadow:0 0 6px rgba(255,230,0,0.9) !important;
+  border-color:rgba(255,230,0,0.4) !important;
+}
+#page-editor .mst-vadd {
+  color:#00d4ff !important;
+  text-shadow:0 0 6px rgba(0,212,255,0.9) !important;
+  border-color:rgba(0,212,255,0.4) !important;
+}
+#page-editor .mst-vdel {
+  color:#ff2255 !important;
+  text-shadow:0 0 6px rgba(255,34,85,0.9) !important;
+}
+#page-editor .mst-clip-info {
+  color:#ffffff !important;
+  text-shadow:0 0 4px rgba(255,255,255,0.5) !important;
+}
+#page-editor .mst-mktpl-prev {
+  text-shadow:0 0 5px currentColor !important;
+  opacity:1 !important;
+}
+#page-editor .mst-mktpl-name {
+  color:#ffe600 !important;
+  text-shadow:0 0 6px rgba(255,230,0,0.9) !important;
+}
+#page-editor .mst-ai-btn {
+  color:#ffe600 !important;
+  text-shadow:0 0 8px rgba(255,230,0,1) !important;
+  border-color:rgba(255,230,0,0.4) !important;
+  background:rgba(255,230,0,0.08) !important;
+}
+#page-editor .mst-ai-btn:hover {
+  background:rgba(255,230,0,0.15) !important;
+}
+#page-editor .mst-ai-sug {
+  color:#ffffff !important;
+  text-shadow:0 0 5px rgba(255,255,255,0.6) !important;
+}
+#page-editor .mst-ai-sug:hover {
+  color:#ffe600 !important;
+  text-shadow:0 0 8px rgba(255,230,0,0.9) !important;
+}
+#page-editor .mst-cut-btn {
+  color:#00d4ff !important;
+  text-shadow:0 0 6px rgba(0,212,255,0.9) !important;
+  border-color:rgba(0,212,255,0.4) !important;
+}
+#page-editor .mst-cutter-title {
+  color:#ffe600 !important;
+  text-shadow:0 0 8px rgba(255,230,0,1), 0 0 16px rgba(255,230,0,0.6) !important;
+}
+#page-editor .mst-add-txt {
+  color:#00d4ff !important;
+  text-shadow:0 0 8px rgba(0,212,255,1) !important;
+  border-color:rgba(0,212,255,0.4) !important;
+}
+#page-editor .mst-back {
+  color:#00d4ff !important;
+  text-shadow:0 0 8px rgba(0,212,255,1) !important;
+}
+#page-editor .mst-clear {
+  color:#ff2255 !important;
+  text-shadow:0 0 6px rgba(255,34,85,0.9) !important;
+}
+/* Todo texto que sea span, div con contenido, que no sea botón */
+#page-editor * {
+  -webkit-font-smoothing:antialiased !important;
+}
+
+/* ══ NEON TEXT — MARKETING STUDIO ══ */
+#page-editor .mst-title {
+  color:#00d4ff !important;
+  text-shadow:0 0 10px rgba(0,212,255,1), 0 0 20px rgba(0,212,255,0.8), 0 0 40px rgba(0,212,255,0.5) !important;
+}
+#page-editor .mst-tl-title,
+#page-editor .mst-ptitle,
+#page-editor .mst-cutter-title {
+  color:#ffe600 !important;
+  text-shadow:0 0 8px rgba(255,230,0,1), 0 0 16px rgba(255,230,0,0.7), 0 0 30px rgba(255,230,0,0.4) !important;
+}
+#page-editor .mst-track-lbl {
+  text-shadow:0 0 8px currentColor, 0 0 16px currentColor !important;
+  font-weight:700 !important;
+}
+#page-editor .mst-tclip-name {
+  color:#ffffff !important;
+  text-shadow:0 0 6px rgba(255,255,255,0.9), 0 0 12px rgba(255,255,255,0.5) !important;
+  opacity:1 !important;
+}
+#page-editor .mst-vname {
+  color:#ffffff !important;
+  text-shadow:0 0 6px rgba(255,255,255,0.8), 0 0 12px rgba(255,255,255,0.4) !important;
+}
+#page-editor .mst-vlanding {
+  color:#ff5520 !important;
+  text-shadow:0 0 6px rgba(255,85,32,0.9), 0 0 12px rgba(255,85,32,0.5) !important;
+}
+#page-editor .mst-vdur {
+  color:#ffe600 !important;
+  text-shadow:0 0 5px rgba(255,230,0,1), 0 0 10px rgba(255,230,0,0.6) !important;
+}
+#page-editor .mst-time {
+  color:#ffe600 !important;
+  text-shadow:0 0 8px rgba(255,230,0,1), 0 0 16px rgba(255,230,0,0.6) !important;
+}
+#page-editor .mst-cut-time {
+  color:#ffe600 !important;
+  text-shadow:0 0 6px rgba(255,230,0,1), 0 0 12px rgba(255,230,0,0.5) !important;
+}
+#page-editor .mst-ltab.on,
+#page-editor .mst-rtab.on {
+  color:#00d4ff !important;
+  text-shadow:0 0 8px rgba(0,212,255,1), 0 0 16px rgba(0,212,255,0.6) !important;
+}
+#page-editor .mst-ltab:not(.on),
+#page-editor .mst-rtab:not(.on) {
+  color:rgba(0,212,255,0.5) !important;
+}
+#page-editor .mst-tl-hint {
+  color:rgba(255,255,255,0.25) !important;
+  text-shadow:none !important;
+}
+#page-editor .mst-upload-txt {
+  color:#00d4ff !important;
+  text-shadow:0 0 6px rgba(0,212,255,0.8) !important;
+  letter-spacing:2px !important;
+}
+#page-editor .mst-empty-txt {
+  color:#00d4ff !important;
+  text-shadow:0 0 8px rgba(0,212,255,0.8), 0 0 20px rgba(0,212,255,0.4) !important;
+}
+#page-editor .mst-range-val,
+#page-editor #mst-size-val {
+  color:#ffe600 !important;
+  text-shadow:0 0 6px rgba(255,230,0,1), 0 0 12px rgba(255,230,0,0.5) !important;
+}
+#page-editor .mst-pfield label {
+  color:#00d4ff !important;
+  text-shadow:0 0 5px rgba(0,212,255,0.7) !important;
+}
+#page-editor .mst-mktpl-name {
+  text-shadow:0 0 5px rgba(255,230,0,0.8) !important;
+}
+#page-editor .mst-txt-label {
+  color:#ffffff !important;
+  text-shadow:0 0 4px rgba(255,255,255,0.6) !important;
+}
+#page-editor .mst-txt-dot {
+  box-shadow:0 0 6px currentColor, 0 0 12px currentColor !important;
+}
+#page-editor .mst-ai-sug {
+  color:rgba(255,255,255,0.85) !important;
+  text-shadow:0 0 4px rgba(255,255,255,0.3) !important;
+}
+#page-editor .mst-ai-sug:hover {
+  color:#fff !important;
+  text-shadow:0 0 8px rgba(255,255,255,0.8) !important;
+}
+#page-editor .mst-font-btn {
+  color:rgba(0,212,255,0.5) !important;
+}
+#page-editor .mst-font-btn.on {
+  color:#00d4ff !important;
+  text-shadow:0 0 6px rgba(0,212,255,0.9) !important;
+}
+#page-editor .mst-anim-btn {
+  color:rgba(0,212,255,0.4) !important;
+}
+#page-editor .mst-anim-btn.on {
+  color:#00d4ff !important;
+  text-shadow:0 0 6px rgba(0,212,255,0.9) !important;
+}
+#page-editor .mst-pos-btn {
+  color:rgba(0,212,255,0.35) !important;
+}
+#page-editor .mst-pos-btn.on {
+  color:#00d4ff !important;
+  text-shadow:0 0 6px rgba(0,212,255,0.9) !important;
+}
+#page-editor .mst-vready {
+  color:#00ff88 !important;
+  text-shadow:0 0 6px rgba(0,255,136,0.9) !important;
+}
+#page-editor .mst-clip-info {
+  color:rgba(0,212,255,0.5) !important;
+}
+#page-editor .mst-ai-loading {
+  color:#ffe600 !important;
+  text-shadow:0 0 6px rgba(255,230,0,0.8) !important;
+}
+/* Neon en los botones de exportar */
+#page-editor .mst-exp.meta {
+  text-shadow:0 0 6px rgba(0,212,255,0.9) !important;
+  box-shadow:0 0 8px rgba(0,212,255,0.2) !important;
+}
+#page-editor .mst-exp.tiktok {
+  text-shadow:0 0 6px rgba(255,34,85,0.9) !important;
+  box-shadow:0 0 8px rgba(255,34,85,0.2) !important;
+}
+#page-editor .mst-exp.whatsapp {
+  text-shadow:0 0 6px rgba(0,255,136,0.9) !important;
+  box-shadow:0 0 8px rgba(0,255,136,0.2) !important;
+}
+#page-editor .mst-back {
+  text-shadow:0 0 6px rgba(0,212,255,0.8) !important;
+}
+#page-editor .mst-proc-txt {
+  text-shadow:0 0 12px rgba(255,34,85,1), 0 0 24px rgba(255,34,85,0.6) !important;
+}
+
+/* ── BASE ───────────────────────────────────── */
+#page-editor{background:#050403;}
+.mst{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+
+/* ── TOPBAR ─────────────────────────────────── */
+.mst-top{background:#0a0806;border-bottom:1px solid #252018;height:50px;display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0;}
+.mst-back{padding:4px 10px;border:1px solid rgba(0,212,255,0.3);background:transparent;color:#00d4ff;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;}
+.mst-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#00d4ff;text-shadow:0 0 10px rgba(0,212,255,0.5);margin-right:auto;}
+.mst-clear{padding:4px 10px;border:1px solid rgba(255,34,85,0.3);background:rgba(255,34,85,0.06);color:#ff2255;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;}
+.mst-export-wrap{display:flex;gap:4px;}
+.mst-exp{padding:5px 12px;border:1px solid rgba(255,85,32,0.4);background:rgba(255,85,32,0.12);color:#ff5520;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;text-shadow:0 0 4px rgba(255,85,32,0.4);}
+.mst-exp:hover{background:rgba(255,85,32,0.25);}
+.mst-exp.meta{border-color:rgba(0,212,255,0.4);background:rgba(0,212,255,0.08);color:#00d4ff;}
+.mst-exp.tiktok{border-color:rgba(255,34,85,0.4);background:rgba(255,34,85,0.08);color:#ff2255;}
+.mst-exp.whatsapp{border-color:rgba(0,255,136,0.4);background:rgba(0,255,136,0.08);color:#00ff88;}
+
+/* ── BODY ───────────────────────────────────── */
+.mst-body{display:grid;grid-template-columns:240px 1fr 260px;flex:1;min-height:0;overflow:hidden;}
+
+/* ── PANEL IZQUIERDO — BIBLIOTECA ────────────── */
+.mst-lib{background:#0a0806;border-right:1px solid #252018;display:flex;flex-direction:column;overflow:hidden;}
+.mst-lib-tabs{display:flex;border-bottom:1px solid #252018;flex-shrink:0;}
+.mst-ltab{flex:1;padding:7px;text-align:center;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:rgba(0,212,255,0.3);border-bottom:2px solid transparent;transition:all 0.2s;}
+.mst-ltab.on{color:#00d4ff;border-bottom-color:#00d4ff;}
+
+/* Videos tab */
+.mst-lib-content{flex:1;overflow-y:auto;padding:8px;}
+.mst-upload-btn{width:100%;padding:10px;border:1px dashed rgba(0,212,255,0.2);background:transparent;border-radius:5px;cursor:pointer;text-align:center;margin-bottom:8px;transition:all 0.2s;}
+.mst-upload-btn:hover{border-color:rgba(0,212,255,0.5);background:rgba(0,212,255,0.02);}
+.mst-upload-icon{font-size:18px;opacity:0.2;display:block;margin-bottom:3px;}
+.mst-upload-txt{font-family:'DM Mono',monospace;font-size:7px;color:rgba(0,212,255,0.35);letter-spacing:1px;}
+.mst-notice{display:none;padding:5px 8px;border-radius:3px;font-family:'DM Mono',monospace;font-size:8px;text-align:center;border:1px solid;margin-bottom:6px;}
+
+/* Video card */
+.mst-vcard{background:#141210;border:1px solid #252018;border-radius:5px;padding:7px;margin-bottom:5px;cursor:pointer;transition:all 0.2s;position:relative;}
+.mst-vcard:hover{border-color:rgba(0,212,255,0.2);}
+.mst-vcard.active{border-color:rgba(0,212,255,0.5);box-shadow:0 0 8px rgba(0,212,255,0.1);}
+.mst-vthumb{height:52px;background:#0a0806;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:5px;position:relative;overflow:hidden;}
+.mst-vthumb video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.6;}
+.mst-vdur{position:absolute;bottom:2px;right:3px;font-family:'DM Mono',monospace;font-size:7px;color:#ffe600;background:rgba(0,0,0,0.7);padding:1px 3px;border-radius:2px;}
+.mst-vname{font-size:10px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
+.mst-vlanding{font-size:8px;color:#ff5520;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;}
+.mst-vactions{display:flex;gap:3px;}
+.mst-vadd{flex:1;padding:3px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);border-radius:2px;font-size:8px;color:#00d4ff;cursor:pointer;text-align:center;font-family:'DM Mono',monospace;}
+.mst-vdel{padding:3px 6px;background:rgba(255,34,85,0.06);border:1px solid rgba(255,34,85,0.2);border-radius:2px;font-size:8px;color:#ff2255;cursor:pointer;}
+.mst-vload{flex:1;padding:3px;background:rgba(255,230,0,0.06);border:1px solid rgba(255,230,0,0.2);border-radius:2px;font-size:8px;color:#ffe600;cursor:pointer;text-align:center;font-family:'DM Mono',monospace;}
+.mst-vready{flex:1;padding:3px;background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.18);border-radius:2px;font-size:8px;color:#00ff88;text-align:center;font-family:'DM Mono',monospace;}
+
+/* ── CENTRO ─────────────────────────────────── */
+.mst-center{display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+
+/* Preview */
+.mst-preview{flex:1;background:#000;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.mst-canvas{display:block;}
+.mst-empty{position:absolute;text-align:center;color:rgba(0,212,255,0.12);pointer-events:none;}
+.mst-empty-icon{font-size:32px;opacity:0.3;margin-bottom:6px;}
+.mst-empty-txt{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;}
+.mst-text-overlay-handle{position:absolute;cursor:move;user-select:none;display:flex;align-items:center;gap:4px;padding:2px 4px;border:1px solid rgba(255,255,255,0.2);border-radius:2px;}
+.mst-text-handle-del{width:14px;height:14px;background:rgba(255,34,85,0.6);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;cursor:pointer;color:#fff;flex-shrink:0;}
+
+/* Cortador */
+.mst-cutter{background:#0a0806;border-top:1px solid #252018;padding:8px 12px;flex-shrink:0;display:none;}
+.mst-cutter.on{display:block;}
+.mst-cutter-title{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:#ffe600;margin-bottom:6px;}
+.mst-cut-timeline{height:32px;background:#141210;border-radius:3px;position:relative;margin-bottom:6px;cursor:pointer;overflow:hidden;}
+.mst-cut-filled{position:absolute;top:0;bottom:0;background:rgba(255,85,32,0.2);border:1px solid rgba(255,85,32,0.4);}
+.mst-cut-handle{position:absolute;top:0;bottom:0;width:10px;background:#ff5520;cursor:ew-resize;display:flex;align-items:center;justify-content:center;}
+.mst-cut-handle::after{content:'⋮';font-size:10px;color:#fff;}
+.mst-cut-handle.end{background:#00d4ff;}
+.mst-cut-bottom{display:flex;align-items:center;gap:8px;}
+.mst-cut-time{font-family:'DM Mono',monospace;font-size:9px;color:#ffe600;}
+.mst-cut-btn{padding:4px 12px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:#00d4ff;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;border-radius:2px;}
+
+/* Playbar */
+.mst-playbar{background:#0a0806;border-top:1px solid #252018;padding:8px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.mst-playbtn{padding:5px 14px;border:1px solid rgba(255,85,32,0.35);background:rgba(255,85,32,0.1);color:#ff5520;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;border-radius:2px;}
+.mst-time{font-family:'DM Mono',monospace;font-size:9px;color:#ffe600;white-space:nowrap;}
+.mst-prog{flex:1;height:4px;background:#252018;border-radius:2px;cursor:pointer;}
+.mst-prog-fill{height:100%;width:0%;background:#ff5520;border-radius:2px;box-shadow:0 0 5px rgba(255,85,32,0.4);}
+.mst-asp{display:flex;gap:3px;}
+.mst-asp-btn{padding:3px 7px;border:1px solid #252018;background:transparent;color:rgba(0,212,255,0.3);font-family:'DM Mono',monospace;font-size:7px;cursor:pointer;border-radius:2px;}
+.mst-asp-btn.on{border-color:rgba(0,212,255,0.4);color:#00d4ff;}
+
+/* Timeline multicapa */
+.mst-tl{background:#070504;border-top:1px solid #252018;height:155px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;}
+.mst-tl-top{display:flex;align-items:center;gap:8px;padding:5px 10px;border-bottom:1px solid #151210;flex-shrink:0;}
+.mst-tl-title{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:3px;text-transform:uppercase;color:#ffe600;}
+.mst-tl-add{padding:2px 8px;border:1px solid rgba(255,230,0,0.2);background:transparent;color:rgba(255,230,0,0.4);font-family:'DM Mono',monospace;font-size:7px;cursor:pointer;border-radius:2px;}
+.mst-tl-hint{font-family:'DM Mono',monospace;font-size:7px;color:rgba(255,255,255,0.1);margin-left:auto;}
+.mst-tracks{flex:1;overflow-y:auto;overflow-x:auto;}
+.mst-track{display:flex;align-items:center;border-bottom:1px solid #0f0d0b;min-height:36px;}
+.mst-track-lbl{width:72px;flex-shrink:0;padding:0 6px;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;border-right:1px solid #252018;}
+.mst-track-area{flex:1;position:relative;height:36px;min-width:400px;background:repeating-linear-gradient(90deg,#0c0a08 0,#0c0a08 59px,#111009 59px,#111009 60px);overflow:hidden;}
+.mst-tclip{position:absolute;top:3px;height:30px;border-radius:3px;display:flex;align-items:center;padding:0 5px;overflow:hidden;cursor:grab;user-select:none;transition:box-shadow 0.15s;}
+.mst-tclip:hover{box-shadow:0 0 6px rgba(255,255,255,0.1);}
+.mst-tclip-name{font-family:'DM Mono',monospace;font-size:7px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;opacity:0.8;}
+.mst-tclip-del{width:13px;height:13px;background:rgba(255,34,85,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;cursor:pointer;flex-shrink:0;opacity:0;transition:opacity 0.2s;}
+.mst-tclip:hover .mst-tclip-del{opacity:1;}
+
+/* ── PANEL DERECHO ───────────────────────────── */
+.mst-right{background:#0a0806;border-left:1px solid #252018;display:flex;flex-direction:column;overflow:hidden;}
+.mst-rtabs{display:flex;border-bottom:1px solid #252018;}
+.mst-rtab{flex:1;padding:7px 4px;text-align:center;font-family:'DM Mono',monospace;font-size:6px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:rgba(0,212,255,0.3);border-bottom:2px solid transparent;transition:all 0.2s;}
+.mst-rtab.on{color:#00d4ff;border-bottom-color:#00d4ff;}
+.mst-rpanel{flex:1;overflow-y:auto;padding:11px;}
+.mst-ptitle{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:#ffe600;margin-bottom:9px;}
+.mst-pfield{margin-bottom:9px;}
+.mst-pfield label{display:block;font-family:'DM Mono',monospace;font-size:6px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,212,255,0.4);margin-bottom:4px;}
+.mst-pfield textarea,.mst-pfield select,.mst-pfield input[type=text]{width:100%;background:#141210;border:1px solid #252018;padding:5px 7px;font-size:11px;color:#00d4ff;border-radius:3px;outline:none;font-family:'DM Sans',sans-serif;}
+.mst-pfield textarea{min-height:48px;resize:none;}
+.mst-pfield select{font-size:10px;}
+.mst-range-row{display:flex;align-items:center;gap:6px;}
+.mst-range-row input{flex:1;accent-color:#ffe600;}
+.mst-range-val{font-family:'DM Mono',monospace;font-size:9px;color:#ffe600;white-space:nowrap;}
+.mst-colors{display:flex;gap:4px;flex-wrap:wrap;}
+.mst-color{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.15s;flex-shrink:0;}
+.mst-color.on{border-color:#fff;box-shadow:0 0 5px rgba(255,255,255,0.3);}
+.mst-pos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;}
+.mst-pos-btn{padding:5px;border:1px solid #252018;background:transparent;color:rgba(0,212,255,0.3);font-size:10px;cursor:pointer;border-radius:2px;text-align:center;transition:all 0.15s;}
+.mst-pos-btn.on{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.4);color:#00d4ff;}
+.mst-fonts{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px;}
+.mst-font-btn{padding:5px;border:1px solid #252018;background:transparent;color:rgba(0,212,255,0.4);font-size:10px;cursor:pointer;border-radius:2px;text-align:center;transition:all 0.15s;white-space:nowrap;overflow:hidden;}
+.mst-font-btn.on{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.35);color:#00d4ff;}
+.mst-anim-btns{display:flex;gap:4px;flex-wrap:wrap;}
+.mst-anim-btn{padding:3px 8px;border:1px solid #252018;background:transparent;color:rgba(0,212,255,0.3);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;border-radius:2px;transition:all 0.15s;}
+.mst-anim-btn.on{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.35);color:#00d4ff;}
+.mst-add-txt{width:100%;padding:8px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.22);color:#00d4ff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border-radius:3px;text-shadow:0 0 4px rgba(0,212,255,0.3);transition:all 0.2s;}
+.mst-add-txt:hover{background:rgba(0,212,255,0.15);}
+.mst-ai-btn{width:100%;padding:7px;background:rgba(255,230,0,0.06);border:1px solid rgba(255,230,0,0.2);color:#ffe600;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:3px;margin-bottom:8px;text-shadow:0 0 4px rgba(255,230,0,0.3);}
+.mst-templates{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px;}
+.mst-tpl{padding:5px;border:1px solid rgba(255,230,0,0.15);background:rgba(255,230,0,0.04);color:rgba(255,230,0,0.6);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;border-radius:2px;text-align:center;transition:all 0.15s;}
+.mst-tpl:hover{border-color:rgba(255,230,0,0.4);color:#ffe600;}
+.mst-txt-list{margin-top:10px;}
+.mst-txt-item{background:#141210;border:1px solid #252018;border-radius:3px;padding:5px 7px;margin-bottom:4px;display:flex;align-items:center;gap:5px;cursor:pointer;transition:border-color 0.15s;}
+.mst-txt-item:hover{border-color:rgba(0,212,255,0.2);}
+.mst-txt-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.mst-txt-label{font-size:9px;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.mst-txt-del{color:#ff2255;cursor:pointer;font-size:11px;opacity:0.5;transition:opacity 0.15s;}
+.mst-txt-del:hover{opacity:1;}
+
+/* Plantillas de marketing */
+.mst-mktpl{background:#141210;border:1px solid rgba(255,230,0,0.12);border-radius:4px;padding:8px;margin-bottom:6px;cursor:pointer;transition:all 0.15s;}
+.mst-mktpl:hover{border-color:rgba(255,230,0,0.3);background:#1a1610;}
+.mst-mktpl-name{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:#ffe600;margin-bottom:3px;}
+.mst-mktpl-prev{font-size:10px;color:rgba(255,255,255,0.5);}
+
+/* Processing */
+.mst-proc{display:none;position:fixed;inset:0;background:rgba(5,4,3,0.93);z-index:99999;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.mst-proc.on{display:flex;}
+.mst-proc-spin{width:36px;height:36px;border:3px solid #252018;border-top-color:#ff5520;border-radius:50%;animation:spin 0.7s linear infinite;}
+.mst-proc-txt{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#ff2255;text-shadow:0 0 8px rgba(255,34,85,0.6);}
+
+/* AI loading */
+.mst-ai-loading{display:none;font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,230,0,0.5);text-align:center;padding:8px;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:0.4;}50%{opacity:1;}}
+.mst-ai-suggestions{margin-top:6px;}
+.mst-ai-sug{background:#141210;border:1px solid rgba(255,230,0,0.15);border-radius:3px;padding:6px 8px;margin-bottom:4px;font-size:10px;color:rgba(255,255,255,0.7);cursor:pointer;transition:all 0.15s;}
+.mst-ai-sug:hover{border-color:rgba(255,230,0,0.4);color:#fff;}
+</style>
+
+<!-- HTML DEL EDITOR -->
+<div class="page" id="page-editor">
+<div class="mst">
+
+  <!-- TOPBAR -->
+  <div class="mst-top">
+    <button class="mst-back" onclick="goTo('page-studio')">← Studio</button>
+    <div class="mst-title">🎬 LandCopy Studio</div>
+    <button class="mst-clear" onclick="mstLimpiar()">✕ Limpiar</button>
+    <div class="mst-export-wrap">
+      <button class="mst-exp meta" onclick="mstExport('16:9')">Meta 16:9</button>
+      <button class="mst-exp tiktok" onclick="mstExport('9:16')">TikTok 9:16</button>
+      <button class="mst-exp whatsapp" onclick="mstExport('1:1')">WhatsApp 1:1</button>
+    </div>
+  </div>
+
+  <div class="mst-body">
+
+    <!-- IZQUIERDA: BIBLIOTECA -->
+    <div class="mst-lib">
+      <div class="mst-lib-tabs">
+        <div class="mst-ltab on" id="mlt-videos" onclick="mstLibTab('videos',this)">Videos</div>
+        <div class="mst-ltab" id="mlt-landing" onclick="mstLibTab('landing',this)">Por Landing</div>
+      </div>
+
+      <div class="mst-lib-content" id="mst-lib-videos">
+        <div class="mst-notice" id="mst-notice"></div>
+        
+        <button class="mst-upload-btn" onclick="document.getElementById('mst-file-inp').click()">
+          <span class="mst-upload-icon">🎬</span>
+          <span class="mst-upload-txt">+ SUBIR VIDEO</span>
+        </button>
+        <input type="file" id="mst-file-inp" accept="video/*" style="display:none" onchange="mstSubirVideo(event)">
+        
+        <div id="mst-clips-list">
+          <div style="text-align:center;padding:20px 10px;font-size:10px;color:rgba(0,212,255,0.2);line-height:1.8;">
+            Sube un video<br>o carga uno del archivo
+          </div>
+        </div>
+      </div>
+
+      <div class="mst-lib-content" id="mst-lib-landing" style="display:none;">
+        <div id="mst-landing-list">
+          <div style="text-align:center;padding:20px 10px;font-size:10px;color:rgba(0,212,255,0.2);">
+            Los clips se organizan<br>por landing automáticamente
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTRO -->
+    <div class="mst-center">
+
+      <!-- Preview con canvas para drag de textos -->
+      <div class="mst-preview" id="mst-preview-wrap">
+        <canvas id="mst-canvas" class="mst-canvas"></canvas>
+        <div id="mst-txt-handles"></div>
+        <div class="mst-empty" id="mst-empty">
+          <div class="mst-empty-icon">🎬</div>
+          <div class="mst-empty-txt">Agrega un video al timeline</div>
+        </div>
+      </div>
+
+      <!-- Cortador de video -->
+      <div class="mst-cutter" id="mst-cutter">
+        <div class="mst-cutter-title">✂ Cortar clip — arrastra los handles para seleccionar el fragmento</div>
+        <div class="mst-cut-timeline" id="mst-cut-tl" onclick="mstCutSeek(event)">
+          <div class="mst-cut-filled" id="mst-cut-fill"></div>
+          <div class="mst-cut-handle" id="mst-cut-s" onmousedown="mstCutDrag(event,'s')"></div>
+          <div class="mst-cut-handle end" id="mst-cut-e" onmousedown="mstCutDrag(event,'e')"></div>
+        </div>
+        <div class="mst-cut-bottom">
+          <span class="mst-cut-time">Inicio: <span id="mst-cut-start-lbl">0:00</span></span>
+          <span class="mst-cut-time">Fin: <span id="mst-cut-end-lbl">0:00</span></span>
+          <span class="mst-cut-time">Duración: <span id="mst-cut-dur-lbl">0:00</span></span>
+          <button class="mst-cut-btn" onclick="mstCutApply()">✓ Aplicar corte</button>
+          <button class="mst-cut-btn" style="border-color:rgba(255,34,85,0.3);color:#ff2255;" onclick="mstCutCancel()">✕ Cancelar</button>
+        </div>
+      </div>
+
+      <!-- Playbar -->
+      <div class="mst-playbar">
+        <button class="mst-playbtn" id="mst-playbtn" onclick="mstPlay()">▶ Play</button>
+        <button class="mst-playbtn" style="font-size:9px;padding:5px 8px;" onclick="mstCutOpen()" title="Cortar este video">✂</button>
+        <span class="mst-time" id="mst-time">0:00 / 0:00</span>
+        <div class="mst-prog" id="mst-prog" onclick="mstSeek(event)">
+          <div class="mst-prog-fill" id="mst-prog-fill"></div>
+        </div>
+        <div class="mst-asp">
+          <button class="mst-asp-btn on" onclick="mstAsp('16:9',this)">16:9</button>
+          <button class="mst-asp-btn" onclick="mstAsp('9:16',this)">9:16</button>
+          <button class="mst-asp-btn" onclick="mstAsp('1:1',this)">1:1</button>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="mst-tl">
+        <div class="mst-tl-top">
+          <span class="mst-tl-title">Timeline</span>
+          <button class="mst-tl-add" onclick="mstNuevaPista()">+ Pista</button>
+          <span class="mst-tl-hint">Arrastra videos o usa el botón +</span>
+        </div>
+        <div class="mst-tracks" id="mst-tracks"></div>
+      </div>
+    </div>
+
+    <!-- DERECHA: PROPIEDADES -->
+    <div class="mst-right">
+      <div class="mst-rtabs">
+        <div class="mst-rtab on" onclick="mstRTab('texto',this)">Texto</div>
+        <div class="mst-rtab" onclick="mstRTab('mkt',this)">Marketing</div>
+        <div class="mst-rtab" onclick="mstRTab('clip',this)">Clip</div>
+      </div>
+
+      <!-- Panel: Texto -->
+      <div class="mst-rpanel" id="mst-rpanel-texto">
+        <div class="mst-ptitle">IA — Sugerir texto</div>
+        <div class="mst-pfield">
+          <label>Producto / contexto</label>
+          <input type="text" id="mst-ai-producto" placeholder="Ej: Masajeador cervical, Colombia">
+        </div>
+        <button class="mst-ai-btn" onclick="mstAISugerir()">⚡ SUGERIR TEXTOS CON IA</button>
+        <div class="mst-ai-loading" id="mst-ai-loading">Generando ideas...</div>
+        <div class="mst-ai-suggestions" id="mst-ai-sugs"></div>
+
+        <div class="mst-ptitle" style="margin-top:12px;">Crear texto</div>
+        <div class="mst-pfield">
+          <label>Texto</label>
+          <textarea id="mst-txt-inp" placeholder="Escribe o elige una sugerencia de IA"></textarea>
+        </div>
+        <div class="mst-pfield">
+          <label>Fuente</label>
+          <div class="mst-fonts" id="mst-fonts-grid"></div>
+        </div>
+        <div class="mst-pfield">
+          <label>Tamaño — <span id="mst-size-val" style="color:#ffe600;">32px</span></label>
+          <input type="range" id="mst-size" min="10" max="90" value="32" oninput="document.getElementById('mst-size-val').textContent=this.value+'px'">
+        </div>
+        <div class="mst-pfield">
+          <label>Color</label>
+          <div class="mst-colors" id="mst-colors-grid"></div>
+        </div>
+        <div class="mst-pfield">
+          <label>Posición inicial</label>
+          <div class="mst-pos-grid" id="mst-pos-grid"></div>
+        </div>
+        <div class="mst-pfield">
+          <label>Fondo</label>
+          <select id="mst-fondo">
+            <option value="none">Sin fondo</option>
+            <option value="dark">Negro semi-transparente</option>
+            <option value="black">Negro sólido</option>
+            <option value="orange">Naranja marca</option>
+            <option value="white">Blanco</option>
+          </select>
+        </div>
+        <div class="mst-pfield">
+          <label>Animación de entrada</label>
+          <div class="mst-anim-btns" id="mst-anim-btns"></div>
+        </div>
+        <div class="mst-pfield">
+          <label>Aparece en (segundos)</label>
+          <div class="mst-range-row">
+            <input type="range" id="mst-txt-start" min="0" max="60" value="0" oninput="document.getElementById('mst-tstart-val').textContent=this.value+'s'">
+            <span class="mst-range-val" id="mst-tstart-val">0s</span>
+          </div>
+        </div>
+        <div class="mst-pfield">
+          <label>Desaparece en (segundos)</label>
+          <div class="mst-range-row">
+            <input type="range" id="mst-txt-end" min="0" max="60" value="30" oninput="document.getElementById('mst-tend-val').textContent=this.value+'s'">
+            <span class="mst-range-val" id="mst-tend-val">30s</span>
+          </div>
+        </div>
+        <button class="mst-add-txt" onclick="mstAddTexto()">+ Agregar texto al video</button>
+
+        <div class="mst-txt-list">
+          <div class="mst-ptitle" style="margin-top:12px;">Textos en el video</div>
+          <div id="mst-txt-lista"><div style="font-size:9px;color:rgba(0,212,255,0.2);text-align:center;padding:6px;">Sin textos aún</div></div>
+        </div>
+      </div>
+
+      <!-- Panel: Marketing templates -->
+      <div class="mst-rpanel" id="mst-rpanel-mkt" style="display:none;">
+        <div class="mst-ptitle">Plantillas rápidas</div>
+        <div id="mst-templates-list"></div>
+      </div>
+
+      <!-- Panel: Clip -->
+      <div class="mst-rpanel" id="mst-rpanel-clip" style="display:none;">
+        <div class="mst-ptitle">Clip seleccionado</div>
+        <div id="mst-clip-info" style="font-size:10px;color:rgba(0,212,255,0.3);padding:8px 0;">Haz clic en un clip del timeline</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Processing overlay -->
+<div class="mst-proc" id="mst-proc">
+  <div class="mst-proc-spin"></div>
+  <div class="mst-proc-txt" id="mst-proc-txt">Procesando...</div>
+</div>
+</div>
+
+<script>
+// ══ MARKETING STUDIO ══════════════════════════
+
+// Estado
+let mstCL = [];       // clips en biblioteca
+let mstTR = [];       // tracks
+let mstTX = [];       // capas de texto
+let mstVid = null;    // video element activo
+let mstPlay_ = false;
+let mstAsp_ = '16:9';
+let mstTxtColor = '#ffffff';
+let mstTxtPos = 'top';
+let mstTxtFont = 'Syne';
+let mstTxtAnim = 'none';
+let mstCutStart = 0;
+let mstCutEnd = 0;
+let mstCutActive = null; // clip activo para corte
+let mstAnimId = null;
+let mstDraggingTxt = null; // texto que se arrastra
+let mstTxtOffX = 0, mstTxtOffY = 0;
+
+// Fuentes disponibles
+const MST_FONTS = ['Syne','DM Sans','DM Mono','Oswald','Bebas Neue','Montserrat','Playfair Display','Pacifico'];
+
+// Colores disponibles
+const MST_COLORS = ['#ffffff','#ff5520','#ffe600','#00d4ff','#ff2255','#00ff88','#000000','#ff9500','#c850c0','#4158d0'];
+
+// Animaciones
+const MST_ANIMS = ['none','fade','slide-up','slide-down','slide-left','zoom'];
+
+// Plantillas de marketing
+const MST_TEMPLATES = [
+  {nombre:'💰 Precio', texto:'Solo $[PRECIO]', color:'#ffe600', pos:'bottom', fondo:'dark', anim:'slide-up'},
+  {nombre:'🚀 CTA', texto:'¡Pide ahora!', color:'#ff5520', pos:'bottom', fondo:'orange', anim:'zoom'},
+  {nombre:'🛡️ Garantía', texto:'30 días de garantía', color:'#00ff88', pos:'top', fondo:'dark', anim:'fade'},
+  {nombre:'📦 Envío', texto:'Envío GRATIS hoy', color:'#ffffff', pos:'top', fondo:'black', anim:'slide-down'},
+  {nombre:'⚡ Urgencia', texto:'¡Últimas unidades!', color:'#ff2255', pos:'center', fondo:'dark', anim:'zoom'},
+  {nombre:'🌍 País', texto:'Disponible en [PAÍS]', color:'#00d4ff', pos:'bottom', fondo:'dark', anim:'fade'},
+  {nombre:'⭐ Rating', texto:'★★★★★ Miles de clientes', color:'#ffe600', pos:'top', fondo:'none', anim:'fade'},
+  {nombre:'📱 WhatsApp', texto:'Escríbenos al WhatsApp', color:'#00ff88', pos:'bottom', fondo:'black', anim:'slide-up'},
+];
+
+// ── INIT ──────────────────────────────────────
+function mstInit() {
+  mstCL = []; mstTX = []; mstPlay_ = false;
+  if (mstVid) { mstVid.pause(); mstVid.src = ''; }
+  
+  // Cargar del Video Studio
+  const saved = JSON.parse(localStorage.getItem('vs_clips') || '[]');
+  mstCL = saved.map((c,i) => ({
+    id: 'saved_'+i,
+    nombre: c.name || 'Clip '+(i+1),
+    dur: c.duration || '--',
+    durSecs: 0,
+    landing: c.landing || '',
+    uso: c.use || '',
+    url: null, file: null,
+    delArchivo: true
+  }));
+  
+  // Tracks iniciales
+  mstTR = [
+    {id:1, label:'VIDEO 1', color:'#ff5520', clips:[]},
+    {id:2, label:'VIDEO 2', color:'#00d4ff', clips:[]},
+  ];
+  
+  // Renderizar UI
+  mstRenderFonts();
+  mstRenderColors();
+  mstRenderPosGrid();
+  mstRenderAnims();
+  mstRenderTemplates();
+  mstRenderClips();
+  mstRenderTracks();
+  mstResizeCanvas();
+  mstDrawEmpty();
+  mstRenderTextos();
+  
+  const btn = document.getElementById('mst-playbtn');
+  if (btn) btn.textContent = '▶ Play';
+}
+
+// ── RENDER UI ─────────────────────────────────
+function mstRenderFonts() {
+  const grid = document.getElementById('mst-fonts-grid');
+  if (!grid) return;
+  grid.innerHTML = MST_FONTS.map(f => `
+    <div class="mst-font-btn ${f===mstTxtFont?'on':''}" 
+      style="font-family:'${f}',sans-serif;"
+      onclick="mstSetFont('${f}',this)">${f.split(' ')[0]}</div>
+  `).join('');
+}
+
+function mstRenderColors() {
+  const g = document.getElementById('mst-colors-grid');
+  if (!g) return;
+  g.innerHTML = MST_COLORS.map(c => `
+    <div class="mst-color ${c===mstTxtColor?'on':''}" 
+      style="background:${c};${c==='#000000'?'border:1px solid #444;':''}"
+      onclick="mstSetColor('${c}',this)"></div>
+  `).join('');
+}
+
+function mstRenderPosGrid() {
+  const g = document.getElementById('mst-pos-grid');
+  if (!g) return;
+  const btns = [
+    ['top-left','↖'],['top','↑'],['top-right','↗'],
+    ['left','←'],['center','●'],['right','→'],
+    ['bottom-left','↙'],['bottom','↓'],['bottom-right','↘']
+  ];
+  g.innerHTML = btns.map(([pos,ic]) => `
+    <div class="mst-pos-btn ${pos===mstTxtPos?'on':''}" onclick="mstSetPos('${pos}',this)">${ic}</div>
+  `).join('');
+}
+
+function mstRenderAnims() {
+  const g = document.getElementById('mst-anim-btns');
+  if (!g) return;
+  const labels = {none:'Sin anim',fade:'Fade','slide-up':'↑ Slide','slide-down':'↓ Slide','slide-left':'← Slide',zoom:'Zoom'};
+  g.innerHTML = MST_ANIMS.map(a => `
+    <div class="mst-anim-btn ${a===mstTxtAnim?'on':''}" onclick="mstSetAnim('${a}',this)">${labels[a]||a}</div>
+  `).join('');
+}
+
+function mstRenderTemplates() {
+  const g = document.getElementById('mst-templates-list');
+  if (!g) return;
+  g.innerHTML = MST_TEMPLATES.map((t,i) => `
+    <div class="mst-mktpl" onclick="mstAplicarTemplate(${i})">
+      <div class="mst-mktpl-name">${t.nombre}</div>
+      <div class="mst-mktpl-prev" style="color:${t.color};">"${t.texto}"</div>
+    </div>
+  `).join('');
+}
+
+// ── CLIPS BIBLIOTECA ──────────────────────────
+function mstRenderClips() {
+  const lista = document.getElementById('mst-clips-list');
+  if (!lista) return;
+  if (mstCL.length === 0) {
+    lista.innerHTML = '<div style="text-align:center;padding:16px 8px;font-size:10px;color:rgba(0,212,255,0.2);line-height:1.8;">Sube un video<br>con el botón de arriba</div>';
+    return;
+  }
+  lista.innerHTML = mstCL.map((c,i) => `
+    <div class="mst-vcard ${c.url?'active':''}" id="mstcard_${i}">
+      <div class="mst-vthumb">
+        ${c.url ? `<video src="${c.url}" muted preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.7;"></video>` : '🎬'}
+        <div class="mst-vdur">${c.dur}</div>
+      </div>
+      <div class="mst-vname" title="${c.nombre}">${c.nombre}</div>
+      <div class="mst-vlanding">${c.landing}${c.uso?' · '+c.uso:''}</div>
+      <div class="mst-vactions">
+        ${c.delArchivo && !c.url
+          ? `<div class="mst-vload" onclick="mstCargarVideo(${i})">📁 Cargar</div>`
+          : `<div class="mst-vready">✓ Listo</div>`
+        }
+        <div class="mst-vadd" onclick="mstAddAlTimeline(${i})">+ Timeline</div>
+        <div class="mst-vdel" onclick="mstEliminarClip(${i})" title="Eliminar">✕</div>
+      </div>
+    </div>
+  `).join('');
+  
+  // Renderizar también por landing
+  mstRenderLanding();
+}
+
+function mstRenderLanding() {
+  const g = document.getElementById('mst-landing-list');
+  if (!g) return;
+  const byLanding = {};
+  mstCL.forEach((c,i) => {
+    const key = c.landing || 'Sin landing';
+    if (!byLanding[key]) byLanding[key] = [];
+    byLanding[key].push({...c, idx:i});
+  });
+  if (Object.keys(byLanding).length === 0) {
+    g.innerHTML = '<div style="text-align:center;padding:16px;font-size:10px;color:rgba(0,212,255,0.2);">Agrega clips para verlos organizados por landing</div>';
+    return;
+  }
+  g.innerHTML = Object.entries(byLanding).map(([land, clips]) => `
+    <div style="margin-bottom:10px;">
+      <div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:#ff5520;padding:4px 6px;border-bottom:1px solid #252018;margin-bottom:5px;">${land}</div>
+      ${clips.map(c => `
+        <div style="background:#141210;border:1px solid #252018;border-radius:3px;padding:5px 7px;margin-bottom:3px;display:flex;align-items:center;gap:6px;cursor:pointer;" onclick="mstAddAlTimeline(${c.idx})">
+          <div style="font-size:9px;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.nombre}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:7px;color:#ffe600;">${c.dur}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:7px;color:#00d4ff;cursor:pointer;">+</div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function mstSubirVideo(event) {
+  const file = event.target.files[0];
+  event.target.value = '';
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const clip = {
+    id: 'local_'+Date.now(),
+    nombre: file.name.replace(/\.[^.]+$/,'').substring(0,28),
+    dur: '...', durSecs: 0,
+    landing: '', uso: '',
+    url, file,
+    delArchivo: false
+  };
+  mstCL.unshift(clip);
+  mstRenderClips();
+  mstAviso('✓ "'+clip.nombre+'" listo — presiona + Timeline', true);
+  const v = document.createElement('video');
+  v.src = url;
+  v.onloadedmetadata = () => {
+    clip.dur = mstFT(v.duration);
+    clip.durSecs = v.duration;
+    mstRenderClips();
+  };
+}
+
+function mstCargarVideo(i) {
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'video/*';
+  inp.onchange = e => {
+    const file = e.target.files[0];
+    if (!file || !mstCL[i]) return;
+    const url = URL.createObjectURL(file);
+    mstCL[i].url = url; mstCL[i].file = file;
+    const v = document.createElement('video');
+    v.src = url;
+    v.onloadedmetadata = () => {
+      mstCL[i].dur = mstFT(v.duration);
+      mstCL[i].durSecs = v.duration;
+      mstRenderClips();
+      // Actualizar en tracks
+      mstTR.forEach(t => t.clips.forEach(c => {
+        if (c.clipIdx === i) { c.url = url; c.durSecs = v.duration; }
+      }));
+      mstAviso('✓ Video cargado', true);
+    };
+  };
+  inp.click();
+}
+
+function mstEliminarClip(i) {
+  if (!confirm('¿Eliminar "'+mstCL[i].nombre+'" de la biblioteca?')) return;
+  if (mstCL[i].url && !mstCL[i].delArchivo) URL.revokeObjectURL(mstCL[i].url);
+  mstCL.splice(i,1);
+  mstRenderClips();
+}
+
+function mstAviso(msg, ok) {
+  const n = document.getElementById('mst-notice');
+  if (!n) return;
+  n.textContent = msg;
+  n.style.display = 'block';
+  n.style.background = ok?'rgba(0,255,136,0.07)':'rgba(255,34,85,0.07)';
+  n.style.borderColor = ok?'rgba(0,255,136,0.3)':'rgba(255,34,85,0.3)';
+  n.style.color = ok?'#00ff88':'#ff2255';
+  setTimeout(()=>{ n.style.display='none'; }, 4000);
+}
+
+// ── TIMELINE ──────────────────────────────────
+function mstRenderTracks() {
+  const c = document.getElementById('mst-tracks');
+  if (!c) return;
+  c.innerHTML = mstTR.map(t => `
+    <div class="mst-track">
+      <div class="mst-track-lbl" style="color:${t.color};text-shadow:0 0 4px ${t.color}55;">${t.label}</div>
+      <div class="mst-track-area"
+        ondragover="event.preventDefault()"
+        ondrop="mstDropTrack(event,${t.id})">
+        ${t.clips.map(c => `
+          <div class="mst-tclip"
+            style="left:${c.px}px;width:${c.wpx}px;background:${t.color}1a;border:1px solid ${t.color}44;"
+            draggable="true"
+            ondragstart="mstDragTClip(event,${c.uid},${t.id})"
+            onclick="mstSelClip(${c.uid},${t.id})">
+            <div class="mst-tclip-name">${c.nombre}</div>
+            <div class="mst-tclip-del" onclick="event.stopPropagation();mstQuitarClip(${c.uid},${t.id})">✕</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function mstAddAlTimeline(i) {
+  const clip = mstCL[i];
+  if (!clip) return;
+  const track = mstTR[0];
+  const last = track.clips[track.clips.length-1];
+  const px = last ? last.px+last.wpx+4 : 4;
+  const secs = clip.durSecs || 5;
+  track.clips.push({
+    uid: Date.now(),
+    clipIdx: i,
+    nombre: clip.nombre,
+    px, wpx: Math.max(Math.round(secs*35),50),
+    durSecs: secs,
+    url: clip.url, file: clip.file,
+    cutStart: 0, cutEnd: secs
+  });
+  mstRenderTracks();
+  mstActualizarVideo();
+  const empty = document.getElementById('mst-empty');
+  if (empty) empty.style.display = 'none';
+}
+
+function mstNuevaPista() {
+  const n = mstTR.length+1;
+  const cols = ['#ff5520','#00d4ff','#ffe600','#ff2255','#00ff88'];
+  mstTR.push({id:n, label:'PISTA '+n, color:cols[n%cols.length], clips:[]});
+  mstRenderTracks();
+}
+
+function mstQuitarClip(uid, tid) {
+  const t = mstTR.find(x=>x.id===tid);
+  if (!t) return;
+  t.clips = t.clips.filter(c=>c.uid!==uid);
+  mstRenderTracks();
+  mstActualizarVideo();
+}
+
+function mstSelClip(uid, tid) {
+  const t = mstTR.find(x=>x.id===tid);
+  if (!t) return;
+  const clip = t.clips.find(c=>c.uid===uid);
+  if (!clip) return;
+  mstCutActive = clip;
+  const info = document.getElementById('mst-clip-info');
+  if (info) info.innerHTML = `
+    <div style="background:#141210;border:1px solid #252018;border-radius:4px;padding:8px;font-size:10px;">
+      <div style="color:#ffe600;font-family:'DM Mono',monospace;font-size:7px;margin-bottom:4px;">CLIP ACTIVO</div>
+      <div style="color:#fff;margin-bottom:3px;">${clip.nombre}</div>
+      <div style="color:#00d4ff;font-size:9px;">${mstFT(clip.durSecs)}</div>
+      <div style="margin-top:8px;font-size:9px;color:rgba(255,255,255,0.4);">
+        Corte: ${mstFT(clip.cutStart||0)} → ${mstFT(clip.cutEnd||clip.durSecs)}
+      </div>
+      ${!clip.url ? '<div style="margin-top:5px;font-size:9px;color:#ff5520;">⚠️ Sin video — carga el video en la biblioteca</div>' : ''}
+    </div>`;
+  mstRTab('clip', null);
+}
+
+function mstDragTClip(event, uid, tid) {
+  event.dataTransfer.setData('tipo','tclip');
+  event.dataTransfer.setData('uid', uid);
+  event.dataTransfer.setData('tid', tid);
+}
+
+function mstDropTrack(event, tid) {
+  event.preventDefault();
+  const tipo = event.dataTransfer.getData('tipo');
+  if (tipo === 'tclip') {
+    const uid = parseInt(event.dataTransfer.getData('uid'));
+    const fromId = parseInt(event.dataTransfer.getData('tid'));
+    if (fromId === tid) return;
+    const from = mstTR.find(t=>t.id===fromId);
+    const to = mstTR.find(t=>t.id===tid);
+    if (!from||!to) return;
+    const idx = from.clips.findIndex(c=>c.uid===uid);
+    if (idx===-1) return;
+    const [clip] = from.clips.splice(idx,1);
+    to.clips.push(clip);
+    mstRenderTracks();
+  }
+}
+
+// ── CANVAS / VIDEO ────────────────────────────
+function mstResizeCanvas() {
+  const canvas = document.getElementById('mst-canvas');
+  const wrap = document.getElementById('mst-preview-wrap');
+  if (!canvas||!wrap) return;
+  const mw = wrap.clientWidth-20, mh = wrap.clientHeight-20;
+  let w,h;
+  if (mstAsp_==='16:9'){w=mw;h=Math.round(w*9/16);if(h>mh){h=mh;w=Math.round(h*16/9);}}
+  else if(mstAsp_==='9:16'){h=mh;w=Math.round(h*9/16);if(w>mw){w=mw;h=Math.round(w*16/9);}}
+  else{w=h=Math.min(mw,mh);}
+  canvas.width=w; canvas.height=h;
+  canvas.style.width=w+'px'; canvas.style.height=h+'px';
+}
+
+function mstDrawEmpty() {
+  const canvas = document.getElementById('mst-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#050403';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle = 'rgba(0,212,255,0.06)';
+  ctx.setLineDash([4,4]);
+  ctx.strokeRect(8,8,canvas.width-16,canvas.height-16);
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(0,212,255,0.08)';
+  ctx.font = 'bold 11px DM Mono,monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('Agrega un video al timeline', canvas.width/2, canvas.height/2);
+}
+
+function mstDrawFrame(t) {
+  const canvas = document.getElementById('mst-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0,0,W,H);
+  if (mstVid && mstVid.readyState >= 2) {
+    try { ctx.drawImage(mstVid,0,0,W,H); } catch(e){}
+  }
+  // Dibujar textos con animación
+  const now = t || (mstVid ? mstVid.currentTime : 0);
+  mstTX.forEach(tx => {
+    if (now < (tx.tStart||0) || now > (tx.tEnd||999)) return;
+    const fs = tx.size||32;
+    // Elegir fuente
+    ctx.font = `bold ${fs}px '${tx.font||'Syne'}',sans-serif`;
+    let x = W/2, y = fs+14;
+    ctx.textAlign = 'center';
+    const pos = tx.pos||'top';
+    if (pos.includes('bottom')) y = H - 14;
+    if (pos==='center'||pos==='left'||pos==='right') y = H/2 + fs/3;
+    if (pos.includes('left')){x=14;ctx.textAlign='left';}
+    if (pos.includes('right')){x=W-14;ctx.textAlign='right';}
+    
+    // Calcular progreso de animación
+    const dur = (tx.tEnd||30)-(tx.tStart||0);
+    const progr = Math.min(1, (now-(tx.tStart||0))/(Math.min(dur,0.5)));
+    let alpha = 1;
+    let dx = 0, dy = 0, scale = 1;
+    const anim = tx.anim||'none';
+    if (anim==='fade') alpha = progr;
+    else if (anim==='slide-up') { alpha=progr; dy=(1-progr)*30; }
+    else if (anim==='slide-down') { alpha=progr; dy=-(1-progr)*30; }
+    else if (anim==='slide-left') { alpha=progr; dx=(1-progr)*40; }
+    else if (anim==='zoom') { scale=0.5+0.5*progr; alpha=progr; }
+    
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    if (scale!==1||dx!==0||dy!==0) ctx.transform(scale,0,0,scale,x*(1-scale)+dx,y*(1-scale)+dy);
+    
+    const m = ctx.measureText(tx.texto);
+    const tw = m.width;
+    const bx = ctx.textAlign==='left'?x-5:ctx.textAlign==='right'?x-tw-5:x-tw/2-5;
+    
+    if (tx.fondo&&tx.fondo!=='none') {
+      ctx.globalAlpha = alpha*0.88;
+      ctx.fillStyle = tx.fondo==='orange'?'rgba(232,66,10,0.88)':tx.fondo==='white'?'rgba(255,255,255,0.9)':tx.fondo==='black'?'rgba(0,0,0,0.92)':'rgba(0,0,0,0.58)';
+      ctx.fillRect(bx-2, y-fs-3, tw+14, fs+10);
+    }
+    ctx.globalAlpha = alpha;
+    // Borde del texto (outline)
+    ctx.strokeStyle = tx.fondo==='white'?'rgba(0,0,0,0.5)':'rgba(0,0,0,0.6)';
+    ctx.lineWidth = 3;
+    if (scale!==1) ctx.restore(), ctx.save(), ctx.globalAlpha=alpha;
+    ctx.strokeText(tx.texto, x+dx, y+dy);
+    ctx.fillStyle = tx.color;
+    ctx.fillText(tx.texto, x+dx, y+dy);
+    ctx.restore();
+  });
+}
+
+function mstActualizarVideo() {
+  for (const t of mstTR) {
+    for (const c of t.clips) {
+      if (c.url) {
+        if (!mstVid) {
+          mstVid = document.createElement('video');
+          mstVid.style.cssText='position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;';
+          document.body.appendChild(mstVid);
+        }
+        if (mstVid.src !== c.url) { mstVid.src=c.url; mstVid.load(); }
+        mstVid.onloadeddata = () => {
+          mstDrawFrame(0);
+          const te = document.getElementById('mst-time');
+          if (te && mstVid.duration) te.textContent = '0:00 / '+mstFT(mstVid.duration);
+        };
+        return;
+      }
+    }
+  }
+  mstDrawEmpty();
+}
+
+// ── REPRODUCCIÓN ──────────────────────────────
+function mstPlay() {
+  const btn = document.getElementById('mst-playbtn');
+  if (!mstVid||!mstVid.src){alert('Agrega un clip con video al timeline');return;}
+  if (mstVid.paused) {
+    mstVid.play(); btn.textContent='⏸ Pausa'; mstPlay_=true; mstLoop();
+  } else {
+    mstVid.pause(); btn.textContent='▶ Play'; mstPlay_=false;
+  }
+}
+
+function mstLoop() {
+  if (!mstPlay_) return;
+  if (mstVid && mstVid.duration) {
+    mstDrawFrame(mstVid.currentTime);
+    const pct = (mstVid.currentTime/mstVid.duration)*100;
+    const fill = document.getElementById('mst-prog-fill');
+    const time = document.getElementById('mst-time');
+    if (fill) fill.style.width=pct+'%';
+    if (time) time.textContent=mstFT(mstVid.currentTime)+' / '+mstFT(mstVid.duration);
+    if (mstVid.ended){mstPlay_=false;document.getElementById('mst-playbtn').textContent='▶ Play';return;}
+  }
+  requestAnimationFrame(mstLoop);
+}
+
+function mstSeek(event) {
+  if (!mstVid||!mstVid.duration) return;
+  const rect=document.getElementById('mst-prog').getBoundingClientRect();
+  mstVid.currentTime=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width))*mstVid.duration;
+  mstDrawFrame(mstVid.currentTime);
+}
+
+// ── CORTADOR ──────────────────────────────────
+function mstCutOpen() {
+  if (!mstVid||!mstVid.src||!mstVid.duration){alert('Carga un video primero');return;}
+  mstCutStart = 0;
+  mstCutEnd = mstVid.duration;
+  const cutter = document.getElementById('mst-cutter');
+  if (cutter) cutter.classList.add('on');
+  mstCutUpdateUI();
+}
+
+function mstCutCancel() {
+  const c=document.getElementById('mst-cutter');
+  if(c) c.classList.remove('on');
+}
+
+function mstCutUpdateUI() {
+  if (!mstVid||!mstVid.duration) return;
+  const d = mstVid.duration;
+  const s = mstCutStart/d*100, e = mstCutEnd/d*100;
+  const fill=document.getElementById('mst-cut-fill');
+  const hs=document.getElementById('mst-cut-s');
+  const he=document.getElementById('mst-cut-e');
+  if(fill){fill.style.left=s+'%';fill.style.width=(e-s)+'%';}
+  if(hs) hs.style.left=s+'%';
+  if(he) he.style.left=e+'%';
+  const sl=document.getElementById('mst-cut-start-lbl');
+  const el=document.getElementById('mst-cut-end-lbl');
+  const dl=document.getElementById('mst-cut-dur-lbl');
+  if(sl) sl.textContent=mstFT(mstCutStart);
+  if(el) el.textContent=mstFT(mstCutEnd);
+  if(dl) dl.textContent=mstFT(mstCutEnd-mstCutStart);
+}
+
+function mstCutSeek(event) {
+  if (!mstVid||!mstVid.duration) return;
+  const rect=document.getElementById('mst-cut-tl').getBoundingClientRect();
+  const pct=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width));
+  mstVid.currentTime=pct*mstVid.duration;
+  mstDrawFrame(mstVid.currentTime);
+}
+
+function mstCutDrag(event, handle) {
+  event.preventDefault();
+  const tl=document.getElementById('mst-cut-tl');
+  const rect=tl.getBoundingClientRect();
+  function onMove(e) {
+    const pct=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+    const t=pct*(mstVid.duration||10);
+    if(handle==='s'){mstCutStart=Math.min(t,mstCutEnd-0.5);}
+    else{mstCutEnd=Math.max(t,mstCutStart+0.5);}
+    mstCutUpdateUI();
+    mstVid.currentTime = handle==='s'?mstCutStart:mstCutEnd;
+    mstDrawFrame(mstVid.currentTime);
+  }
+  function onUp(){document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);}
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('mouseup',onUp);
+}
+
+function mstCutApply() {
+  // Actualizar el clip activo con los puntos de corte
+  if (mstCutActive) {
+    mstCutActive.cutStart = mstCutStart;
+    mstCutActive.cutEnd = mstCutEnd;
+    mstCutActive.durSecs = mstCutEnd - mstCutStart;
+    mstCutActive.wpx = Math.max(Math.round(mstCutActive.durSecs*35),50);
+    mstRenderTracks();
+    mstAviso('✓ Corte aplicado: '+mstFT(mstCutStart)+' → '+mstFT(mstCutEnd), true);
+  }
+  mstCutCancel();
+  // Actualizar video al punto de inicio del corte
+  if (mstVid) mstVid.currentTime = mstCutStart;
+  mstDrawFrame(mstCutStart);
+}
+
+// ── ASPECTO ───────────────────────────────────
+function mstAsp(ratio, el) {
+  mstAsp_=ratio;
+  document.querySelectorAll('.mst-asp-btn').forEach(b=>b.classList.remove('on'));
+  if(el) el.classList.add('on');
+  mstResizeCanvas();
+  mstDrawFrame(mstVid?mstVid.currentTime:0);
+}
+
+// ── TEXTO ─────────────────────────────────────
+function mstSetFont(f,el){mstTxtFont=f;document.querySelectorAll('.mst-font-btn').forEach(b=>b.classList.remove('on'));if(el)el.classList.add('on');}
+function mstSetColor(c,el){mstTxtColor=c;document.querySelectorAll('.mst-color').forEach(b=>b.classList.remove('on'));if(el)el.classList.add('on');}
+function mstSetPos(p,el){mstTxtPos=p;document.querySelectorAll('.mst-pos-btn').forEach(b=>b.classList.remove('on'));if(el)el.classList.add('on');}
+function mstSetAnim(a,el){mstTxtAnim=a;document.querySelectorAll('.mst-anim-btn').forEach(b=>b.classList.remove('on'));if(el)el.classList.add('on');}
+
+function mstAddTexto() {
+  const inp=document.getElementById('mst-txt-inp');
+  const texto=(inp?inp.value:'').trim();
+  if(!texto){alert('Escribe el texto primero');return;}
+  mstTX.push({
+    id:Date.now(),
+    texto,
+    size:parseInt(document.getElementById('mst-size').value||'32'),
+    color:mstTxtColor,
+    pos:mstTxtPos,
+    font:mstTxtFont,
+    anim:mstTxtAnim,
+    fondo:document.getElementById('mst-fondo').value||'none',
+    tStart:parseFloat(document.getElementById('mst-txt-start').value||'0'),
+    tEnd:parseFloat(document.getElementById('mst-txt-end').value||'30'),
+  });
+  if(inp) inp.value='';
+  mstRenderTextos();
+  mstDrawFrame(mstVid?mstVid.currentTime:0);
+}
+
+function mstAplicarTemplate(i) {
+  const t=MST_TEMPLATES[i];
+  const inp=document.getElementById('mst-txt-inp');
+  if(inp) inp.value=t.texto;
+  mstTxtColor=t.color; mstTxtPos=t.pos; mstTxtAnim=t.anim||'none';
+  mstRenderColors(); mstRenderPosGrid(); mstRenderAnims();
+  document.getElementById('mst-fondo').value=t.fondo||'none';
+  mstRTab('texto',null);
+}
+
+function mstRenderTextos() {
+  const lista=document.getElementById('mst-txt-lista');
+  if(!lista) return;
+  if(mstTX.length===0){lista.innerHTML='<div style="font-size:9px;color:rgba(0,212,255,0.2);text-align:center;padding:6px;">Sin textos aún</div>';return;}
+  lista.innerHTML=mstTX.map(t=>`
+    <div class="mst-txt-item">
+      <div class="mst-txt-dot" style="background:${t.color};box-shadow:0 0 3px ${t.color}88;"></div>
+      <div class="mst-txt-label">${t.texto}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:7px;color:rgba(255,255,255,0.2);flex-shrink:0;">${mstFT(t.tStart)}-${mstFT(t.tEnd)}</div>
+      <div class="mst-txt-del" onclick="mstBorrarTexto(${t.id})">✕</div>
+    </div>
+  `).join('');
+}
+
+function mstBorrarTexto(id) {
+  mstTX=mstTX.filter(t=>t.id!==id);
+  mstRenderTextos();
+  mstDrawFrame(mstVid?mstVid.currentTime:0);
+}
+
+// ── IA PARA TEXTO ─────────────────────────────
+async function mstAISugerir() {
+  const producto=document.getElementById('mst-ai-producto').value.trim();
+  if(!producto){alert('Escribe el producto primero');return;}
+  const loading=document.getElementById('mst-ai-loading');
+  const sugs=document.getElementById('mst-ai-sugs');
+  if(loading) loading.style.display='block';
+  if(sugs) sugs.innerHTML='';
+  try {
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:400,
+        messages:[{role:'user',content:`Genera exactamente 5 textos cortos (máximo 5 palabras cada uno) para superponer sobre un video de marketing del producto: "${producto}". 
+Textos de marketing que generen urgencia, confianza o acción. 
+Responde SOLO con un JSON array de strings, sin explicación, sin comillas extras, sin markdown. 
+Ejemplo: ["texto1","texto2","texto3","texto4","texto5"]`}]
+      })
+    });
+    const data=await resp.json();
+    const content=data.content?.[0]?.text||'[]';
+    let arr;
+    try { arr=JSON.parse(content.trim()); } catch(e){ arr=['¡Compra ahora!','Envío gratis','Solo hoy','Garantía 30 días','Miles de clientes felices']; }
+    if(sugs) sugs.innerHTML=arr.map(s=>`
+      <div class="mst-ai-sug" onclick="document.getElementById('mst-txt-inp').value='${s.replace(/'/g,"\\'")}'">${s}</div>
+    `).join('');
+  } catch(err) {
+    if(sugs) sugs.innerHTML='<div style="font-size:9px;color:#ff2255;text-align:center;padding:6px;">Error al conectar con IA</div>';
+  }
+  if(loading) loading.style.display='none';
+}
+
+// ── TABS ──────────────────────────────────────
+function mstLibTab(tab, el) {
+  document.querySelectorAll('.mst-ltab').forEach(t=>t.classList.remove('on'));
+  if(el) el.classList.add('on');
+  document.getElementById('mst-lib-videos').style.display=tab==='videos'?'block':'none';
+  document.getElementById('mst-lib-landing').style.display=tab==='landing'?'block':'none';
+}
+
+function mstRTab(tab, el) {
+  if(el){document.querySelectorAll('.mst-rtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');}
+  ['texto','mkt','clip'].forEach(t=>{
+    const p=document.getElementById('mst-rpanel-'+t);
+    if(p) p.style.display=t===tab?'block':'none';
+  });
+}
+
+// ── LIMPIAR TODO ──────────────────────────────
+function mstLimpiar() {
+  if(!confirm('¿Limpiar el timeline y los textos para empezar de nuevo?')) return;
+  if(mstVid){mstVid.pause();mstVid.src='';}
+  mstPlay_=false; mstTX=[];
+  mstTR.forEach(t=>t.clips=[]);
+  const btn=document.getElementById('mst-playbtn');
+  if(btn) btn.textContent='▶ Play';
+  const fill=document.getElementById('mst-prog-fill');
+  if(fill) fill.style.width='0%';
+  const time=document.getElementById('mst-time');
+  if(time) time.textContent='0:00 / 0:00';
+  const empty=document.getElementById('mst-empty');
+  if(empty) empty.style.display='block';
+  const cutter=document.getElementById('mst-cutter');
+  if(cutter) cutter.classList.remove('on');
+  mstRenderTracks();
+  mstRenderTextos();
+  mstDrawEmpty();
+  mstAviso('✓ Limpiado — listo para nuevo video', true);
+}
+
+// ── EXPORTAR ──────────────────────────────────
+async function mstExport(ratio) {
+  const tieneClips=mstTR.some(t=>t.clips.length>0);
+  if(!tieneClips){alert('Agrega clips al timeline primero');return;}
+  const clipsConVideo=mstTR.flatMap(t=>t.clips).filter(c=>c.url||c.file);
+  if(clipsConVideo.length===0){alert('Carga el video de los clips primero (botón 📁 Cargar)');return;}
+  
+  const ratioOld=mstAsp_;
+  mstAsp_=ratio;
+  mstResizeCanvas();
+  
+  const proc=document.getElementById('mst-proc');
+  const msg=document.getElementById('mst-proc-txt');
+  if(proc) proc.classList.add('on');
+  if(msg) msg.textContent='Cargando FFmpeg...';
+  
+  try {
+    if(!ffmpegLoaded){await ffmpeg.load();ffmpegLoaded=true;}
+    if(msg) msg.textContent='Procesando video...';
+    
+    const clip=clipsConVideo[0];
+    const fileData=clip.file||await fetch(clip.url).then(r=>r.blob());
+    ffmpeg.FS('writeFile','input.mp4',await fetchFile(fileData));
+    
+    let vfParts=[];
+    
+    // Aspecto ratio
+    const canvas=document.getElementById('mst-canvas');
+    if(canvas){
+      const W=canvas.width, H=canvas.height;
+      vfParts.push(`scale=${W}:${H}:force_original_aspect_ratio=decrease,pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2`);
+    }
+    
+    // Corte del clip
+    let inputArgs=['-i','input.mp4'];
+    const cs=clip.cutStart||0, ce=clip.cutEnd||clip.durSecs||9999;
+    if(cs>0||ce<clip.durSecs){
+      inputArgs=['-ss',String(cs),'-i','input.mp4','-t',String(ce-cs)];
+    }
+    
+    // Textos con FFmpeg drawtext
+    if(mstTX.length>0){
+      const posMap={
+        'top':'x=(w-tw)/2:y=20','top-left':'x=20:y=20','top-right':'x=w-tw-20:y=20',
+        'center':'x=(w-tw)/2:y=(h-th)/2','left':'x=20:y=(h-th)/2','right':'x=w-tw-20:y=(h-th)/2',
+        'bottom':'x=(w-tw)/2:y=h-th-20','bottom-left':'x=20:y=h-th-20','bottom-right':'x=w-tw-20:y=h-th-20'
+      };
+      mstTX.forEach(t=>{
+        const pos=posMap[t.pos]||posMap['top'];
+        const col=t.color.replace('#','');
+        const safe=t.texto.replace(/'/g,"\\'").replace(/:/g,'\\:');
+        const timeFilter=t.tStart>0||t.tEnd<999?`:enable='between(t,${t.tStart},${t.tEnd})'`:'';
+        vfParts.push(`drawtext=text='${safe}':fontsize=${t.size}:fontcolor=${col}:${pos}:box=1:boxcolor=black@0.4:boxborderw=5${timeFilter}`);
+      });
+    }
+    
+    if(msg) msg.textContent='Exportando MP4...';
+    const filterArgs=vfParts.length>0?['-vf',vfParts.join(',')]:[];
+    await ffmpeg.run(...inputArgs,...filterArgs,'-c:v','libx264','-c:a','aac','-movflags','faststart','output.mp4');
+    
+    const data=ffmpeg.FS('readFile','output.mp4');
+    const blob=new Blob([data.buffer],{type:'video/mp4'});
+    const url=URL.createObjectURL(blob);
+    const plat=ratio==='16:9'?'meta':ratio==='9:16'?'tiktok':'whatsapp';
+    const nombre=(clipsConVideo[0].nombre||'clip').replace(/\s+/g,'-').toLowerCase();
+    const a=document.createElement('a');
+    a.href=url;a.download=nombre+'-'+plat+'.mp4';a.click();
+    URL.revokeObjectURL(url);
+    try{ffmpeg.FS('unlink','input.mp4');ffmpeg.FS('unlink','output.mp4');}catch(e){}
+    if(proc) proc.classList.remove('on');
+    mstAsp_=ratioOld; mstResizeCanvas();
+  } catch(err) {
+    if(proc) proc.classList.remove('on');
+    mstAsp_=ratioOld; mstResizeCanvas();
+    console.error(err);
+    alert('Error al exportar: '+err.message);
+  }
+}
+
+// ── UTILIDADES ────────────────────────────────
+function mstFT(s){if(!s||isNaN(s))return'0:00';return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');}
+
+// ── INICIALIZACIÓN ────────────────────────────
+if(VIDEO_ENABLED) document.addEventListener('DOMContentLoaded',()=>{
+  // Botón en Video Studio
+  const nav=document.querySelector('.vs-nav');
+  if(nav){
+    const btn=document.createElement('button');
+    btn.className='vs-new';
+    btn.style.cssText='background:rgba(255,230,0,0.1);border-color:rgba(255,230,0,0.3);color:#ffe600;text-shadow:0 0 5px rgba(255,230,0,0.4);margin-left:6px;';
+    btn.textContent='🎬 LandCopy Studio';
+    btn.onclick=()=>{goTo('page-editor');setTimeout(mstInit,100);};
+    nav.appendChild(btn);
+  }
+  // Bottom nav
+  const bnav=document.getElementById('bottom-nav');
+  if(bnav && VIDEO_ENABLED){
+    const btn=document.createElement('button');
+    btn.className='bnav-btn';
+    btn.id='bnav-advanced';
+    btn.textContent='✂·Studio';
+    btn.style.color='rgba(255,230,0,0.4)';
+    btn.onclick=()=>{goTo('page-editor');setTimeout(mstInit,100);};
+    bnav.appendChild(btn);
+  }
+});
+</script>
+
+
 </body>
 </html>
