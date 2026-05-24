@@ -3266,7 +3266,8 @@ async function handleLogin() {
     }
 
     localStorage.setItem('lc_token', data.session.access_token);
-    localStorage.setItem('lc_user', JSON.stringify(data.user));
+    const userData = data.user || { email: email, plan: 'basico' };
+localStorage.setItem('lc_user', JSON.stringify(userData));
     goTo('page-main');
 
   } catch (err) {
