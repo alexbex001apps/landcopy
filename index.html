@@ -3301,6 +3301,12 @@ function logout() {
 }
 
 checkSession();
+
+// Proteger la app: si no hay sesión, ir al login
+const token = localStorage.getItem('lc_token');
+if (!token) {
+  goTo('page-login');
+}
 </script>
 
 
