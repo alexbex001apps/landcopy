@@ -3414,7 +3414,16 @@ if (!token) {
   document.getElementById('login-foot').style.display = 'block';
   document.getElementById('register-form').style.display = 'none';
 }
-
+let planSeleccionado = 'pro';
+function selPlan(el) {
+  document.querySelectorAll('.plan-opt').forEach(p => {
+    p.style.border = '1px solid #ddd5c0';
+    p.style.background = '#faf8f4';
+  });
+  el.style.border = '2px solid #e8420a';
+  el.style.background = '#fff8f6';
+  planSeleccionado = el.getAttribute('data-plan');
+}
 function showRegister() {
   document.getElementById('lt-register').classList.add('on');
   document.getElementById('lt-login').classList.remove('on');
