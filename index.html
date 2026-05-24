@@ -3330,11 +3330,22 @@ if (!token) {
   document.getElementById('login-body').style.display = 'block';
   document.getElementById('login-opts').style.display = 'flex';
   document.getElementById('login-btn').style.display = 'block';
+  document.getElementById('login-div').style.display = 'flex';
+  document.getElementById('login-google').style.display = 'flex';
+  document.getElementById('login-foot').style.display = 'block';
+  document.getElementById('register-form').style.display = 'none';
 }
 
 function showRegister() {
   document.getElementById('lt-register').classList.add('on');
   document.getElementById('lt-login').classList.remove('on');
+  document.getElementById('login-body').style.display = 'none';
+  document.getElementById('login-opts').style.display = 'none';
+  document.getElementById('login-btn').style.display = 'none';
+  document.getElementById('login-div').style.display = 'none';
+  document.getElementById('login-google').style.display = 'none';
+  document.getElementById('login-foot').style.display = 'none';
+  document.getElementById('register-form').style.display = 'block';
 }
 </script>
 
