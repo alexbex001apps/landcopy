@@ -841,8 +841,8 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
   <button class="login-back" onclick="volverDesdeLogin()">← Volver</button>
   <div class="login-box">
     <div class="login-tabs">
-      <div class="login-tab on" id="lt-login">Iniciar sesión</div>
-      <div class="login-tab" id="lt-register" onclick="document.getElementById('lt-login').classList.remove('on');this.classList.add('on');">Crear cuenta</div>
+      <div class="login-tab on" id="lt-login" onclick="showLogin()">Iniciar sesión</div>
+      <div class="login-tab" id="lt-register" onclick="showRegister()">Crear cuenta</div>
     </div>
     <div class="login-head">
       <div class="login-logo">Land<span>Copy</span></div>
@@ -3314,6 +3314,18 @@ if (!token) {
   if (token) {
     goTo('page-main');
   }
+}
+  function showLogin() {
+  document.getElementById('lt-login').classList.add('on');
+  document.getElementById('lt-register').classList.remove('on');
+  document.getElementById('login-body').style.display = 'block';
+  document.getElementById('login-opts').style.display = 'flex';
+  document.getElementById('login-btn').style.display = 'block';
+}
+
+function showRegister() {
+  document.getElementById('lt-register').classList.add('on');
+  document.getElementById('lt-login').classList.remove('on');
 }
 </script>
 
