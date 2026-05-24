@@ -32,7 +32,10 @@ export default async function handler(req, res) {
         generaciones_limite: 30
       });
 
-      return res.status(200).json({ success: true, user: data.user });
+     const { data: signIn, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+if (signInError) return res.status(200).json({ success: true, user: data.user });
+const { data: userData } = await supabase.from('users').select('*').eq('id', data.user.id).single();
+return res.status(200).json({ success: true, session: signIn.session, user: userData || { email, plan: 'basico' } });
     }
 
     // LOGIN
