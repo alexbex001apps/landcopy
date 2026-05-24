@@ -132,16 +132,26 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 .sh-link{color:var(--accent);font-weight:500;}
 
 /* Loading */
-.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:14px;}
+.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:20px;}
 .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
-.loading-steps{display:flex;flex-direction:column;gap:6px;}
-.ls{font-size:11px;color:var(--muted);opacity:0.4;transition:opacity 0.3s;}
-.ls.active{opacity:1;color:var(--accent);}
-.ls.done{opacity:0.7;color:var(--success);}
+.loading-text{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--dark);text-align:center;}
+.loading-steps{display:flex;flex-direction:column;gap:8px;width:100%;max-width:440px;}
+.ls{font-size:14px;color:var(--muted);opacity:0.3;transition:all 0.4s ease;padding:10px 16px;border-radius:6px;border-left:3px solid transparent;}
+.ls.active{opacity:1;color:var(--dark);font-weight:600;background:rgba(232,66,10,0.05);border-left-color:var(--accent);font-size:15px;}
+.ls.done{opacity:0.6;color:var(--success);border-left-color:var(--success);}
 
 /* Output */
+.value-banner{background:var(--dark);border-radius:8px;padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.vb-left{display:flex;align-items:center;gap:12px;}
+.vb-emoji{font-size:20px;}
+.vb-text{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;}
+.vb-text strong{color:#fff;font-weight:600;}
+.vb-stats{display:flex;gap:16px;flex-shrink:0;}
+.vb-stat{text-align:center;}
+.vb-stat-num{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--neon-orange);}
+.vb-stat-label{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;color:rgba(255,255,255,0.3);text-transform:uppercase;}
+
 .out-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .out-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--dark);}
 .copy-all{padding:6px 14px;background:var(--dark);border:none;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#fff;cursor:pointer;border-radius:3px;}
@@ -527,15 +537,19 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
           <div class="loading-text">Generando contenido...</div>
           <div class="loading-steps">
             <div class="ls active" id="step-1">⚡ Analizando producto y mercado</div>
-            <div class="ls" id="step-2">🎯 Identificando puntos de dolor</div>
-            <div class="ls" id="step-3">✍️ Escribiendo copy persuasivo</div>
-            <div class="ls" id="step-4">📱 Adaptando para cada canal</div>
-            <div class="ls" id="step-5">✅ Finalizando contenido</div>
+            <div class="ls" id="step-2">🎯 Identificando puntos de dolor del cliente</div>
+            <div class="ls" id="step-3">🧠 Pensando estrategia de conversión</div>
+            <div class="ls" id="step-4">✍️ Escribiendo copy persuasivo profesional</div>
+            <div class="ls" id="step-5">🚀 Aplicando técnicas de ventas poderosas</div>
+            <div class="ls" id="step-6">📱 Adaptando para cada canal de marketing</div>
+            <div class="ls" id="step-7">💰 Optimizando para máximo rendimiento</div>
+            <div class="ls" id="step-8">✅ Finalizando tu landing ganadora</div>
           </div>
         </div>
       </div>
 
       <div id="output-state" style="display:none;">
+        <div id="value-banner" class="value-banner" style="display:none;"></div>
         <div class="out-header">
           <div class="out-title" id="output-product-name">Contenido generado</div>
           <button class="copy-all" onclick="copyAll()">📋 Copiar todo</button>
@@ -1244,11 +1258,12 @@ async function generateContent() {
   document.getElementById('loading-state').style.display='flex';
   document.getElementById('output-state').style.display='none';
   document.getElementById('gen-btn').disabled=true;
+  const _genStart = Date.now();
   document.getElementById('tab-btn-vision').style.display='none';
   document.getElementById('vision-banner-wrap').innerHTML='';
   document.getElementById('benefit-transform-wrap').style.display='none';
   document.getElementById('vision-analysis-card').style.display='none';
-  const steps=['step-1','step-2','step-3','step-4','step-5'];
+  const steps=['step-1','step-2','step-3','step-4','step-5','step-6','step-7','step-8'];
   let si=0;
   const iv=setInterval(()=>{
     if(si>0){document.getElementById(steps[si-1]).classList.remove('active');document.getElementById(steps[si-1]).classList.add('done');}
@@ -1351,7 +1366,25 @@ async function generateContent() {
     document.getElementById('stat-pieces').textContent=Object.keys(parsed).length;
     document.getElementById('stat-country').textContent=co.code;
     document.getElementById('output-product-name').textContent=name;
-    setTimeout(()=>{document.getElementById('loading-state').style.display='none';document.getElementById('output-state').style.display='block';document.getElementById('gen-btn').disabled=false;steps.forEach(s=>document.getElementById(s).classList.remove('done','active'));},400);
+    setTimeout(()=>{
+      document.getElementById('loading-state').style.display='none';
+      document.getElementById('output-state').style.display='block';
+      document.getElementById('gen-btn').disabled=false;
+      steps.forEach(s=>document.getElementById(s).classList.remove('done','active'));
+      // Banner de valor
+      const elapsed = Math.round((Date.now() - _genStart) / 1000);
+      const banner = document.getElementById('value-banner');
+      banner.style.display='flex';
+      banner.innerHTML=`
+        <div class="vb-left">
+          <div class="vb-emoji">⚡</div>
+          <div class="vb-text">Generaste en <strong>${elapsed} segundos</strong> lo que un copywriter profesional haría en <strong>2-3 días</strong>.<br>Ahorraste aproximadamente <strong>$350 USD</strong> en servicios de marketing.</div>
+        </div>
+        <div class="vb-stats">
+          <div class="vb-stat"><div class="vb-stat-num">${elapsed}s</div><div class="vb-stat-label">Tiempo</div></div>
+          <div class="vb-stat"><div class="vb-stat-num">$350</div><div class="vb-stat-label">Ahorrado</div></div>
+        </div>`;
+    },400);
   } catch(err) {
     clearInterval(iv);
     document.getElementById('loading-state').style.display='none';
