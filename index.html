@@ -132,7 +132,7 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 .sh-link{color:var(--accent);font-weight:500;}
 
 /* Loading */
-.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:16px;padding:20px;}
+.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 120px);gap:16px;padding:40px 20px;}
 .loading-title-text{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--dark);text-align:center;}
 .loading-dot{display:inline-block;animation:ldotPulse 1.4s infinite;}
 .loading-dot:nth-child(2){animation-delay:0.2s;}
@@ -1294,9 +1294,16 @@ async function generateContent() {
   const steps=['step-1','step-2','step-3','step-4','step-5','step-6','step-7','step-8','step-9','step-10','step-11','step-12'];
   let si=0;
   function lsAnimatePct(num,dur){const el=document.getElementById(`lspct-${num}`);if(!el)return;const start=Date.now();function upd(){const e=Date.now()-start;const p=Math.min(Math.round((e/dur)*100),100);el.textContent=p+'%';if(p<100)requestAnimationFrame(upd);}requestAnimationFrame(upd);}
-  function lsAdvance(){if(si<steps.length){if(si>0){const prev=document.getElementById(steps[si-1]);if(prev){prev.classList.remove('active');prev.classList.add('done');}const prevPct=document.getElementById(`lspct-${si}`);if(prevPct)prevPct.textContent='100%';}const cur=document.getElementById(steps[si]);if(cur){cur.classList.add('active');const fill=document.getElementById(`lsfill-${si+1}`);if(fill){fill.style.animation='none';fill.offsetHeight;fill.style.animation='';}lsAnimatePct(si+1,1900);}const pct=Math.round(((si+1)/steps.length)*100);const pb=document.getElementById('loading-progress');if(pb)pb.style.width=pct+'%';const lc=document.getElementById('loading-counter');if(lc)lc.textContent=`Paso ${si+1} de ${steps.length}`;si++;}}
+  function lsReset(){steps.forEach(id=>{const el=document.getElementById(id);if(el){el.classList.remove('active','done');}});for(let n=1;n<=12;n++){const f=document.getElementById(`lsfill-${n}`);if(f){f.style.animation='none';f.offsetHeight;f.style.animation='';}const p=document.getElementById(`lspct-${n}`);if(p)p.textContent='0%';}si=0;}
+  function lsAdvance(){
+    if(si>0){const prev=document.getElementById(steps[si-1]);if(prev){prev.classList.remove('active');prev.classList.add('done');}const prevPct=document.getElementById(`lspct-${si}`);if(prevPct)prevPct.textContent='100%';}
+    if(si>=steps.length){lsReset();}
+    const cur=document.getElementById(steps[si]);if(cur){cur.classList.add('active');const fill=document.getElementById(`lsfill-${si+1}`);if(fill){fill.style.animation='none';fill.offsetHeight;fill.style.animation='';}lsAnimatePct(si+1,1900);}
+    const pct=Math.round(((si+1)/steps.length)*100);const pb=document.getElementById('loading-progress');if(pb)pb.style.width=pct+'%';const lc=document.getElementById('loading-counter');if(lc)lc.textContent=`Paso ${si+1} de ${steps.length}`;
+    si++;
+  }
   lsAdvance();
-  const iv=setInterval(()=>{if(si<steps.length){lsAdvance();}else{clearInterval(iv);}},1900);
+  const iv=setInterval(lsAdvance,1900);
   try {
     const resp=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       name,problem:document.getElementById('product-problem').value.trim(),
