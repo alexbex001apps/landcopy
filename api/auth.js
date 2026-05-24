@@ -27,7 +27,7 @@ export default async function handler(req, res) {
       await supabase.from('users').insert({
         id: data.user.id,
         email: data.user.email,
-        plan: 'basico',
+        plan: body.plan || 'basico',
         generaciones_usadas: 0,
         generaciones_limite: 30
       });
