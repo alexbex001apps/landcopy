@@ -3863,6 +3863,12 @@ function showRegister() {
   document.getElementById('login-google').style.display = 'none';
   document.getElementById('login-foot').style.display = 'none';
   document.getElementById('register-form').style.display = 'block';
+}function imgToggleFav(el){
+  const isOn = el.textContent === '♥';
+  el.textContent = isOn ? '♡' : '♥';
+  el.style.background = isOn ? '#fff' : '#fff3ee';
+  el.style.borderColor = isOn ? '#ddd5c0' : '#e8420a';
+  el.style.color = isOn ? '' : '#e8420a';
 }
 </script>
 
