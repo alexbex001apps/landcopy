@@ -3394,7 +3394,7 @@ if (!token) {
     }
 
     localStorage.setItem('lc_token', data.session?.access_token || '');
-    localStorage.setItem('lc_user', JSON.stringify({ email, plan: 'basico' }));
+    localStorage.setItem('lc_user', JSON.stringify({ email, plan: planSeleccionado }));
     goTo('page-main');
 
   } catch (err) {
