@@ -863,6 +863,15 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
       </button>
     </div>
     <div class="login-foot">¿No tienes cuenta? <a onclick="showRegister()">Crear cuenta →</a></div>
+    <div id="register-form" style="display:none">
+  <div class="login-body">
+    <div class="lf" style="margin-bottom:12px"><label>Nombre</label><input type="text" id="reg-nombre" placeholder="Tu nombre"/></div>
+    <div class="lf" style="margin-bottom:12px"><label>Correo electrónico</label><input type="email" id="reg-email" placeholder="tu@email.com"/></div>
+    <div class="lf" style="margin-bottom:16px"><label>Contraseña</label><input type="password" id="reg-password" placeholder="Mínimo 8 caracteres"/></div>
+    <button class="login-btn" onclick="handleRegister()" id="register-btn">Crear cuenta y entrar</button>
+  </div>
+  <div class="login-foot">¿Ya tienes cuenta? <a onclick="showLogin()">Inicia sesión →</a></div>
+</div>
   </div>
 </div>
 
