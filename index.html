@@ -955,6 +955,7 @@ function goTo(pageId) {
   document.getElementById(pageId).classList.add('active');
   currentPage = pageId;
   window.scrollTo(0,0);
+  checkSession();
   // Update bottom nav
   document.querySelectorAll('.bnav-btn').forEach(b => {
     b.classList.remove('on','studio-on','login-on','pricing-on');
