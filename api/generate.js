@@ -50,7 +50,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { name, problem, benefit, price, priceOld, clients, chars, category, country, tone, image, imageMime, outputs } = req.body;
-  if (!name) return res.status(400).json({ error: 'Nombre requerido' });
+  if (!name && !req.body.visionOnly && !req.body.improveOnly && !req.body.heroOnly) return res.status(400).json({ error: 'Nombre requerido' });
 
   const co = countryData[country] || countryData.general;
   const toneDesc = toneInstructions[tone] || toneInstructions.urgente;
@@ -59,6 +59,47 @@ export default async function handler(req, res) {
   const o = outputs || {};
 
   // ── MODO IMPROVE ONLY ──────────────────────
+ // ── MODO VISION ONLY (para imágenes IA) ──────────────────────
+if(req.body.visionOnly) {
+  const { image, config } = req.body;
+  const cfg = config || {};
+  const visionPrompt = `Analiza esta imagen de producto y genera 4 ideas de fotografía publicitaria.
+  
+Contexto de uso:
+- Destino: ${cfg.dest || 'Instagram'}
+- Tipo de foto: ${cfg.tipo || 'Profesional'}
+- Género del modelo: ${cfg.genero || 'Mujer'}
+- Lugar: ${cfg.donde || 'casa'}
+- Acción: ${cfg.hace || 'usando el producto'}
+- Momento: ${cfg.momento || 'mañana'}
+
+Basándote en el producto que ves en la imagen, genera exactamente 4 ideas de fotografía publicitaria que muestren este producto específico.
+
+Responde SOLO con este JSON sin markdown:
+{"ideas":[
+  {"desc":"[descripción idea 1 con el producto real que ves]","ctx":"${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · ${cfg.dest||'Instagram'}"},
+  {"desc":"[descripción idea 2]","ctx":"${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · ${cfg.dest||'Instagram'}"},
+  {"desc":"[descripción idea 3]","ctx":"${cfg.momento||'mañana'} · Cenital · ${cfg.dest||'Instagram'}"},
+  {"desc":"[descripción idea 4]","ctx":"${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · ${cfg.dest||'Instagram'}"}
+]}`;
+
+  const messages = [{ role:'user', content:[
+    { type:'image_url', image_url:{ url:image, detail:'low' }},
+    { type:'text', text:visionPrompt }
+  ]}];
+
+  const result = await callOpenAI(process.env.OPENAI_API_KEY, {
+    model: 'gpt-4o-mini',
+    max_tokens: 800,
+    temperature: 0.8,
+    messages
+  });
+
+  if(result.status !== 200) return res.status(500).json({ error: result.body.error?.message || 'Error OpenAI' });
+  const raw = result.body.choices[0].message.content.trim();
+  const clean = raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();
+  return res.status(200).json(JSON.parse(clean));
+}
   if(req.body.improveOnly) {
     const { originalText, sectionName } = req.body;
     const improvePrompt = `Eres el mejor experto en copywriting persuasivo para ecommerce latinoamericano.
