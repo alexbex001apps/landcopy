@@ -880,7 +880,21 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
           </div>
         </div>
 
-        <!-- TIPO -->
+        <div style="background:#fff;border:1px solid #ddd5c0;border-radius:10px;padding:14px;margin-bottom:10px;">
+  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:10px;">¿tienes imagen de tu producto?</div>
+  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;border:1px dashed #ddd5c0;border-radius:8px;padding:12px;background:#faf8f4;">
+    <span style="font-size:20px;">📷</span>
+    <div>
+      <div style="font-size:11px;font-weight:700;color:#444;">Subir imagen del producto</div>
+      <div style="font-size:9px;color:#aaa;">La IA la analizará y mejorará el prompt</div>
+    </div>
+    <input type="file" accept="image/*" id="id-producto-img" style="display:none;" onchange="iCargarProducto(this)">
+  </label>
+  <div id="id-producto-preview" style="display:none;margin-top:8px;text-align:center;">
+    <img id="id-producto-thumb" style="max-height:80px;border-radius:6px;border:1px solid #ddd5c0;" src="">
+    <div style="font-size:9px;color:#7a7060;margin-top:4px;" id="id-producto-status">Imagen cargada ✓</div>
+  </div>
+</div><!-- TIPO -->
         <div style="background:#fff;border:1px solid #ddd5c0;border-radius:10px;padding:14px;margin-bottom:10px;">
           <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:10px;">¿Qué tipo de foto?</div>
           <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;" id="id-tipo-wrap">
@@ -1007,21 +1021,7 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
           </div>
         </div>
 
-<div style="background:#fff;border:1px solid #ddd5c0;border-radius:10px;padding:14px;margin-bottom:10px;">
-  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:10px;">¿tienes imagen de tu producto?</div>
-  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;border:1px dashed #ddd5c0;border-radius:8px;padding:12px;background:#faf8f4;">
-    <span style="font-size:20px;">📷</span>
-    <div>
-      <div style="font-size:11px;font-weight:700;color:#444;">Subir imagen del producto</div>
-      <div style="font-size:9px;color:#aaa;">La IA la analizará y mejorará el prompt</div>
-    </div>
-    <input type="file" accept="image/*" id="id-producto-img" style="display:none;" onchange="iCargarProducto(this)">
-  </label>
-  <div id="id-producto-preview" style="display:none;margin-top:8px;text-align:center;">
-    <img id="id-producto-thumb" style="max-height:80px;border-radius:6px;border:1px solid #ddd5c0;" src="">
-    <div style="font-size:9px;color:#7a7060;margin-top:4px;" id="id-producto-status">Imagen cargada ✓</div>
-  </div>
-</div>
+
         <button onclick="iGenerar()" style="width:100%;padding:12px;background:#e8420a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Generar 4 ideas de imagen</button>
       </div>
 
