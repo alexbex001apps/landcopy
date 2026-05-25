@@ -1705,8 +1705,10 @@ async function lGenerarImg(btn,promptBase,seccion){
   btn.textContent='Generando...';btn.disabled=true;
   lStep(3);
 
-  const sec=LP_SECCIONES[seccion]||LP_SECCIONES.hero;
-  const prompt=`${promptBase}. Sección ${sec.label}. Cámara: ${sec.cam}. Iluminación: ${sec.luz}. Composición: ${sec.comp}. Emoción: ${sec.emo}. Fotografía publicitaria profesional realista para landing page latinoamericana. Hyperrealistic 8k.`;
+  const cfg=lGetConfig();
+      const prompt=lConstruirPrompt(seccion,cfg);
+      const sec=LP_SECCIONES[seccion]||LP_SECCIONES.hero;
+  
 
   try{
     const resp=await fetch('/api/images',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,destino:'landing'})});
