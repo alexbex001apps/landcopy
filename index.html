@@ -1165,7 +1165,7 @@ if(window.iProductoBase64){
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0;">
           <button onclick="iVerPrompt(this)" style="padding:5px 10px;border:1px solid #ddd5c0;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:#fff;color:#444;">Ver prompt</button>
-          <button onclick="iGenerarImg(this,'${idea.desc} fotografía profesional realista','${cfg.dest}')" style="padding:5px 10px;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:#e8420a;color:#fff;">Generar imagen</button>
+          <button onclick="iGenerarImg(this,`${idea.desc}. ${cfg.tipo==='Profesional'?'Sony A7III 85mm f/1.4, studio three-point lighting, clean background, commercial product photography':cfg.tipo==='Moderno'?'Canon 35mm f/1.8, urban lifestyle, dynamic lighting, editorial fashion photography':cfg.tipo==='Ciudad'?'street photography, natural urban light, 50mm lens, candid lifestyle':cfg.tipo==='Pueblo'?'natural daylight, warm tones, 50mm lens, authentic lifestyle documentary':'minimalist product shot, white background, macro lens'}. Hyperrealistic, 8k, ultra detailed, professional advertising photography, Latin American market`,'${cfg.dest}')" style="padding:5px 10px;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:#e8420a;color:#fff;">Generar imagen</button>
         </div>
       </div>
       <div style="padding:8px 12px;display:none;" class="i-prompt-body">
