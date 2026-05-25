@@ -844,63 +844,51 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
     <div class="dh-right">
       <div class="dh-tag">Imágenes IA · Beta</div>
       <button class="dh-btn dh-ghost" onclick="goTo('page-main')">← Volver al copy</button>
-      <div id="header-auth-img"></div>
     </div>
   </div>
+  <div style="display:grid;grid-template-columns:460px 1fr;flex:1;min-height:0;background:#f5f0e8;">
+    <div style="background:#fff;border-right:1px solid #ddd5c0;padding:20px;overflow-y:auto;padding-bottom:100px;">
 
-  <div style="display:grid;grid-template-columns:480px 1fr;flex:1;min-height:0;background:#f5f0e8;">
-
-    <!-- PANEL IZQUIERDO — CONFIGURADOR -->
-    <div style="background:#fff;border-right:1px solid #ddd5c0;padding:24px;overflow-y:auto;padding-bottom:100px;">
-
-      <!-- STEP BAR -->
-      <div style="display:flex;margin-bottom:16px;border-radius:8px;overflow:hidden;border:1px solid #ddd5c0;">
-        <div id="img-sb1" onclick="imgGoStep(1)" style="flex:1;padding:9px;text-align:center;background:#e8420a;color:#fff;font-size:11px;font-weight:700;cursor:pointer;border-right:1px solid #ddd5c0;">
-          <div style="font-size:9px;font-weight:400;margin-bottom:1px;">Paso 1</div>Configurar
-        </div>
-        <div id="img-sb2" onclick="imgGoStep(2)" style="flex:1;padding:9px;text-align:center;background:#fff;color:#999;font-size:11px;font-weight:700;cursor:pointer;border-right:1px solid #ddd5c0;">
-          <div style="font-size:9px;font-weight:400;margin-bottom:1px;">Paso 2</div>Elegir idea
-        </div>
-        <div id="img-sb3" onclick="imgGoStep(3)" style="flex:1;padding:9px;text-align:center;background:#fff;color:#999;font-size:11px;font-weight:700;cursor:pointer;">
-          <div style="font-size:9px;font-weight:400;margin-bottom:1px;">Paso 3</div>Descargar y usar
-        </div>
+      <!-- STEPS -->
+      <div style="display:flex;margin-bottom:14px;border-radius:8px;overflow:hidden;border:1px solid #ddd5c0;">
+        <div id="isb1" style="flex:1;padding:9px;text-align:center;background:#e8420a;color:#fff;font-size:11px;font-weight:700;cursor:pointer;border-right:1px solid #ddd5c0;" onclick="iStep(1)"><div style="font-size:9px;font-weight:400;">Paso 1</div>Configurar</div>
+        <div id="isb2" style="flex:1;padding:9px;text-align:center;background:#fff;color:#999;font-size:11px;font-weight:700;cursor:pointer;border-right:1px solid #ddd5c0;" onclick="iStep(2)"><div style="font-size:9px;font-weight:400;">Paso 2</div>Elegir idea</div>
+        <div id="isb3" style="flex:1;padding:9px;text-align:center;background:#fff;color:#999;font-size:11px;font-weight:700;cursor:pointer;" onclick="iStep(3)"><div style="font-size:9px;font-weight:400;">Paso 3</div>Descargar</div>
       </div>
 
       <!-- PASO 1 -->
-      <div id="img-paso1">
-
+      <div id="ip1">
         <!-- DESTINO -->
         <div style="background:#fff;border:1px solid #ddd5c0;border-radius:10px;padding:14px;margin-bottom:10px;">
           <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:10px;">¿Para dónde es la imagen?</div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;" id="img-dest-row">
-            <div class="img-dest on" onclick="imgSelDest(this,'instagram')">📱 Instagram <span style="font-size:9px;opacity:0.7;">4:5</span></div>
-            <div class="img-dest" onclick="imgSelDest(this,'facebook')">📘 Facebook <span style="font-size:9px;opacity:0.7;">1:1</span></div>
-            <div class="img-dest" onclick="imgSelDest(this,'tiktok')">🎵 TikTok <span style="font-size:9px;opacity:0.7;">9:16</span></div>
-            <div class="img-dest" onclick="imgSelDest(this,'landing')">🌐 Landing page <span style="font-size:9px;opacity:0.7;">multi</span></div>
-            <div class="img-dest" onclick="imgSelDest(this,'whatsapp')">📲 WhatsApp <span style="font-size:9px;opacity:0.7;">1:1</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <div class="id-dest sel" onclick="iDest(this,'instagram')">📱 Instagram <span style="font-size:9px;opacity:0.7;">4:5</span></div>
+            <div class="id-dest" onclick="iDest(this,'facebook')">📘 Facebook <span style="font-size:9px;opacity:0.7;">1:1</span></div>
+            <div class="id-dest" onclick="iDest(this,'tiktok')">🎵 TikTok <span style="font-size:9px;opacity:0.7;">9:16</span></div>
+            <div class="id-dest" onclick="iDest(this,'landing')">🌐 Landing <span style="font-size:9px;opacity:0.7;">multi</span></div>
+            <div class="id-dest" onclick="iDest(this,'whatsapp')">📲 WhatsApp <span style="font-size:9px;opacity:0.7;">1:1</span></div>
           </div>
-          <!-- SECCIÓN LANDING -->
-          <div id="img-landing-sec" style="display:none;background:#fff8f6;border:1px solid #ffd0bc;border-radius:8px;padding:10px 12px;margin-top:10px;">
-            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#e8420a;margin-bottom:6px;">¿Qué sección necesitas?</div>
-            <div style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="img-chip on" onclick="imgSelSingle(this,'.img-landing-sec .img-chip')">Set completo (8 imgs)</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'.img-landing-sec .img-chip')">Hero</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'.img-landing-sec .img-chip')">Beneficios</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'.img-landing-sec .img-chip')">Testimonios</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'.img-landing-sec .img-chip')">CTA final</div>
+          <div id="id-landing-sec" style="display:none;background:#fff8f6;border:1px solid #ffd0bc;border-radius:8px;padding:10px;margin-top:10px;">
+            <div style="font-size:9px;font-weight:700;color:#e8420a;margin-bottom:6px;">¿Qué sección?</div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;" id="id-sec-wrap">
+              <div class="id-chip sel" onclick="iSingle(this,'id-sec-wrap')">Set completo (8 imgs)</div>
+              <div class="id-chip" onclick="iSingle(this,'id-sec-wrap')">Hero</div>
+              <div class="id-chip" onclick="iSingle(this,'id-sec-wrap')">Beneficios</div>
+              <div class="id-chip" onclick="iSingle(this,'id-sec-wrap')">Testimonios</div>
+              <div class="id-chip" onclick="iSingle(this,'id-sec-wrap')">CTA final</div>
             </div>
           </div>
         </div>
 
-        <!-- TIPO DE FOTO -->
+        <!-- TIPO -->
         <div style="background:#fff;border:1px solid #ddd5c0;border-radius:10px;padding:14px;margin-bottom:10px;">
           <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:10px;">¿Qué tipo de foto?</div>
-          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
-            <div class="img-tipo on" onclick="imgSelTipo(this)"><div style="font-size:20px;margin-bottom:4px;">🏠</div><div style="font-size:10px;font-weight:700;color:#1a1a1a;">Pueblo</div><div style="font-size:9px;color:#999;">Gente real</div></div>
-            <div class="img-tipo" onclick="imgSelTipo(this)"><div style="font-size:20px;margin-bottom:4px;">🏙️</div><div style="font-size:10px;font-weight:700;color:#1a1a1a;">Ciudad</div><div style="font-size:9px;color:#999;">Mix urbano</div></div>
-            <div class="img-tipo" onclick="imgSelTipo(this)"><div style="font-size:20px;margin-bottom:4px;">⚡</div><div style="font-size:10px;font-weight:700;color:#1a1a1a;">Moderno</div><div style="font-size:9px;color:#999;">Jóvenes</div></div>
-            <div class="img-tipo" onclick="imgSelTipo(this)"><div style="font-size:20px;margin-bottom:4px;">📷</div><div style="font-size:10px;font-weight:700;color:#1a1a1a;">Profesional</div><div style="font-size:9px;color:#999;">Estudio</div></div>
-            <div class="img-tipo" onclick="imgSelTipo(this)"><div style="font-size:20px;margin-bottom:4px;">🎯</div><div style="font-size:10px;font-weight:700;color:#1a1a1a;">Yo lo hago todo</div><div style="font-size:9px;color:#999;">Dame el producto</div></div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;" id="id-tipo-wrap">
+            <div class="id-tipo sel" onclick="iSingle(this,'id-tipo-wrap')"><div style="font-size:20px;margin-bottom:4px;">🏠</div><div style="font-size:10px;font-weight:700;">Pueblo</div><div style="font-size:9px;color:#999;">Gente real</div></div>
+            <div class="id-tipo" onclick="iSingle(this,'id-tipo-wrap')"><div style="font-size:20px;margin-bottom:4px;">🏙️</div><div style="font-size:10px;font-weight:700;">Ciudad</div><div style="font-size:9px;color:#999;">Mix urbano</div></div>
+            <div class="id-tipo" onclick="iSingle(this,'id-tipo-wrap')"><div style="font-size:20px;margin-bottom:4px;">⚡</div><div style="font-size:10px;font-weight:700;">Moderno</div><div style="font-size:9px;color:#999;">Jóvenes</div></div>
+            <div class="id-tipo" onclick="iSingle(this,'id-tipo-wrap')"><div style="font-size:20px;margin-bottom:4px;">📷</div><div style="font-size:10px;font-weight:700;">Profesional</div><div style="font-size:9px;color:#999;">Estudio</div></div>
+            <div class="id-tipo" onclick="iSingle(this,'id-tipo-wrap')"><div style="font-size:20px;margin-bottom:4px;">🎯</div><div style="font-size:10px;font-weight:700;">Yo lo hago todo</div><div style="font-size:9px;color:#999;">Solo el producto</div></div>
           </div>
         </div>
 
@@ -909,346 +897,223 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
           <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:10px;">¿Cómo es la persona?</div>
 
           <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
-            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:5px;">Género</div>
-            <div style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="img-chip on" onclick="imgSelGenero(this)">Mujer</div>
-              <div class="img-chip" onclick="imgSelGenero(this)">Hombre</div>
-              <div class="img-chip" onclick="imgSelGenero(this)">Niña</div>
-              <div class="img-chip" onclick="imgSelGenero(this)">Niño</div>
-              <div class="img-chip" onclick="imgSelGenero(this)">Bebé</div>
-              <div class="img-chip" onclick="imgSelGenero(this)">Todos</div>
+            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Género</div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;" id="id-genero-wrap">
+              <div class="id-chip sel" onclick="iGenero(this)">Mujer</div>
+              <div class="id-chip" onclick="iGenero(this)">Hombre</div>
+              <div class="id-chip" onclick="iGenero(this)">Niña</div>
+              <div class="id-chip" onclick="iGenero(this)">Niño</div>
+              <div class="id-chip" onclick="iGenero(this)">Bebé</div>
+              <div class="id-chip" onclick="iGenero(this)">Todos</div>
             </div>
           </div>
 
           <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
-            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:5px;">Personas</div>
-            <div id="img-cant-wrap" style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="img-chip on" onclick="imgSelSingle(this,'#img-cant-wrap .img-chip')" id="img-cant">1 persona</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'#img-cant-wrap .img-chip')">2 personas</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'#img-cant-wrap .img-chip')">3 a 5</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'#img-cant-wrap .img-chip')">Grupo grande</div>
-            </div>
-          </div>
-
-          <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;" id="img-edad-row">
-            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:5px;">Edad</div>
-            <div id="img-edad-adult" style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="img-chip on" onclick="imgSelSingle(this,'#img-edad-adult .img-chip')">Joven (20-30)</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'#img-edad-adult .img-chip')">Adulto (30-50)</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'#img-edad-adult .img-chip')">Mayor (50+)</div>
-            </div>
-            <div id="img-edad-nino" style="display:none;flex-wrap:wrap;gap:5px;">
-              <div class="img-chip on" onclick="imgSelSingle(this,'#img-edad-nino .img-chip')">Bebé (0-2)</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'#img-edad-nino .img-chip')">Infante (3-5)</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'#img-edad-nino .img-chip')">Niño (6-10)</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'#img-edad-nino .img-chip')">Preadolescente (11-14)</div>
+            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Personas</div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;" id="id-personas-wrap">
+              <div class="id-chip sel" onclick="iSingle(this,'id-personas-wrap')">1 persona</div>
+              <div class="id-chip" onclick="iSingle(this,'id-personas-wrap')">2 personas</div>
+              <div class="id-chip" onclick="iSingle(this,'id-personas-wrap')">3 a 5</div>
+              <div class="id-chip" onclick="iSingle(this,'id-personas-wrap')">Grupo grande</div>
             </div>
           </div>
 
           <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
-            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:5px;">Complexión</div>
-            <div style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="img-chip-opt on" onclick="imgToggle(this)">Delgada</div>
-              <div class="img-chip-opt" onclick="imgToggle(this)">Normal</div>
-              <div class="img-chip-opt" onclick="imgToggle(this)">Gordita</div>
-              <div class="img-chip-opt" onclick="imgToggle(this)">Atlética</div>
+            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Edad</div>
+            <div id="id-edad-adult" style="display:flex;flex-wrap:wrap;gap:5px;" id="id-edad-adult-wrap">
+              <div class="id-chip sel" onclick="iSingle(this,'id-edad-adult-wrap')">Joven (20-30)</div>
+              <div class="id-chip" onclick="iSingle(this,'id-edad-adult-wrap')">Adulto (30-50)</div>
+              <div class="id-chip" onclick="iSingle(this,'id-edad-adult-wrap')">Mayor (50+)</div>
+            </div>
+            <div id="id-edad-nino" style="display:none;flex-wrap:wrap;gap:5px;">
+              <div class="id-chip sel" onclick="iSingle(this,'id-edad-nino')">Bebé (0-2)</div>
+              <div class="id-chip" onclick="iSingle(this,'id-edad-nino')">Infante (3-5)</div>
+              <div class="id-chip" onclick="iSingle(this,'id-edad-nino')">Niño (6-10)</div>
+              <div class="id-chip" onclick="iSingle(this,'id-edad-nino')">Preadolescente (11-14)</div>
             </div>
           </div>
 
           <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
-            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:5px;">Apariencia</div>
+            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Complexión</div>
             <div style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="img-chip-opt" onclick="imgToggle(this)">Con canas</div>
-              <div class="img-chip-opt on" onclick="imgToggle(this)">Natural</div>
-              <div class="img-chip-opt" onclick="imgToggle(this)">Arreglada</div>
-              <div class="img-chip-opt" onclick="imgToggle(this)">Casual</div>
-              <div class="img-chip-opt" onclick="imgToggle(this)">Elegante</div>
+              <div class="id-multi" onclick="iMulti(this)">Delgada</div>
+              <div class="id-multi" onclick="iMulti(this)">Normal</div>
+              <div class="id-multi" onclick="iMulti(this)">Gordita</div>
+              <div class="id-multi" onclick="iMulti(this)">Atlética</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
+            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Apariencia</div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+              <div class="id-multi" onclick="iMulti(this)">Con canas</div>
+              <div class="id-multi sel" onclick="iMulti(this)">Natural</div>
+              <div class="id-multi" onclick="iMulti(this)">Arreglada</div>
+              <div class="id-multi" onclick="iMulti(this)">Casual</div>
+              <div class="id-multi" onclick="iMulti(this)">Elegante</div>
             </div>
           </div>
 
           <div style="display:flex;align-items:flex-start;gap:8px;">
-            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:5px;">Estado</div>
+            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Estado</div>
             <div style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="img-chip-opt on" onclick="imgToggle(this)">Alegre</div>
-              <div class="img-chip-opt" onclick="imgToggle(this)">Serio</div>
-              <div class="img-chip-opt" onclick="imgToggle(this)">Sorprendido</div>
-              <div class="img-chip-opt" onclick="imgToggle(this)">Relajado</div>
-              <div class="img-chip-opt" onclick="imgToggle(this)">Confiado</div>
+              <div class="id-multi sel" onclick="iMulti(this)">Alegre</div>
+              <div class="id-multi" onclick="iMulti(this)">Serio</div>
+              <div class="id-multi" onclick="iMulti(this)">Sorprendido</div>
+              <div class="id-multi" onclick="iMulti(this)">Relajado</div>
+              <div class="id-multi" onclick="iMulti(this)">Confiado</div>
             </div>
           </div>
         </div>
 
         <!-- ESCENA -->
         <div style="background:#fff;border:1px solid #ddd5c0;border-radius:10px;padding:14px;margin-bottom:10px;">
-          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:4px;">Escena <span style="font-size:9px;font-weight:400;color:#999;text-transform:none;letter-spacing:0;">— opcional, si no eliges la IA decide</span></div>
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:4px;">Escena <span style="font-size:9px;font-weight:400;color:#999;text-transform:none;">— opcional, si no eliges la IA decide</span></div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px;">
             <div>
               <div style="font-size:10px;font-weight:700;color:#444;margin-bottom:6px;">¿Dónde?</div>
-              <div style="display:flex;flex-direction:column;gap:4px;">
-                <div class="img-chip-opt on" onclick="imgSelSingle(this,'#img-donde .img-chip-opt')" id="img-donde">Casa</div>
-                <div class="img-chip-opt" onclick="imgSelSingle(this,'#img-donde .img-chip-opt')">Tienda</div>
-                <div class="img-chip-opt" onclick="imgSelSingle(this,'#img-donde .img-chip-opt')">Calle</div>
-                <div class="img-chip-opt" onclick="imgSelSingle(this,'#img-donde .img-chip-opt')">Parque</div>
-                <div class="img-chip-opt" onclick="imgSelSingle(this,'#img-donde .img-chip-opt')">Gym</div>
-                <div class="img-chip-opt" onclick="imgSelSingle(this,'#img-donde .img-chip-opt')">Playa</div>
-                <div class="img-chip-opt" onclick="imgSelSingle(this,'#img-donde .img-chip-opt')">Mercado</div>
-                <div class="img-chip-opt" onclick="imgSelSingle(this,'#img-donde .img-chip-opt')">Restaurante</div>
+              <div style="display:flex;flex-direction:column;gap:4px;" id="id-donde-wrap">
+                <div class="id-multi" onclick="iSingle(this,'id-donde-wrap')">Casa</div>
+                <div class="id-multi" onclick="iSingle(this,'id-donde-wrap')">Tienda</div>
+                <div class="id-multi" onclick="iSingle(this,'id-donde-wrap')">Calle</div>
+                <div class="id-multi" onclick="iSingle(this,'id-donde-wrap')">Parque</div>
+                <div class="id-multi" onclick="iSingle(this,'id-donde-wrap')">Gym</div>
+                <div class="id-multi" onclick="iSingle(this,'id-donde-wrap')">Playa</div>
+                <div class="id-multi" onclick="iSingle(this,'id-donde-wrap')">Mercado</div>
+                <div class="id-multi" onclick="iSingle(this,'id-donde-wrap')">Restaurante</div>
               </div>
             </div>
             <div>
               <div style="font-size:10px;font-weight:700;color:#444;margin-bottom:6px;">¿Qué hace?</div>
-              <div style="display:flex;flex-direction:column;gap:4px;">
-                <div class="img-chip-opt on" onclick="imgSelSingle(this,'#img-hace .img-chip-opt')" id="img-hace">Usándolo</div>
-                <div class="img-chip-opt" onclick="imgSelSingle(this,'#img-hace .img-chip-opt')">Mostrándolo</div>
-                <div class="img-chip-opt" onclick="imgSelSingle(this,'#img-hace .img-chip-opt')">Comprándolo</div>
-                <div class="img-chip-opt" onclick="imgSelSingle(this,'#img-hace .img-chip-opt')">Recomendando</div>
-                <div class="img-chip-opt" onclick="imgSelSingle(this,'#img-hace .img-chip-opt')">Descansando</div>
+              <div style="display:flex;flex-direction:column;gap:4px;" id="id-hace-wrap">
+                <div class="id-multi" onclick="iSingle(this,'id-hace-wrap')">Usándolo</div>
+                <div class="id-multi" onclick="iSingle(this,'id-hace-wrap')">Mostrándolo</div>
+                <div class="id-multi" onclick="iSingle(this,'id-hace-wrap')">Comprándolo</div>
+                <div class="id-multi" onclick="iSingle(this,'id-hace-wrap')">Recomendando</div>
+                <div class="id-multi" onclick="iSingle(this,'id-hace-wrap')">Descansando</div>
               </div>
             </div>
             <div>
               <div style="font-size:10px;font-weight:700;color:#444;margin-bottom:6px;">Momento</div>
-              <div style="display:flex;flex-direction:column;gap:4px;">
-                <div class="img-chip-opt on" onclick="imgSelSingle(this,'#img-momento .img-chip-opt')" id="img-momento">Mañana</div>
-                <div class="img-chip-opt" onclick="imgSelSingle(this,'#img-momento .img-chip-opt')">Tarde</div>
-                <div class="img-chip-opt" onclick="imgSelSingle(this,'#img-momento .img-chip-opt')">Noche</div>
-                <div class="img-chip-opt" onclick="imgSelSingle(this,'#img-momento .img-chip-opt')">Nublado</div>
+              <div style="display:flex;flex-direction:column;gap:4px;" id="id-momento-wrap">
+                <div class="id-multi" onclick="iSingle(this,'id-momento-wrap')">Mañana</div>
+                <div class="id-multi" onclick="iSingle(this,'id-momento-wrap')">Tarde</div>
+                <div class="id-multi" onclick="iSingle(this,'id-momento-wrap')">Noche</div>
+                <div class="id-multi" onclick="iSingle(this,'id-momento-wrap')">Nublado</div>
               </div>
             </div>
           </div>
         </div>
 
-        <button onclick="imgGenerarIdeas()" style="width:100%;padding:12px;background:#e8420a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Generar 4 ideas de imagen</button>
+        <button onclick="iGenerar()" style="width:100%;padding:12px;background:#e8420a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Generar 4 ideas de imagen</button>
       </div>
 
       <!-- PASO 2 -->
-      <div id="img-paso2" style="display:none;">
-        <div style="background:#fff8f6;border:1px solid #ffd0bc;border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:5px;" id="img-ctx-tags"></div>
-        <div id="img-ideas-container"></div>
-        <button onclick="imgGoStep(1)" style="width:100%;padding:10px;background:#fff;border:1px solid #ddd5c0;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#444;margin-top:8px;">← Reconfigurar</button>
+      <div id="ip2" style="display:none;">
+        <div style="background:#fff8f6;border:1px solid #ffd0bc;border-radius:8px;padding:10px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:5px;" id="id-ctx"></div>
+        <div id="id-ideas"></div>
+        <button onclick="iStep(1)" style="width:100%;padding:10px;background:#fff;border:1px solid #ddd5c0;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#444;margin-top:8px;">← Reconfigurar</button>
       </div>
 
       <!-- PASO 3 -->
-      <div id="img-paso3" style="display:none;">
-        <div id="img-resultado-container">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-
-    <div style="border:1px solid #ddd5c0;border-radius:8px;overflow:hidden;background:#fff;">
-      <div style="height:130px;background:#f0ede5;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-        <div style="position:absolute;top:6px;left:6px;background:#1a1a1a;color:#fff;font-size:8px;padding:2px 6px;border-radius:10px;">Instagram 4:5</div>
-        <div id="img-fav-1" onclick="imgToggleFav(this)" style="position:absolute;top:6px;right:6px;width:26px;height:26px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;border:1px solid #ddd5c0;">♡</div>
-        <div style="font-size:32px;color:#ddd5c0;">🖼</div>
-        <div style="font-size:9px;color:#bbb;margin-top:4px;">Aquí aparece tu imagen</div>
-        <div onclick="" style="margin-top:6px;font-size:9px;color:#e8420a;cursor:pointer;">↻ Otra variación</div>
-      </div>
-      <div style="padding:8px 10px;border-top:1px solid #f0ede5;">
-        <div style="font-size:10px;color:#444;margin-bottom:6px;line-height:1.3;">Mujer en casa frente al espejo</div>
-        <div style="display:flex;gap:4px;">
-          <button style="padding:4px 7px;border:1px solid #ddd5c0;border-radius:4px;font-size:9px;cursor:pointer;background:#fff;color:#444;">📋</button>
-          <button style="padding:4px 7px;border:1px solid #ddd5c0;border-radius:4px;font-size:9px;cursor:pointer;background:#fff;color:#444;">↗</button>
-          <button style="flex:1;padding:4px 7px;border:none;border-radius:4px;font-size:9px;cursor:pointer;background:#e8420a;color:#fff;font-weight:700;">⬇ Descargar</button>
+      <div id="ip3" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;" id="id-grid"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+          <button style="padding:10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #ddd5c0;background:#fff;color:#444;">⬇ Descargar todas</button>
+          <button style="padding:10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #ffd0bc;background:#fff8f6;color:#e8420a;">♥ Descargar favoritas</button>
         </div>
-      </div>
-    </div>
-
-    <div style="border:1px solid #ddd5c0;border-radius:8px;overflow:hidden;background:#fff;">
-      <div style="height:130px;background:#e8f4e8;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-        <div style="position:absolute;top:6px;left:6px;background:#1a1a1a;color:#fff;font-size:8px;padding:2px 6px;border-radius:10px;">Instagram 4:5</div>
-        <div id="img-fav-2" onclick="imgToggleFav(this)" style="position:absolute;top:6px;right:6px;width:26px;height:26px;background:#fff3ee;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;border:1px solid #e8420a;color:#e8420a;">♥</div>
-        <div style="font-size:32px;color:#a5d6a5;">🖼</div>
-        <div style="font-size:9px;color:#888;margin-top:4px;">Lista</div>
-        <div style="margin-top:6px;font-size:9px;color:#e8420a;cursor:pointer;">↻ Otra variación</div>
-      </div>
-      <div style="padding:8px 10px;border-top:1px solid #f0ede5;">
-        <div style="font-size:10px;color:#444;margin-bottom:6px;line-height:1.3;">Mujer de lado con producto</div>
-        <div style="display:flex;gap:4px;">
-          <button style="padding:4px 7px;border:1px solid #ddd5c0;border-radius:4px;font-size:9px;cursor:pointer;background:#fff;color:#444;">📋</button>
-          <button style="padding:4px 7px;border:1px solid #ddd5c0;border-radius:4px;font-size:9px;cursor:pointer;background:#fff;color:#444;">↗</button>
-          <button style="flex:1;padding:4px 7px;border:none;border-radius:4px;font-size:9px;cursor:pointer;background:#e8420a;color:#fff;font-weight:700;">⬇ Descargar</button>
+        <div style="background:#fff;border:1px solid #ddd5c0;border-radius:8px;padding:10px;">
+          <div style="font-size:10px;font-weight:700;color:#444;margin-bottom:8px;">Mis imágenes de esta sesión</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;" id="id-galeria"></div>
+          <div style="font-size:9px;color:#aaa;margin-top:6px;">Punto naranja = favorita</div>
         </div>
-      </div>
-    </div>
-
-    <div style="border:1px solid #ddd5c0;border-radius:8px;overflow:hidden;background:#fff;">
-      <div style="height:130px;background:#f0ede5;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-        <div style="position:absolute;top:6px;left:6px;background:#1a1a1a;color:#fff;font-size:8px;padding:2px 6px;border-radius:10px;">Instagram 4:5</div>
-        <div id="img-fav-3" onclick="imgToggleFav(this)" style="position:absolute;top:6px;right:6px;width:26px;height:26px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;border:1px solid #ddd5c0;">♡</div>
-        <div style="font-size:32px;color:#ddd5c0;">🖼</div>
-        <div style="font-size:9px;color:#bbb;margin-top:4px;">En cola...</div>
-        <div style="margin-top:6px;font-size:9px;color:#e8420a;cursor:pointer;">↻ Otra variación</div>
-      </div>
-      <div style="padding:8px 10px;border-top:1px solid #f0ede5;">
-        <div style="font-size:10px;color:#444;margin-bottom:6px;line-height:1.3;">Manos sosteniendo — cenital</div>
-        <div style="display:flex;gap:4px;">
-          <button style="padding:4px 7px;border:1px solid #ddd5c0;border-radius:4px;font-size:9px;cursor:pointer;background:#fff;color:#444;">📋</button>
-          <button style="padding:4px 7px;border:1px solid #ddd5c0;border-radius:4px;font-size:9px;cursor:pointer;background:#fff;color:#444;">↗</button>
-          <button style="flex:1;padding:4px 7px;border:none;border-radius:4px;font-size:9px;cursor:pointer;background:#e8420a;color:#fff;font-weight:700;">⬇ Descargar</button>
-        </div>
-      </div>
-    </div>
-
-    <div style="border:1px solid #ddd5c0;border-radius:8px;overflow:hidden;background:#fff;">
-      <div style="height:130px;background:#f0ede5;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-        <div style="position:absolute;top:6px;left:6px;background:#1a1a1a;color:#fff;font-size:8px;padding:2px 6px;border-radius:10px;">Instagram 4:5</div>
-        <div id="img-fav-4" onclick="imgToggleFav(this)" style="position:absolute;top:6px;right:6px;width:26px;height:26px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;border:1px solid #ddd5c0;">♡</div>
-        <div style="font-size:32px;color:#ddd5c0;">🖼</div>
-        <div style="font-size:9px;color:#bbb;margin-top:4px;">En cola...</div>
-        <div style="margin-top:6px;font-size:9px;color:#e8420a;cursor:pointer;">↻ Otra variación</div>
-      </div>
-      <div style="padding:8px 10px;border-top:1px solid #f0ede5;">
-        <div style="font-size:10px;color:#444;margin-bottom:6px;line-height:1.3;">Mujer relajada — lifestyle</div>
-        <div style="display:flex;gap:4px;">
-          <button style="padding:4px 7px;border:1px solid #ddd5c0;border-radius:4px;font-size:9px;cursor:pointer;background:#fff;color:#444;">📋</button>
-          <button style="padding:4px 7px;border:1px solid #ddd5c0;border-radius:4px;font-size:9px;cursor:pointer;background:#fff;color:#444;">↗</button>
-          <button style="flex:1;padding:4px 7px;border:none;border-radius:4px;font-size:9px;cursor:pointer;background:#e8420a;color:#fff;font-weight:700;">⬇ Descargar</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-    <button style="padding:10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #ddd5c0;background:#fff;color:#444;">⬇ Descargar todas</button>
-    <button style="padding:10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #ffd0bc;background:#fff8f6;color:#e8420a;">♥ Descargar favoritas</button>
-  </div>
-
-  <div style="background:#fff;border:1px solid #ddd5c0;border-radius:8px;padding:10px 12px;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <div style="font-size:10px;font-weight:700;color:#444;">Mis imágenes de esta sesión</div>
-      <div style="display:flex;gap:6px;">
-        <button style="padding:4px 10px;border:1px solid #ddd5c0;border-radius:6px;font-size:9px;font-weight:700;cursor:pointer;background:#fff;color:#444;">Solo favoritas</button>
-        <button style="padding:4px 10px;border:1px solid #ddd5c0;border-radius:6px;font-size:9px;font-weight:700;cursor:pointer;background:#fff;color:#444;">⬇ Todo</button>
-      </div>
-    </div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;">
-      <div style="width:46px;height:46px;background:#f0ede5;border-radius:6px;border:1px solid #ddd5c0;position:relative;display:flex;align-items:center;justify-content:center;font-size:16px;color:#ddd5c0;cursor:pointer;">🖼<div style="position:absolute;top:-3px;right:-3px;width:9px;height:9px;background:#e8420a;border-radius:50%;border:1.5px solid #fff;"></div></div>
-      <div style="width:46px;height:46px;background:#e8f4e8;border-radius:6px;border:1px solid #ddd5c0;position:relative;display:flex;align-items:center;justify-content:center;font-size:16px;color:#a5d6a5;cursor:pointer;">🖼<div style="position:absolute;top:-3px;right:-3px;width:9px;height:9px;background:#e8420a;border-radius:50%;border:1.5px solid #fff;"></div></div>
-      <div style="width:46px;height:46px;background:#f0ede5;border-radius:6px;border:1px solid #ddd5c0;display:flex;align-items:center;justify-content:center;font-size:16px;color:#ddd5c0;cursor:pointer;">🖼</div>
-      <div style="width:46px;height:46px;background:#f0ede5;border-radius:6px;border:1px solid #ddd5c0;display:flex;align-items:center;justify-content:center;font-size:16px;color:#ddd5c0;cursor:pointer;">🖼</div>
-      <div style="width:46px;height:46px;border:1px dashed #ddd5c0;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#ddd5c0;cursor:pointer;">+</div>
-    </div>
-    <div style="font-size:9px;color:#aaa;margin-top:6px;">Punto naranja = favorita · Se guardan durante esta sesión</div>
-  </div>
-</div>
         <div style="display:flex;gap:8px;margin-top:10px;">
-          <button onclick="imgGoStep(2)" style="flex:1;padding:10px;background:#fff;border:1px solid #ddd5c0;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#444;">← Ver ideas</button>
-          <button onclick="imgGoStep(1)" style="flex:1;padding:10px;background:#fff;border:1px solid #ddd5c0;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#444;">Nueva configuración</button>
+          <button onclick="iStep(1)" style="flex:1;padding:9px;border:1px solid #ddd5c0;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:#fff;color:#444;">Nueva configuración</button>
+          <button onclick="iStep(2)" style="flex:1;padding:9px;border:1px solid #ddd5c0;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:#fff;color:#444;">← Ver ideas</button>
         </div>
       </div>
 
     </div>
 
-    <!-- PANEL DERECHO — RESULTADO -->
-    <div style="padding:24px;overflow-y:auto;background:#f5f0e8;" id="img-panel-derecho">
+    <!-- PANEL DERECHO -->
+    <div style="padding:24px;overflow-y:auto;background:#f5f0e8;" id="id-panel-derecho">
       <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;">
         <div style="font-size:48px;opacity:0.2;margin-bottom:12px;">🖼️</div>
         <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#1a1a1a;margin-bottom:6px;">Configura y genera</div>
-        <div style="font-size:12px;color:#7a7060;max-width:280px;line-height:1.6;">Selecciona el destino, tipo de foto y persona. La IA generará 4 ideas visuales para tu producto.</div>
+        <div style="font-size:12px;color:#7a7060;max-width:280px;line-height:1.6;">Selecciona el destino, tipo de foto y persona.</div>
       </div>
     </div>
   </div>
 </div>
 
 <style>
-.img-dest{display:flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid #ddd5c0;border-radius:20px;font-size:11px;font-weight:600;color:#444;cursor:pointer;background:#faf8f4;}
-.img-dest.on{background:#e8420a;color:#fff;border-color:#e8420a;}
-.img-tipo{border:1px solid #ddd5c0;border-radius:8px;padding:10px 6px;text-align:center;cursor:pointer;background:#faf8f4;}
-.img-tipo.on{border:2px solid #e8420a;background:#fff8f6;}
-.img-chip{padding:5px 10px;border:1px solid #ddd5c0;border-radius:20px;font-size:10px;color:#444;cursor:pointer;background:#faf8f4;}
-.img-chip.on{background:#e8420a;color:#fff;border-color:#e8420a;}
-.img-chip-opt{padding:5px 10px;border:1px dashed #ddd5c0;border-radius:20px;font-size:10px;color:#999;cursor:pointer;background:#faf8f4;}
-.img-chip-opt.on{border-style:solid;background:#fff3ee;color:#e8420a;border-color:#e8420a;}
+.id-dest{display:flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid #ddd5c0;border-radius:20px;font-size:11px;font-weight:600;color:#444;cursor:pointer;background:#faf8f4;}
+.id-dest.sel{background:#e8420a;color:#fff;border-color:#e8420a;}
+.id-tipo{border:1px solid #ddd5c0;border-radius:8px;padding:10px 6px;text-align:center;cursor:pointer;background:#faf8f4;}
+.id-tipo.sel{border:2px solid #e8420a;background:#fff8f6;}
+.id-chip{padding:5px 10px;border:1px solid #ddd5c0;border-radius:20px;font-size:10px;color:#444;cursor:pointer;background:#faf8f4;}
+.id-chip.sel{background:#e8420a;color:#fff;border-color:#e8420a;}
+.id-multi{padding:5px 10px;border:1px dashed #ddd5c0;border-radius:20px;font-size:10px;color:#999;cursor:pointer;background:#faf8f4;}
+.id-multi.sel{border-style:solid;background:#fff3ee;color:#e8420a;border-color:#e8420a;}
 </style>
 
 <script>
-function imgGoStep(n){
-  document.getElementById('img-paso1').style.display=n===1?'block':'none';
-  document.getElementById('img-paso2').style.display=n===2?'block':'none';
-  document.getElementById('img-paso3').style.display=n===3?'block':'none';
-  ['img-sb1','img-sb2','img-sb3'].forEach((id,i)=>{
+function iStep(n){
+  ['ip1','ip2','ip3'].forEach((id,i)=>{document.getElementById(id).style.display=i+1===n?'block':'none';});
+  ['isb1','isb2','isb3'].forEach((id,i)=>{
     const el=document.getElementById(id);
     el.style.background=i+1===n?'#e8420a':'#fff';
     el.style.color=i+1===n?'#fff':i+1<n?'#e8420a':'#999';
   });
-  if(n===3 && window._imgPromptPendiente){
-    const {prompt, destino} = window._imgPromptPendiente;
-    window._imgPromptPendiente = null;
-    imgLlamarDalle(prompt, destino);
-  }
 }
 
-async function imgLlamarDalle(prompt, destino) {
-  const dest = destino.toLowerCase().split(' ')[0].replace(/[^\w]/g,'').trim();
-  try {
-    const resp = await fetch('/api/images', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ prompt, destino: dest })
-    });
-    const data = await resp.json();
-    if(data.error) throw new Error(data.error);
-    const areas = document.querySelectorAll('#img-resultado-container .img-area-slot');
-    if(areas[0]) {
-      areas[0].innerHTML = `<img src="${data.url}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" />`;
-    }
-  } catch(err) {
-    console.error('DALL-E error:', err.message);
-  }
+function iDest(el,dest){
+  document.querySelectorAll('.id-dest').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('id-landing-sec').style.display=dest==='landing'?'block':'none';
 }
 
-function imgSelDest(el,dest){
-  document.querySelectorAll('.img-dest').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on');
-  document.getElementById('img-landing-sec').style.display=dest==='landing'?'block':'none';
+function iSingle(el,wrapId){
+  document.querySelectorAll('#'+wrapId+' .id-chip, #'+wrapId+' .id-multi').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
 }
-function imgSelTipo(el){
-  document.querySelectorAll('.img-tipo').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on');
-}
-function imgSelGenero(el){
-  document.querySelectorAll('#img-paso1 .img-chip').forEach(c=>{
-    if(c.onclick&&c.onclick.toString().includes('imgSelGenero'))c.classList.remove('on');
-  });
-  el.classList.add('on');
+
+function iGenero(el){
+  document.querySelectorAll('#id-genero-wrap .id-chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
   const isNino=['Niña','Niño','Bebé'].includes(el.textContent.trim());
-  document.getElementById('img-edad-adult').style.display=isNino?'none':'flex';
-  document.getElementById('img-edad-nino').style.display=isNino?'flex':'none';
+  document.getElementById('id-edad-adult').style.display=isNino?'none':'flex';
+  document.getElementById('id-edad-nino').style.display=isNino?'flex':'none';
 }
-function imgSelSingle(el,sel){
-  document.querySelectorAll(sel).forEach(c=>{c.classList.remove('on');c.style.border='1px solid #ddd5c0';c.style.background='#faf8f4';});
-  el.classList.add('on');el.style.border='2px solid #e8420a';el.style.background='#fff8f6';
-}
-function imgToggle(el){el.classList.toggle('on');}
 
-function imgGetConfig(){
-  const dest=document.querySelector('.img-dest.on')?.textContent.trim()||'Instagram';
-  const tipo=document.querySelector('.img-tipo.on div:nth-child(2)')?.textContent.trim()||'Pueblo';
-  const genero=document.querySelector('#img-paso1 .img-chip.on')?.textContent.trim()||'Mujer';
-  const personas=document.querySelector('#img-cant-wrap .img-chip.on')?.textContent.trim()||'1 persona';
-  const edad=document.querySelector('#img-edad-adult .img-chip.on, #img-edad-nino .img-chip.on')?.textContent.trim()||'Adulto';
-  const donde=document.querySelector('#img-donde .img-chip-opt.on')?.textContent.trim()||'';
-  const hace=document.querySelector('#img-hace .img-chip-opt.on')?.textContent.trim()||'';
-  const momento=document.querySelector('#img-momento .img-chip-opt.on')?.textContent.trim()||'';
+function iMulti(el){el.classList.toggle('sel');}
+
+function iGetConfig(){
+  const dest=document.querySelector('.id-dest.sel')?.textContent.trim().split(' ').filter(t=>!t.includes(':'))[1]||'Instagram';
+  const tipo=document.querySelector('#id-tipo-wrap .id-tipo.sel div:nth-child(2)')?.textContent.trim()||'Pueblo';
+  const genero=document.querySelector('#id-genero-wrap .id-chip.sel')?.textContent.trim()||'Mujer';
+  const personas=document.querySelector('#id-personas-wrap .id-chip.sel')?.textContent.trim()||'1 persona';
+  const edad=document.querySelector('#id-edad-adult .id-chip.sel, #id-edad-nino .id-chip.sel')?.textContent.trim()||'Adulto';
+  const donde=document.querySelector('#id-donde-wrap .id-multi.sel')?.textContent.trim()||'';
+  const hace=document.querySelector('#id-hace-wrap .id-multi.sel')?.textContent.trim()||'';
+  const momento=document.querySelector('#id-momento-wrap .id-multi.sel')?.textContent.trim()||'';
   return {dest,tipo,genero,personas,edad,donde,hace,momento};
 }
 
-async function imgGenerarIdeas(){
-  const cfg=imgGetConfig();
-  const tags=document.getElementById('img-ctx-tags');
-  tags.innerHTML=[cfg.tipo,cfg.genero,cfg.personas,cfg.edad,cfg.donde,cfg.hace,cfg.momento,cfg.dest]
-    .filter(Boolean).map(t=>`<span style="display:inline-block;background:#fff3ee;color:#e8420a;font-size:9px;padding:2px 8px;border-radius:20px;border:1px solid #ffd0bc;">${t}</span>`).join('');
-
+async function iGenerar(){
+  const cfg=iGetConfig();
+  const ctx=document.getElementById('id-ctx');
+  ctx.innerHTML=[cfg.tipo,cfg.genero,cfg.personas,cfg.edad,cfg.donde,cfg.hace,cfg.momento,cfg.dest].filter(Boolean)
+    .map(t=>`<span style="display:inline-block;background:#fff3ee;color:#e8420a;font-size:9px;padding:2px 8px;border-radius:20px;border:1px solid #ffd0bc;">${t}</span>`).join('');
   const btn=event.target;
-  btn.textContent='Generando ideas...';
-  btn.disabled=true;
-
+  btn.textContent='Generando ideas...';btn.disabled=true;
   const ideas=[
-    {desc:`${cfg.genero} en ${cfg.donde||'casa'} ${cfg.hace||'usando el producto'} — foto de frente`,ctx:`${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · Luz natural · ${cfg.dest}`},
-    {desc:`${cfg.genero} sonriendo con el producto — foto desde el lado`,ctx:`${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · Contra luz · ${cfg.dest}`},
-    {desc:`Manos de ${cfg.genero.toLowerCase()} sosteniendo el producto — foto cenital`,ctx:`${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · Cenital · ${cfg.dest}`},
-    {desc:`${cfg.genero} relajada después de usar el producto — foto de ambiente`,ctx:`${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · Lifestyle · ${cfg.dest}`}
+    {desc:`${cfg.genero} en ${cfg.donde||'casa'} ${cfg.hace||'usando el producto'} — foto de frente`,ctx:`${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · ${cfg.dest}`},
+    {desc:`${cfg.genero} sonriendo con el producto — foto desde el lado`,ctx:`${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · ${cfg.dest}`},
+    {desc:`Manos sosteniendo el producto — foto cenital`,ctx:`${cfg.momento||'mañana'} · Cenital · ${cfg.dest}`},
+    {desc:`${cfg.genero} relajada después de usar el producto — lifestyle`,ctx:`${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · ${cfg.dest}`}
   ];
-
-  document.getElementById('img-ideas-container').innerHTML=ideas.map((idea,i)=>`
+  document.getElementById('id-ideas').innerHTML=ideas.map((idea,i)=>`
     <div style="background:#fff;border:1px solid #ddd5c0;border-radius:8px;overflow:hidden;margin-bottom:8px;">
       <div style="padding:10px 12px;background:#faf8f4;border-bottom:1px solid #ddd5c0;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
         <div>
@@ -1256,66 +1121,71 @@ async function imgGenerarIdeas(){
           <div style="font-size:9px;color:#999;margin-top:2px;">${idea.ctx}</div>
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0;">
-          <button onclick="imgVerPrompt(this)" style="padding:5px 10px;border:1px solid #ddd5c0;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:#fff;color:#444;">Ver prompt</button>
-          <button onclick="imgGoStep(3)" style="padding:5px 10px;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:#e8420a;color:#fff;">Generar imagen</button>
+          <button onclick="iVerPrompt(this)" style="padding:5px 10px;border:1px solid #ddd5c0;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:#fff;color:#444;">Ver prompt</button>
+          <button onclick="iGenerarImg(this,'${idea.desc} fotografía profesional realista','${cfg.dest}')" style="padding:5px 10px;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:#e8420a;color:#fff;">Generar imagen</button>
         </div>
       </div>
-      <div style="padding:8px 12px;display:none;" class="img-prompt-body">
-        <div style="background:#f5f5f5;border-radius:4px;padding:8px;font-size:9px;color:#666;line-height:1.5;">${cfg.genero} ${cfg.edad}, ${cfg.hace||'usando el producto'} en ${cfg.donde||'casa'}, ${cfg.momento||'mañana'}, expresión ${cfg.tipo.toLowerCase()}, luz natural. --ar ${cfg.dest.includes('TikTok')||cfg.dest.includes('Instagram')?'4:5':'1:1'} --q 2</div>
+      <div style="padding:8px 12px;display:none;" class="i-prompt-body">
+        <div style="background:#f5f5f5;border-radius:4px;padding:8px;font-size:9px;color:#666;line-height:1.5;">${cfg.genero} ${cfg.edad}, ${cfg.hace||'usando el producto'} en ${cfg.donde||'casa'}, ${cfg.momento||'mañana'}. --ar ${cfg.dest.includes('TikTok')?'9:16':cfg.dest.includes('Landing')?'16:9':'4:5'} --q 2</div>
       </div>
     </div>`).join('');
-
-  btn.textContent='Generar 4 ideas de imagen';
-  btn.disabled=false;
-  imgGoStep(2);
-
-  document.getElementById('img-panel-derecho').innerHTML=`
+  btn.textContent='Generar 4 ideas de imagen';btn.disabled=false;
+  iStep(2);
+  document.getElementById('id-panel-derecho').innerHTML=`
     <div style="padding:16px;">
       <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#1a1a1a;margin-bottom:4px;">4 ideas generadas</div>
-      <div style="font-size:11px;color:#7a7060;margin-bottom:16px;">Elige una y presiona "Generar imagen" para crearla con IA</div>
+      <div style="font-size:11px;color:#7a7060;margin-bottom:16px;">Elige una y presiona "Generar imagen"</div>
       ${ideas.map((idea,i)=>`
-        <div style="background:#fff;border:1px solid #ddd5c0;border-radius:8px;padding:12px;margin-bottom:8px;cursor:pointer;" onclick="imgGoStep(3)">
+        <div style="background:#fff;border:1px solid #ddd5c0;border-radius:8px;padding:12px;margin-bottom:8px;">
           <div style="font-size:11px;font-weight:700;color:#1a1a1a;margin-bottom:3px;">${i+1}. ${idea.desc}</div>
           <div style="font-size:9px;color:#999;">${idea.ctx}</div>
-          <div style="margin-top:8px;"><span style="background:#e8420a;color:#fff;font-size:9px;padding:3px 10px;border-radius:20px;cursor:pointer;">Generar imagen →</span></div>
         </div>`).join('')}
     </div>`;
 }
-async function imgGenerarImagen(btn, prompt, destino, cardIndex) {
-  btn.textContent = 'Generando...';
-  btn.disabled = true;
 
-  try {
-    const resp = await fetch('/api/images', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt, destino })
-    });
-    const data = await resp.json();
-    if (data.error) throw new Error(data.error);
+function iVerPrompt(btn){
+  const body=btn.closest('div[style*="border:1px"]').querySelector('.i-prompt-body');
+  const v=body.style.display==='block';
+  body.style.display=v?'none':'block';
+  btn.textContent=v?'Ver prompt':'Ocultar';
+}
 
-    const imgArea = document.getElementById('img-area-' + cardIndex);
-    if (imgArea) {
-      imgArea.style.background = '#e8f4e8';
-      imgArea.innerHTML = imgArea.innerHTML.replace(
-        /<div style="font-size:32px[^>]*>.*?<\/div>/,
-        `<img src="${data.url}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" />`
-      );
-    }
-    imgGoStep(3);
-  } catch(err) {
-    alert('Error al generar imagen: ' + err.message);
-    btn.textContent = 'Generar imagen';
-    btn.disabled = false;
+async function iGenerarImg(btn,prompt,destino){
+  btn.textContent='Generando...';btn.disabled=true;
+  iStep(3);
+  const dest=destino.toLowerCase().replace(/[^a-z]/g,'');
+  try{
+    const resp=await fetch('/api/images',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,destino:dest})});
+    const data=await resp.json();
+    if(data.error)throw new Error(data.error);
+    const grid=document.getElementById('id-grid');
+    const card=document.createElement('div');
+    card.style.cssText='border:1px solid #ddd5c0;border-radius:8px;overflow:hidden;background:#fff;';
+    card.innerHTML=`
+      <div style="height:130px;position:relative;overflow:hidden;">
+        <img src="${data.url}" style="width:100%;height:100%;object-fit:cover;"/>
+        <div style="position:absolute;top:6px;left:6px;background:#1a1a1a;color:#fff;font-size:8px;padding:2px 6px;border-radius:10px;">${destino}</div>
+        <div onclick="this.textContent=this.textContent==='♥'?'♡':'♥'" style="position:absolute;top:6px;right:6px;width:26px;height:26px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;border:1px solid #ddd5c0;">♡</div>
+      </div>
+      <div style="padding:8px 10px;">
+        <div style="font-size:10px;color:#444;margin-bottom:6px;">${prompt.substring(0,50)}...</div>
+        <div style="display:flex;gap:4px;">
+          <button onclick="navigator.clipboard.writeText('${data.url}')" style="padding:4px 7px;border:1px solid #ddd5c0;border-radius:4px;font-size:9px;cursor:pointer;background:#fff;color:#444;">📋</button>
+          <a href="${data.url}" download style="flex:1;padding:4px 7px;border:none;border-radius:4px;font-size:9px;cursor:pointer;background:#e8420a;color:#fff;font-weight:700;text-align:center;text-decoration:none;">⬇ Descargar</a>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+    const gal=document.getElementById('id-galeria');
+    const thumb=document.createElement('div');
+    thumb.style.cssText='width:46px;height:46px;border-radius:6px;border:1px solid #ddd5c0;overflow:hidden;cursor:pointer;';
+    thumb.innerHTML=`<img src="${data.url}" style="width:100%;height:100%;object-fit:cover;"/>`;
+    gal.appendChild(thumb);
+  }catch(err){
+    alert('Error: '+err.message);
+    btn.textContent='Generar imagen';btn.disabled=false;
   }
 }
-function imgVerPrompt(btn){
-  const body=btn.closest('div[style*="border:1px"]').querySelector('.img-prompt-body');
-  const visible=body.style.display==='block';
-  body.style.display=visible?'none':'block';
-  btn.textContent=visible?'Ver prompt':'Ocultar';
-}
-</script><!-- ══════════════════════════
+</script>
      PAGE: LOGIN
 ══════════════════════════ -->
 <div class="page" id="page-login">
