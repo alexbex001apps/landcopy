@@ -1260,6 +1260,7 @@ async function iGenerarSetCompleto(btn,promptBase,destino){
       const data=await resp.json();
       if(!data.error)iAgregarCard(data.url,pf,destino,sec.label);
     }catch(e){console.error('Error img '+i,e);}
+    await new Promise(r=>setTimeout(r,2000));
   }
   const grid=document.getElementById('id-grid');
   const zipBtn=document.createElement('div');
