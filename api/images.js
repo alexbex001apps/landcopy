@@ -51,7 +51,7 @@ export default async function handler(req, res) {
       n: 1,
       size: size,
       quality: 'standard',
-      response_format: 'url'
+      
     });
 
     if (result.status !== 200) {
