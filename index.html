@@ -1741,7 +1741,7 @@ async function lGenerarSet(btn,promptBase){
 function lAgregarCard(url,prompt,etiqueta){
   const grid=document.getElementById('lp-grid');
   const card=document.createElement('div');
-  card.style.cssText='border:1px solid #b8d8f5;border-radius:8px;overflow:hidden;background:#fff;';
+  card.className='lp-card';card.style.cssText='border:1px solid #b8d8f5;border-radius:8px;overflow:hidden;background:#fff;';
   card.innerHTML=`
     <div style="padding:5px 10px;background:#1a5fa8;color:#fff;font-size:9px;font-weight:700;text-align:center;letter-spacing:1px;">${etiqueta}</div>
     <div style="height:130px;position:relative;overflow:hidden;">
@@ -1750,7 +1750,7 @@ function lAgregarCard(url,prompt,etiqueta){
     </div>
     <div style="padding:8px 10px;">
       <div style="display:flex;gap:4px;">
-        <button onclick="navigator.clipboard.writeText('${url}')" style="padding:4px 7px;border:1px solid #b8d8f5;border-radius:4px;font-size:9px;cursor:pointer;background:#fff;color:#444;">📋</button>
+        <button onclick="this.closest('.lp-card').remove()" style="padding:4px 7px;border:1px solid #ffb8b8;border-radius:4px;font-size:9px;cursor:pointer;background:#fff;color:#e8420a;">✕</button>
         <a href="${url}" download style="flex:1;padding:4px 7px;border:none;border-radius:4px;font-size:9px;cursor:pointer;background:#e8420a;color:#fff;font-weight:700;text-align:center;text-decoration:none;">⬇ Descargar</a>
       </div>
     </div>`;
