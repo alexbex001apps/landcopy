@@ -1721,6 +1721,7 @@ async function lGenerarImg(btn,promptBase,seccion){
 
 async function lGenerarSet(btn,promptBase){
   const secciones=Object.entries(LP_SECCIONES);
+  const cfg=lGetConfig();
   btn.textContent='Generando set (0/8)...';btn.disabled=true;
   lStep(3);
   for(let i=0;i<secciones.length;i++){
