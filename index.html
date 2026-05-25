@@ -1599,16 +1599,40 @@ function lGetConfig(){
 }
 
 
+const STYLE_APPENDIX = 'photorealistic, realistic proportions, natural skin texture, premium commercial photography, editorial aesthetic, Latin American market, cinematic realism, subtle film grain, ultra detailed, clean color grading, realistic lighting, no exaggerated HDR, no text, no watermark';
+
 const LP_SECCIONES={
-  hero:{label:'🏠 Hero',cam:'Sony A7III 85mm f/1.4',luz:'golden hour lateral',comp:'primer plano regla de tercios',emo:'satisfacción y confianza'},
-  beneficio1:{label:'💪 Beneficio visible',cam:'Canon 100mm macro f/2.8',luz:'luz suave lateral',comp:'detalle del resultado producto en uso',emo:'concentración y bienestar'},
-  beneficio2:{label:'❤️ Beneficio emocional',cam:'Canon 35mm f/1.8',luz:'luz natural cálida',comp:'plano medio lifestyle',emo:'alegría y tranquilidad'},
-  testimonio:{label:'⭐ Testimonio',cam:'50mm f/2.0 look documental',luz:'ventana natural tono cálido',comp:'plano medio mirada directa cámara',emo:'aprobación y gratitud'},
-  antesdespues:{label:'✨ Antes/Después',cam:'85mm f/2.0',luz:'contraste intencional',comp:'mismo encuadre diferente emoción',emo:'transformación de cansancio a alivio'},
-  producto:{label:'📦 Producto solo',cam:'100mm macro estudio',luz:'three-point studio lighting',comp:'cenital o 45 grados fondo neutro',emo:'producto solo sin personas'},
-  cta:{label:'🚀 CTA',cam:'35mm f/1.8 dinámico',luz:'luz frontal energía alta',comp:'plano americano gesto invitando',emo:'confianza y urgencia'},
-  confianza:{label:'🤝 Confianza',cam:'24-70mm f/2.8 gran angular',luz:'luz natural exterior cálida',comp:'plano general grupo diverso',emo:'alegría colectiva prueba social'}
+  hero:{label:'🏠 Hero',prompt:'Ultra realistic commercial lifestyle photography for a Latin American landing page. A [GENERO], [EDAD], [COMPLEXION], expressing [ESTADO_EMOCIONAL], located in [DONDE], actively [QUE_HACE] during [MOMENTO]. Cinematic yet authentic atmosphere, premium but relatable. Shot on a full-frame camera with a 35mm lens, eye-level angle, shallow depth of field (f/2.0). Soft natural key light with subtle directional contrast, realistic skin texture, controlled highlights and natural shadows. Dynamic composition with subject slightly off-center, strong visual hierarchy, generous negative space for headline and CTA placement. Editorial advertising aesthetic, premium lifestyle campaign, ultra detailed.'},
+  beneficio1:{label:'💪 Beneficio visible',prompt:'Commercial transformation photography showing a clear visible benefit. A [GENERO], [EDAD], [COMPLEXION], appearing [ESTADO_EMOCIONAL], inside [DONDE], visibly improved while [QUE_HACE], captured during [MOMENTO]. Focus on observable positive outcome and everyday realism. Shot with a full-frame camera using a 50mm lens, medium framing, strong subject separation. Bright soft lighting with balanced shadows, premium lifestyle look, clean skin tones. Composition emphasizes the result first and environment second, minimal distractions, conversion-oriented visual storytelling, polished but believable.'},
+  beneficio2:{label:'❤️ Beneficio emocional',prompt:'Emotion-driven premium lifestyle photography. A [GENERO], [EDAD], [COMPLEXION], experiencing [ESTADO_EMOCIONAL], in [DONDE], naturally [QUE_HACE] during [MOMENTO]. Capture emotional transformation, confidence, authenticity and human connection. Shot with a full-frame camera using an 85mm portrait lens, shallow depth of field (f/1.8). Warm cinematic lighting with soft glow and subtle contrast. Composition centered on facial expression and body language, intimate framing, emotional storytelling, luxury commercial aesthetic.'},
+  testimonio:{label:'⭐ Testimonio',prompt:'Authentic testimonial-style commercial portrait. A [GENERO], [EDAD], [COMPLEXION], showing [ESTADO_EMOCIONAL], inside [DONDE], naturally [QUE_HACE] during [MOMENTO]. Documentary-inspired but premium visual language, trustworthy and relatable. Captured using a full-frame camera with a 50mm lens, medium close-up composition. Soft window lighting mixed with subtle fill light. Composition includes generous negative space for testimonial text overlay, realistic environmental details, candid expression and believable atmosphere.'},
+  antesdespues:{label:'✨ Antes/Después',prompt:'Split-scene commercial comparison image for landing page conversion. Same [GENERO], [EDAD], [COMPLEXION] represented in two moments. LEFT SIDE: before state, subdued expression associated with [ESTADO_EMOCIONAL], located in [DONDE]. RIGHT SIDE: after state, visibly improved while [QUE_HACE] during [MOMENTO]. Consistent wardrobe and camera position across both scenes. Shot with full-frame camera and 50mm lens. Controlled lighting progression: flatter and softer before, brighter and dimensional after. Balanced side-by-side composition emphasizing transformation while maintaining realism.'},
+  producto:{label:'📦 Producto solo',prompt:'Premium commercial product photography for a Latin American landing page. Product displayed inside an environment inspired by [DONDE], associated with [QUE_HACE], conveying [ESTADO_EMOCIONAL], during [MOMENTO]. Product remains the dominant hero element. Captured using a full-frame camera with an 85mm lens, studio-grade sharpness, controlled reflections and realistic materials. Soft directional key light with subtle rim light and premium shadow depth. Clean luxury composition with negative space for copy and elevated realism.'},
+  cta:{label:'🚀 CTA',prompt:'High-conversion commercial lifestyle scene designed for call-to-action. A [GENERO], [EDAD], [COMPLEXION], expressing [ESTADO_EMOCIONAL], in [DONDE], actively [QUE_HACE] during [MOMENTO], creating a feeling of momentum and immediate action. Shot on full-frame camera with 35mm lens and slight low-angle perspective for energy and confidence. Bright directional lighting, vivid but natural colors. Composition naturally guides attention toward an implied action area with strong focal hierarchy and premium landing page aesthetics.'},
+  confianza:{label:'🤝 Confianza',prompt:'Trust-building commercial portrait for a conversion-focused landing page. A [GENERO], [EDAD], [COMPLEXION], displaying [ESTADO_EMOCIONAL], inside [DONDE], confidently [QUE_HACE] during [MOMENTO]. Professional yet approachable visual tone communicating reliability, credibility and authenticity. Captured using a full-frame camera with a 70mm lens, eye-level framing and moderate depth of field. Soft natural lighting with subtle fill light, balanced exposure and realistic details. Stable composition with clean lines and premium editorial branding aesthetic.'}
 };
+
+function lConstruirPrompt(seccion, cfg){
+  const sec=LP_SECCIONES[seccion];
+  if(!sec) return '';
+  const genero=cfg.genero==='Mujer'?'woman':cfg.genero==='Hombre'?'man':cfg.genero==='Niña'?'girl':cfg.genero==='Niño'?'boy':cfg.genero==='Bebé'?'baby':'person';
+  const edad=cfg.edad.includes('20-30')?'25 years old':cfg.edad.includes('30-50')?'40 years old':cfg.edad.includes('50+')?'60 years old':'35 years old';
+  const complex=cfg.complex==='Delgada'||cfg.complex==='Delgado'?'slim build':cfg.complex==='Gordita'||cfg.complex==='Gordito'?'plus-size build':cfg.complex==='Atlética'||cfg.complex==='Atlético'?'athletic build':'average build';
+  const estado=cfg.estado==='Alegre'?'happy and joyful':cfg.estado==='Serio'?'serious and focused':cfg.estado==='Sorprendido'?'surprised and amazed':cfg.estado==='Relajado'?'relaxed and calm':cfg.estado==='Confiado'?'confident and empowered':'positive and natural';
+  const donde=cfg.donde?'a '+cfg.donde.toLowerCase()+' in Latin America':'a typical Latin American home';
+  const hace=cfg.hace?cfg.hace.toLowerCase():'using the product';
+  const momento=cfg.momento==='Mañana'?'early morning':cfg.momento==='Tarde'?'afternoon':cfg.momento==='Noche'?'evening':cfg.momento==='Nublado'?'overcast day':'natural daylight';
+
+  return sec.prompt
+    .replace('[GENERO]',genero)
+    .replace('[EDAD]',edad)
+    .replace('[COMPLEXION]',complex)
+    .replace('[ESTADO_EMOCIONAL]',estado)
+    .replace('[DONDE]',donde)
+    .replace('[QUE_HACE]',hace)
+    .replace('[MOMENTO]',momento)
+    +', '+STYLE_APPENDIX;
+}
 
 async function lGenerar(){
   const cfg=lGetConfig();
