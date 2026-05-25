@@ -1082,7 +1082,7 @@ function iGenero(el){
   document.querySelectorAll('#id-genero-wrap .id-chip').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
   const isNino=['Niña','Niño','Bebé'].includes(el.textContent.trim());
-  document.getElementById('id-edad-adult').style.display=isNino?'none':'flex';
+  document.getElementById('id-edad-adult-wrap').style.display=isNino?'none':'flex';
   document.getElementById('id-edad-nino').style.display=isNino?'flex':'none';
 }
 
