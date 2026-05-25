@@ -1134,12 +1134,28 @@ function iCargarProducto(input){
     .map(t=>`<span style="display:inline-block;background:#fff3ee;color:#e8420a;font-size:9px;padding:2px 8px;border-radius:20px;border:1px solid #ffd0bc;">${t}</span>`).join('');
   const btn=event.target;
   btn.textContent='Generando ideas...';btn.disabled=true;
-  const ideas=[
+ let ideas;
+if(window.iProductoBase64){
+  const visionResp=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    visionOnly:true,
+    image:window.iProductoBase64,
+    config:cfg
+  })});
+  const visionData=await visionResp.json();
+  ideas=visionData.ideas||[
     {desc:`${cfg.genero} en ${cfg.donde||'casa'} ${cfg.hace||'usando el producto'} — foto de frente`,ctx:`${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · ${cfg.dest}`},
     {desc:`${cfg.genero} sonriendo con el producto — foto desde el lado`,ctx:`${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · ${cfg.dest}`},
     {desc:`Manos sosteniendo el producto — foto cenital`,ctx:`${cfg.momento||'mañana'} · Cenital · ${cfg.dest}`},
     {desc:`${cfg.genero} relajada después de usar el producto — lifestyle`,ctx:`${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · ${cfg.dest}`}
   ];
+}else{
+  ideas=[
+    {desc:`${cfg.genero} en ${cfg.donde||'casa'} ${cfg.hace||'usando el producto'} — foto de frente`,ctx:`${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · ${cfg.dest}`},
+    {desc:`${cfg.genero} sonriendo con el producto — foto desde el lado`,ctx:`${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · ${cfg.dest}`},
+    {desc:`Manos sosteniendo el producto — foto cenital`,ctx:`${cfg.momento||'mañana'} · Cenital · ${cfg.dest}`},
+    {desc:`${cfg.genero} relajada después de usar el producto — lifestyle`,ctx:`${cfg.donde||'casa'} · ${cfg.momento||'mañana'} · ${cfg.dest}`}
+  ];
+}
   document.getElementById('id-ideas').innerHTML=ideas.map((idea,i)=>`
     <div style="background:#fff;border:1px solid #ddd5c0;border-radius:8px;overflow:hidden;margin-bottom:8px;">
       <div style="padding:10px 12px;background:#faf8f4;border-bottom:1px solid #ddd5c0;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
