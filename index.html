@@ -1005,6 +1005,21 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
           </div>
         </div>
 
+<div style="background:#fff;border:1px solid #ddd5c0;border-radius:10px;padding:14px;margin-bottom:10px;">
+  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:10px;">¿Tienes foto de tu producto?</div>
+  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;border:1px dashed #ddd5c0;border-radius:8px;padding:12px;background:#faf8f4;">
+    <span style="font-size:20px;">📷</span>
+    <div>
+      <div style="font-size:11px;font-weight:700;color:#444;">Subir imagen del producto</div>
+      <div style="font-size:9px;color:#aaa;">La IA la analizará y mejorará el prompt</div>
+    </div>
+    <input type="file" accept="image/*" id="id-producto-img" style="display:none;" onchange="iCargarProducto(this)">
+  </label>
+  <div id="id-producto-preview" style="display:none;margin-top:8px;text-align:center;">
+    <img id="id-producto-thumb" style="max-height:80px;border-radius:6px;border:1px solid #ddd5c0;" src="">
+    <div style="font-size:9px;color:#7a7060;margin-top:4px;" id="id-producto-status">Imagen cargada ✓</div>
+  </div>
+</div>
         <button onclick="iGenerar()" style="width:100%;padding:12px;background:#e8420a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Generar 4 ideas de imagen</button>
       </div>
 
@@ -1100,7 +1115,19 @@ function iGetConfig(){
   return {dest,tipo,genero,personas,edad,donde,hace,momento};
 }
 
-async function iGenerar(){
+function iCargarProducto(input){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById('id-producto-thumb').src=e.target.result;
+    document.getElementById('id-producto-preview').style.display='block';
+    document.getElementById('id-producto-status').textContent='Imagen cargada ✓';
+    window.iProductoBase64=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+  async function iGenerar(){
   const cfg=iGetConfig();
   const ctx=document.getElementById('id-ctx');
   ctx.innerHTML=[cfg.tipo,cfg.genero,cfg.personas,cfg.edad,cfg.donde,cfg.hace,cfg.momento,cfg.dest].filter(Boolean)
