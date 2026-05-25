@@ -1194,15 +1194,7 @@ async function imgLlamarDalle(prompt, destino) {
     console.error('DALL-E error:', err.message);
   }
 }
-  document.getElementById('img-paso1').style.display=n===1?'block':'none';
-  document.getElementById('img-paso2').style.display=n===2?'block':'none';
-  document.getElementById('img-paso3').style.display=n===3?'block':'none';
-  ['img-sb1','img-sb2','img-sb3'].forEach((id,i)=>{
-    const el=document.getElementById(id);
-    el.style.background=i+1===n?'#e8420a':'#fff';
-    el.style.color=i+1===n?'#fff':i+1<n?'#e8420a':'#999';
-  });
-}
+
 function imgSelDest(el,dest){
   document.querySelectorAll('.img-dest').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
