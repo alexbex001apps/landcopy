@@ -1292,7 +1292,464 @@ async function iDescargarZIP(){
   URL.revokeObjectURL(url);
 }
 </script>
-     <!-- ══════════════════════════
+  <!-- ══════════════════════════
+     PAGE: LANDING IMAGES
+══════════════════════════ -->
+<div class="page" id="page-landing">
+  <div class="dh">
+    <div class="dh-logo" onclick="goTo('page-main')"><span class="logo-land">Land</span><span class="logo-copy">Copy</span></div>
+    <div class="dh-right">
+      <div class="dh-tag">Landing Page · Beta</div>
+      <button class="dh-btn dh-ghost" onclick="goTo('page-main')">← Volver al copy</button>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:460px 1fr;flex:1;min-height:0;background:#e8f4fd;">
+    <div style="background:#dbeeff;border-right:1px solid #b8d8f5;padding:20px;overflow-y:auto;padding-bottom:100px;">
+
+      <!-- PASOS -->
+      <div style="display:flex;margin-bottom:14px;border-radius:8px;overflow:hidden;border:1px solid #b8d8f5;">
+        <div id="lsb1" style="flex:1;padding:9px;text-align:center;background:#e8420a;color:#fff;font-size:11px;font-weight:700;cursor:pointer;border-right:1px solid #b8d8f5;" onclick="lStep(1)"><div style="font-size:9px;font-weight:400;">Paso 1</div>Configurar</div>
+        <div id="lsb2" style="flex:1;padding:9px;text-align:center;background:#fff;color:#999;font-size:11px;font-weight:700;cursor:pointer;border-right:1px solid #b8d8f5;" onclick="lStep(2)"><div style="font-size:9px;font-weight:400;">Paso 2</div>Elegir idea</div>
+        <div id="lsb3" style="flex:1;padding:9px;text-align:center;background:#fff;color:#999;font-size:11px;font-weight:700;cursor:pointer;" onclick="lStep(3)"><div style="font-size:9px;font-weight:400;">Paso 3</div>Descargar</div>
+      </div>
+
+      <!-- PASO 1 -->
+      <div id="lp1">
+
+        <!-- IMAGEN PRODUCTO -->
+        <div style="background:#fff;border:1px solid #b8d8f5;border-radius:10px;padding:14px;margin-bottom:10px;">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#1a5fa8;margin-bottom:8px;">Imagen del producto <span style="font-size:8px;color:#888;font-weight:400;text-transform:none;">— opcional</span></div>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;border:1px dashed #b8d8f5;border-radius:8px;padding:12px;background:#f0f8ff;">
+            <span style="font-size:20px;">📷</span>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#444;">Subir imagen del producto</div>
+              <div style="font-size:9px;color:#aaa;">La IA la analiza y mantiene fiel en todas las secciones</div>
+            </div>
+            <input type="file" accept="image/*" id="lp-producto-img" style="display:none;" onchange="lCargarProducto(this)">
+          </label>
+          <div id="lp-producto-preview" style="display:none;margin-top:8px;text-align:center;">
+            <img id="lp-producto-thumb" style="max-height:160px;border-radius:6px;border:1px solid #b8d8f5;" src="">
+            <div style="font-size:9px;color:#1a5fa8;margin-top:4px;" id="lp-producto-status">Imagen cargada ✓</div>
+          </div>
+        </div>
+
+        <!-- MODO -->
+        <div style="background:#fff;border:1px solid #b8d8f5;border-radius:10px;padding:14px;margin-bottom:10px;">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#1a5fa8;margin-bottom:10px;">¿Cómo quieres trabajar?</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+            <div id="lm-auto" onclick="lSetModo('auto')" style="background:#e8420a;border-radius:8px;padding:10px 8px;text-align:center;cursor:pointer;border:2px solid #e8420a;">
+              <div style="font-size:16px;margin-bottom:4px;">⚡</div>
+              <div style="font-size:10px;font-weight:700;color:#fff;">Automático</div>
+              <div style="font-size:8px;color:rgba(255,255,255,0.7);margin-top:2px;line-height:1.4;">Solo sube la imagen. La IA hace todo.</div>
+            </div>
+            <div id="lm-guiado" onclick="lSetModo('guiado')" style="background:#f0f8ff;border:1px solid #b8d8f5;border-radius:8px;padding:10px 8px;text-align:center;cursor:pointer;">
+              <div style="font-size:16px;margin-bottom:4px;">🎛</div>
+              <div style="font-size:10px;font-weight:700;color:#1a5fa8;">Guiado</div>
+              <div style="font-size:8px;color:#888;margin-top:2px;line-height:1.4;">Tú eliges. La IA aplica la técnica.</div>
+            </div>
+            <div id="lm-manual" onclick="lSetModo('manual')" style="background:#f0f8ff;border:1px solid #b8d8f5;border-radius:8px;padding:10px 8px;text-align:center;cursor:pointer;">
+              <div style="font-size:16px;margin-bottom:4px;">✍️</div>
+              <div style="font-size:10px;font-weight:700;color:#1a5fa8;">Manual</div>
+              <div style="font-size:8px;color:#888;margin-top:2px;line-height:1.4;">Tú escribes. La IA potencia el prompt.</div>
+            </div>
+          </div>
+          <div id="lp-modo-desc" style="background:#f0f8ff;border:1px solid #b8d8f5;border-radius:6px;padding:8px 10px;font-size:9px;color:#1a5fa8;line-height:1.6;">
+            ⚡ <strong>Automático:</strong> Sube la imagen y elige la sección. La IA genera todo.
+          </div>
+        </div>
+
+        <!-- SECCIÓN -->
+        <div style="background:#fff;border:1px solid #b8d8f5;border-radius:10px;padding:14px;margin-bottom:10px;">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#1a5fa8;margin-bottom:4px;">Sección de la landing <span style="font-size:8px;color:#888;font-weight:400;text-transform:none;">— opcional</span></div>
+          <div style="font-size:8px;color:#888;margin-bottom:8px;">Si no eliges, genera el set completo</div>
+          <div style="background:#1a5fa8;border-radius:6px;padding:9px 12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;" id="lp-sec-set" onclick="lSeccion('set')">
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#fff;">⚡ Set completo — 8 imágenes</div>
+              <div style="font-size:8px;color:rgba(255,255,255,0.7);margin-top:1px;">Hero · Beneficios · Testimonio · CTA · más</div>
+            </div>
+            <div style="font-size:8px;color:rgba(255,255,255,0.6);background:rgba(0,0,0,0.2);padding:2px 7px;border-radius:20px;">~3 min</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;" id="lp-sec-wrap">
+            <div class="lp-sec" onclick="lSeccion('hero')" data-sec="hero" style="border-left:2px solid #e8420a;">🏠 Hero<span>Primera impresión</span></div>
+            <div class="lp-sec" onclick="lSeccion('beneficio1')" data-sec="beneficio1" style="border-left:2px solid #1a7a3a;">💪 Beneficio visible<span>Resultado tangible</span></div>
+            <div class="lp-sec" onclick="lSeccion('beneficio2')" data-sec="beneficio2" style="border-left:2px solid #c850c0;">❤️ Beneficio emocional<span>Estilo de vida</span></div>
+            <div class="lp-sec" onclick="lSeccion('testimonio')" data-sec="testimonio" style="border-left:2px solid #378ADD;">⭐ Testimonio<span>Prueba social</span></div>
+            <div class="lp-sec" onclick="lSeccion('antesdespues')" data-sec="antesdespues" style="border-left:2px solid #EF9F27;">✨ Antes/Después<span>Transformación</span></div>
+            <div class="lp-sec" onclick="lSeccion('producto')" data-sec="producto" style="border-left:2px solid #888;">📦 Producto solo<span>Estudio · deseo</span></div>
+            <div class="lp-sec" onclick="lSeccion('cta')" data-sec="cta" style="border-left:2px solid #e8420a;">🚀 CTA<span>Acción directa</span></div>
+            <div class="lp-sec" onclick="lSeccion('confianza')" data-sec="confianza" style="border-left:2px solid #1D9E75;">🤝 Confianza<span>Prueba masiva</span></div>
+          </div>
+        </div>
+
+        <!-- FORMULARIO GUIADO -->
+        <div id="lp-guiado-form" style="display:none;">
+          <div style="background:#fff;border:1px solid #b8d8f5;border-radius:10px;padding:14px;margin-bottom:10px;">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#1a5fa8;margin-bottom:10px;">Tipo de foto</div>
+            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;" id="lp-tipo-wrap">
+              <div class="lp-tipo sel" onclick="lSingle(this,'lp-tipo-wrap')"><div style="font-size:16px;margin-bottom:2px;">🏠</div><div style="font-size:8px;font-weight:700;">Pueblo</div></div>
+              <div class="lp-tipo" onclick="lSingle(this,'lp-tipo-wrap')"><div style="font-size:16px;margin-bottom:2px;">🏙️</div><div style="font-size:8px;font-weight:700;">Ciudad</div></div>
+              <div class="lp-tipo" onclick="lSingle(this,'lp-tipo-wrap')"><div style="font-size:16px;margin-bottom:2px;">⚡</div><div style="font-size:8px;font-weight:700;">Moderno</div></div>
+              <div class="lp-tipo" onclick="lSingle(this,'lp-tipo-wrap')"><div style="font-size:16px;margin-bottom:2px;">📷</div><div style="font-size:8px;font-weight:700;">Profesional</div></div>
+              <div class="lp-tipo" onclick="lSingle(this,'lp-tipo-wrap')"><div style="font-size:16px;margin-bottom:2px;">🎯</div><div style="font-size:8px;font-weight:700;">Solo producto</div></div>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #b8d8f5;border-radius:10px;padding:14px;margin-bottom:10px;">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#1a5fa8;margin-bottom:10px;">Persona</div>
+            <div style="margin-bottom:8px;">
+              <div style="font-size:8px;font-weight:700;color:#1a5fa8;margin-bottom:5px;text-align:center;">Género</div>
+              <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;" id="lp-genero-wrap">
+                <div class="lp-chip sel" onclick="lGenero(this)">Mujer</div>
+                <div class="lp-chip" onclick="lGenero(this)">Hombre</div>
+                <div class="lp-chip" onclick="lGenero(this)">Niña</div>
+                <div class="lp-chip" onclick="lGenero(this)">Niño</div>
+                <div class="lp-chip" onclick="lGenero(this)">Bebé</div>
+                <div class="lp-chip" onclick="lGenero(this)">Todos</div>
+              </div>
+            </div>
+            <div style="margin-bottom:8px;">
+              <div style="font-size:8px;font-weight:700;color:#1a5fa8;margin-bottom:5px;text-align:center;">Edad</div>
+              <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;" id="lp-edad-wrap">
+                <div class="lp-chip sel" onclick="lSingle(this,'lp-edad-wrap')">Joven (20-30)</div>
+                <div class="lp-chip" onclick="lSingle(this,'lp-edad-wrap')">Adulto (30-50)</div>
+                <div class="lp-chip" onclick="lSingle(this,'lp-edad-wrap')">Mayor (50+)</div>
+              </div>
+            </div>
+            <div style="margin-bottom:8px;">
+              <div style="font-size:8px;font-weight:700;color:#1a5fa8;margin-bottom:5px;text-align:center;">Complexión</div>
+              <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;" id="lp-complex-wrap">
+                <div class="lp-multi" onclick="lSingle(this,'lp-complex-wrap')">Delgada</div>
+                <div class="lp-multi" onclick="lSingle(this,'lp-complex-wrap')">Normal</div>
+                <div class="lp-multi" onclick="lSingle(this,'lp-complex-wrap')">Gordita</div>
+                <div class="lp-multi" onclick="lSingle(this,'lp-complex-wrap')">Atlética</div>
+              </div>
+            </div>
+            <div style="margin-bottom:8px;">
+              <div style="font-size:8px;font-weight:700;color:#1a5fa8;margin-bottom:5px;text-align:center;">Estado emocional</div>
+              <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;" id="lp-estado-wrap">
+                <div class="lp-multi sel" onclick="lSingle(this,'lp-estado-wrap')">Alegre</div>
+                <div class="lp-multi" onclick="lSingle(this,'lp-estado-wrap')">Serio</div>
+                <div class="lp-multi" onclick="lSingle(this,'lp-estado-wrap')">Sorprendido</div>
+                <div class="lp-multi" onclick="lSingle(this,'lp-estado-wrap')">Relajado</div>
+                <div class="lp-multi" onclick="lSingle(this,'lp-estado-wrap')">Confiado</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #b8d8f5;border-radius:10px;padding:14px;margin-bottom:10px;">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#1a5fa8;margin-bottom:4px;">Escena <span style="font-size:8px;color:#888;font-weight:400;text-transform:none;">— opcional</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;">
+              <div>
+                <div style="font-size:8px;font-weight:700;color:#1a5fa8;margin-bottom:5px;text-align:center;">¿Dónde?</div>
+                <div style="display:flex;flex-direction:column;gap:3px;" id="lp-donde-wrap">
+                  <div class="lp-multi" onclick="lSingle(this,'lp-donde-wrap')">Casa</div>
+                  <div class="lp-multi" onclick="lSingle(this,'lp-donde-wrap')">Tienda</div>
+                  <div class="lp-multi" onclick="lSingle(this,'lp-donde-wrap')">Calle</div>
+                  <div class="lp-multi" onclick="lSingle(this,'lp-donde-wrap')">Parque</div>
+                  <div class="lp-multi" onclick="lSingle(this,'lp-donde-wrap')">Gym</div>
+                  <div class="lp-multi" onclick="lSingle(this,'lp-donde-wrap')">Playa</div>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:8px;font-weight:700;color:#1a5fa8;margin-bottom:5px;text-align:center;">¿Qué hace?</div>
+                <div style="display:flex;flex-direction:column;gap:3px;" id="lp-hace-wrap">
+                  <div class="lp-multi" onclick="lSingle(this,'lp-hace-wrap')">Usándolo</div>
+                  <div class="lp-multi" onclick="lSingle(this,'lp-hace-wrap')">Mostrándolo</div>
+                  <div class="lp-multi" onclick="lSingle(this,'lp-hace-wrap')">Recomendando</div>
+                  <div class="lp-multi" onclick="lSingle(this,'lp-hace-wrap')">Descansando</div>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:8px;font-weight:700;color:#1a5fa8;margin-bottom:5px;text-align:center;">Momento</div>
+                <div style="display:flex;flex-direction:column;gap:3px;" id="lp-momento-wrap">
+                  <div class="lp-multi" onclick="lSingle(this,'lp-momento-wrap')">Mañana</div>
+                  <div class="lp-multi" onclick="lSingle(this,'lp-momento-wrap')">Tarde</div>
+                  <div class="lp-multi" onclick="lSingle(this,'lp-momento-wrap')">Noche</div>
+                  <div class="lp-multi" onclick="lSingle(this,'lp-momento-wrap')">Nublado</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODO MANUAL -->
+        <div id="lp-manual-form" style="display:none;">
+          <div style="background:#fff;border:1px solid #b8d8f5;border-radius:10px;padding:14px;margin-bottom:10px;">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#1a5fa8;margin-bottom:6px;">Tu prompt</div>
+            <textarea id="lp-prompt-manual" style="width:100%;border:1px solid #b8d8f5;border-radius:6px;padding:8px;font-size:10px;color:#444;background:#f0f8ff;min-height:80px;resize:none;" placeholder="Ej: Mujer de 40 años en cocina moderna usando el producto mientras cocina, luz cálida de tarde, expresión de satisfacción..."></textarea>
+            <div style="font-size:8px;color:#1a5fa8;margin-top:4px;">La IA añade la técnica fotográfica según la sección elegida</div>
+          </div>
+        </div>
+
+        <button onclick="lGenerar()" style="width:100%;padding:12px;background:#e8420a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(232,66,10,0.3);">⚡ Generar ideas de imagen</button>
+      </div>
+
+      <!-- PASO 2 -->
+      <div id="lp2" style="display:none;">
+        <div style="background:#fff8f6;border:1px solid #ffd0bc;border-radius:8px;padding:10px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:5px;" id="lp-ctx"></div>
+        <div id="lp-ideas"></div>
+        <button onclick="lStep(1)" style="width:100%;padding:10px;background:#fff;border:1px solid #b8d8f5;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#1a5fa8;margin-top:8px;">← Reconfigurar</button>
+      </div>
+
+      <!-- PASO 3 -->
+      <div id="lp3" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;" id="lp-grid"></div>
+        <button onclick="lDescargarZIP()" style="width:100%;padding:10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:#1a1a1a;color:#fff;margin-bottom:8px;">⬇ Descargar todas como ZIP</button>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button onclick="lStep(1)" style="flex:1;padding:9px;border:1px solid #b8d8f5;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:#fff;color:#1a5fa8;">Nueva configuración</button>
+          <button onclick="lStep(2)" style="flex:1;padding:9px;border:1px solid #b8d8f5;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:#fff;color:#1a5fa8;">← Ver ideas</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PANEL DERECHO -->
+    <div style="padding:24px;overflow-y:auto;background:#e8f4fd;" id="lp-panel-derecho">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;opacity:0.4;">
+        <div style="font-size:48px;margin-bottom:12px;">🏠</div>
+        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#1a5fa8;margin-bottom:6px;">Configura y genera</div>
+        <div style="font-size:12px;color:#666;max-width:280px;line-height:1.6;">Elige el modo, la sección y genera imágenes profesionales para tu landing.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.lp-sec{background:#f0f8ff;border:1px solid #b8d8f5;border-radius:6px;padding:7px 9px;cursor:pointer;font-size:10px;font-weight:700;color:#1a1a1a;display:flex;flex-direction:column;gap:2px;}
+.lp-sec span{font-size:8px;color:#888;font-weight:400;}
+.lp-sec.sel{background:#e8f4fd;border-color:#1a5fa8;}
+.lp-tipo{border:1px solid #b8d8f5;border-radius:6px;padding:8px 4px;text-align:center;cursor:pointer;background:#f0f8ff;}
+.lp-tipo.sel{border:2px solid #e8420a;background:#fff8f6;}
+.lp-chip{padding:4px 9px;border:1px solid #b8d8f5;border-radius:20px;font-size:9px;color:#444;cursor:pointer;background:#f0f8ff;}
+.lp-chip.sel{background:#e8420a;color:#fff;border-color:#e8420a;}
+.lp-multi{padding:4px 9px;border:1px dashed #b8d8f5;border-radius:20px;font-size:9px;color:#888;cursor:pointer;background:#f0f8ff;text-align:center;}
+.lp-multi.sel{border-style:solid;background:#fff3ee;color:#e8420a;border-color:#e8420a;}
+</style>
+
+<script>
+let lpModo = 'auto';
+let lpSeccion = 'set';
+let lpProductoBase64 = null;
+
+function lStep(n){
+  ['lp1','lp2','lp3'].forEach((id,i)=>{document.getElementById(id).style.display=i+1===n?'block':'none';});
+  ['lsb1','lsb2','lsb3'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    el.style.background=i+1===n?'#e8420a':'#fff';
+    el.style.color=i+1===n?'#fff':i+1<n?'#e8420a':'#999';
+  });
+}
+
+function lSetModo(modo){
+  lpModo=modo;
+  ['auto','guiado','manual'].forEach(m=>{
+    const el=document.getElementById('lm-'+m);
+    if(m===modo){el.style.background='#e8420a';el.style.border='2px solid #e8420a';}
+    else{el.style.background='#f0f8ff';el.style.border='1px solid #b8d8f5';}
+  });
+  const descs={
+    auto:'⚡ <strong>Automático:</strong> Sube la imagen y elige la sección. La IA genera todo.',
+    guiado:'🎛 <strong>Guiado:</strong> Configura persona, escena y tipo de foto. La IA aplica la técnica fotográfica.',
+    manual:'✍️ <strong>Manual:</strong> Escribe tu propio prompt. La IA añade la técnica fotográfica de la sección.'
+  };
+  document.getElementById('lp-modo-desc').innerHTML=descs[modo];
+  document.getElementById('lp-guiado-form').style.display=modo==='guiado'?'block':'none';
+  document.getElementById('lp-manual-form').style.display=modo==='manual'?'block':'none';
+}
+
+function lSeccion(sec){
+  lpSeccion=sec;
+  document.querySelectorAll('.lp-sec').forEach(el=>el.classList.remove('sel'));
+  const el=document.querySelector('[data-sec="'+sec+'"]');
+  if(el)el.classList.add('sel');
+  const setEl=document.getElementById('lp-sec-set');
+  setEl.style.background=sec==='set'?'#e8420a':'#1a5fa8';
+}
+
+function lSingle(el,wrapId){
+  const w=document.getElementById(wrapId);if(w)w.querySelectorAll('.sel').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function lGenero(el){
+  document.querySelectorAll('#lp-genero-wrap .lp-chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function lCargarProducto(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById('lp-producto-thumb').src=e.target.result;
+    document.getElementById('lp-producto-preview').style.display='block';
+    document.getElementById('lp-producto-status').textContent='Imagen cargada ✓';
+    lpProductoBase64=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function lGetConfig(){
+  const tipo=document.querySelector('#lp-tipo-wrap .lp-tipo.sel div:nth-child(2)')?.textContent.trim()||'Profesional';
+  const genero=document.querySelector('#lp-genero-wrap .lp-chip.sel')?.textContent.trim()||'Mujer';
+  const edad=document.querySelector('#lp-edad-wrap .lp-chip.sel')?.textContent.trim()||'Adulto (30-50)';
+  const estado=document.querySelector('#lp-estado-wrap .lp-multi.sel')?.textContent.trim()||'Alegre';
+  const donde=document.querySelector('#lp-donde-wrap .lp-multi.sel')?.textContent.trim()||'';
+  const hace=document.querySelector('#lp-hace-wrap .lp-multi.sel')?.textContent.trim()||'';
+  const momento=document.querySelector('#lp-momento-wrap .lp-multi.sel')?.textContent.trim()||'';
+  return {tipo,genero,edad,estado,donde,hace,momento};
+}
+
+const LP_SECCIONES={
+  hero:{label:'🏠 Hero',cam:'Sony A7III 85mm f/1.4',luz:'golden hour lateral',comp:'primer plano regla de tercios',emo:'satisfacción y confianza'},
+  beneficio1:{label:'💪 Beneficio visible',cam:'Canon 100mm macro f/2.8',luz:'luz suave lateral',comp:'detalle del resultado producto en uso',emo:'concentración y bienestar'},
+  beneficio2:{label:'❤️ Beneficio emocional',cam:'Canon 35mm f/1.8',luz:'luz natural cálida',comp:'plano medio lifestyle',emo:'alegría y tranquilidad'},
+  testimonio:{label:'⭐ Testimonio',cam:'50mm f/2.0 look documental',luz:'ventana natural tono cálido',comp:'plano medio mirada directa cámara',emo:'aprobación y gratitud'},
+  antesdespues:{label:'✨ Antes/Después',cam:'85mm f/2.0',luz:'contraste intencional',comp:'mismo encuadre diferente emoción',emo:'transformación de cansancio a alivio'},
+  producto:{label:'📦 Producto solo',cam:'100mm macro estudio',luz:'three-point studio lighting',comp:'cenital o 45 grados fondo neutro',emo:'producto solo sin personas'},
+  cta:{label:'🚀 CTA',cam:'35mm f/1.8 dinámico',luz:'luz frontal energía alta',comp:'plano americano gesto invitando',emo:'confianza y urgencia'},
+  confianza:{label:'🤝 Confianza',cam:'24-70mm f/2.8 gran angular',luz:'luz natural exterior cálida',comp:'plano general grupo diverso',emo:'alegría colectiva prueba social'}
+};
+
+async function lGenerar(){
+  const cfg=lGetConfig();
+  const btn=event.target;
+  btn.textContent='Generando ideas...';btn.disabled=true;
+
+  const ctxEl=document.getElementById('lp-ctx');
+  ctxEl.innerHTML=[lpSeccion,cfg.tipo,cfg.genero,cfg.edad,cfg.estado,cfg.donde,cfg.hace,cfg.momento]
+    .filter(Boolean)
+    .map(t=>`<span style="display:inline-block;background:#fff3ee;color:#e8420a;font-size:9px;padding:2px 8px;border-radius:20px;border:1px solid #ffd0bc;">${t}</span>`).join('');
+
+  let ideas;
+  if(lpProductoBase64){
+    const visionResp=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      visionOnly:true,image:lpProductoBase64,config:{...cfg,dest:'Landing'}
+    })});
+    const visionData=await visionResp.json();
+    ideas=visionData.ideas||lIdeasFallback(cfg);
+  } else if(lpModo==='manual'){
+    const prompt=document.getElementById('lp-prompt-manual').value.trim();
+    ideas=[
+      {desc:prompt||'Imagen personalizada para landing',ctx:'Manual · Landing'},
+      {desc:prompt+' — variación 2',ctx:'Manual · Landing'},
+      {desc:prompt+' — variación 3',ctx:'Manual · Landing'},
+      {desc:prompt+' — variación 4',ctx:'Manual · Landing'}
+    ];
+  } else {
+    ideas=lIdeasFallback(cfg);
+  }
+
+  document.getElementById('lp-ideas').innerHTML=ideas.map((idea,i)=>`
+    <div style="background:#fff;border:1px solid #b8d8f5;border-radius:8px;overflow:hidden;margin-bottom:8px;">
+      <div style="padding:10px 12px;background:#f0f8ff;border-bottom:1px solid #b8d8f5;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#1a1a1a;">${idea.desc}</div>
+          <div style="font-size:9px;color:#1a5fa8;margin-top:2px;">${idea.ctx}</div>
+        </div>
+        <button onclick="lGenerarImg(this,'${idea.desc}','${lpSeccion}')" style="padding:5px 10px;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:#e8420a;color:#fff;flex-shrink:0;">Generar imagen</button>
+      </div>
+    </div>`).join('');
+
+  btn.textContent='⚡ Generar ideas de imagen';btn.disabled=false;
+  lStep(2);
+
+  document.getElementById('lp-panel-derecho').innerHTML=`
+    <div style="padding:16px;">
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#1a5fa8;margin-bottom:4px;">4 ideas generadas</div>
+      <div style="font-size:11px;color:#666;margin-bottom:16px;">Elige una y presiona "Generar imagen"</div>
+      ${ideas.map((idea,i)=>`
+        <div style="background:#fff;border:1px solid #b8d8f5;border-radius:8px;padding:12px;margin-bottom:8px;">
+          <div style="font-size:11px;font-weight:700;color:#1a1a1a;margin-bottom:3px;">${i+1}. ${idea.desc}</div>
+          <div style="font-size:9px;color:#1a5fa8;">${idea.ctx}</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function lIdeasFallback(cfg){
+  return [
+    {desc:`${cfg.genero} ${cfg.edad} usando el producto — primer plano`,ctx:`${cfg.donde||'estudio'} · ${cfg.momento||'mañana'} · Landing`},
+    {desc:`${cfg.genero} mostrando el resultado del producto — lateral`,ctx:`${cfg.donde||'estudio'} · ${cfg.momento||'mañana'} · Landing`},
+    {desc:`Manos sosteniendo el producto — cenital`,ctx:`Estudio · Landing`},
+    {desc:`${cfg.genero} ${cfg.estado.toLowerCase()} después de usar el producto`,ctx:`${cfg.donde||'casa'} · ${cfg.momento||'tarde'} · Landing`}
+  ];
+}
+
+async function lGenerarImg(btn,promptBase,seccion){
+  const esSet=seccion==='set';
+  if(esSet){await lGenerarSet(btn,promptBase);return;}
+
+  btn.textContent='Generando...';btn.disabled=true;
+  lStep(3);
+
+  const sec=LP_SECCIONES[seccion]||LP_SECCIONES.hero;
+  const prompt=`${promptBase}. Sección ${sec.label}. Cámara: ${sec.cam}. Iluminación: ${sec.luz}. Composición: ${sec.comp}. Emoción: ${sec.emo}. Fotografía publicitaria profesional realista para landing page latinoamericana. Hyperrealistic 8k.`;
+
+  try{
+    const resp=await fetch('/api/images',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,destino:'landing'})});
+    const data=await resp.json();
+    if(data.error)throw new Error(data.error);
+    lAgregarCard(data.url,prompt,sec.label);
+    btn.textContent='Generar imagen';btn.disabled=false;
+  }catch(err){alert('Error: '+err.message);btn.textContent='Generar imagen';btn.disabled=false;}
+}
+
+async function lGenerarSet(btn,promptBase){
+  const secciones=Object.entries(LP_SECCIONES);
+  btn.textContent='Generando set (0/8)...';btn.disabled=true;
+  lStep(3);
+  for(let i=0;i<secciones.length;i++){
+    const [key,sec]=secciones[i];
+    btn.textContent=`Generando set (${i+1}/8)...`;
+    try{
+      const prompt=`${promptBase}. Sección ${sec.label}. Cámara: ${sec.cam}. Iluminación: ${sec.luz}. Composición: ${sec.comp}. Emoción: ${sec.emo}. Fotografía publicitaria profesional realista para landing page latinoamericana. Hyperrealistic 8k.`;
+      const resp=await fetch('/api/images',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,destino:'landing'})});
+      const data=await resp.json();
+      if(!data.error)lAgregarCard(data.url,prompt,sec.label);
+    }catch(e){console.error('Error img '+i,e);}
+    await new Promise(r=>setTimeout(r,4000));
+  }
+  btn.textContent='⚡ Generar ideas de imagen';btn.disabled=false;
+}
+
+function lAgregarCard(url,prompt,etiqueta){
+  const grid=document.getElementById('lp-grid');
+  const card=document.createElement('div');
+  card.style.cssText='border:1px solid #b8d8f5;border-radius:8px;overflow:hidden;background:#fff;';
+  card.innerHTML=`
+    <div style="padding:5px 10px;background:#1a5fa8;color:#fff;font-size:9px;font-weight:700;text-align:center;letter-spacing:1px;">${etiqueta}</div>
+    <div style="height:130px;position:relative;overflow:hidden;">
+      <img src="${url}" style="width:100%;height:100%;object-fit:cover;"/>
+      <div onclick="this.textContent=this.textContent==='♥'?'♡':'♥'" style="position:absolute;top:6px;right:6px;width:26px;height:26px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;border:1px solid #b8d8f5;">♡</div>
+    </div>
+    <div style="padding:8px 10px;">
+      <div style="display:flex;gap:4px;">
+        <button onclick="navigator.clipboard.writeText('${url}')" style="padding:4px 7px;border:1px solid #b8d8f5;border-radius:4px;font-size:9px;cursor:pointer;background:#fff;color:#444;">📋</button>
+        <a href="${url}" download style="flex:1;padding:4px 7px;border:none;border-radius:4px;font-size:9px;cursor:pointer;background:#e8420a;color:#fff;font-weight:700;text-align:center;text-decoration:none;">⬇ Descargar</a>
+      </div>
+    </div>`;
+  grid.appendChild(card);
+}
+
+async function lDescargarZIP(){
+  const imgs=document.querySelectorAll('#lp-grid img');
+  if(!imgs.length)return;
+  if(!window.JSZip){
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+    document.head.appendChild(s);
+    await new Promise(r=>s.onload=r);
+  }
+  const zip=new JSZip();
+  const folder=zip.folder('landing-imagenes');
+  let n=1;
+  for(const img of imgs){
+    try{const resp=await fetch(img.src);const blob=await resp.blob();folder.file('imagen-'+n+++'.jpg',blob);}catch(e){}
+  }
+  const content=await zip.generateAsync({type:'blob'});
+  const url=URL.createObjectURL(content);
+  const a=document.createElement('a');a.href=url;a.download='landing-imagenes.zip';a.click();
+  URL.revokeObjectURL(url);
+}
+</script>   
+  <!-- ══════════════════════════
      PAGE: LOGIN
 ══════════════════════════ -->
 <div class="page" id="page-login">
