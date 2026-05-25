@@ -35,13 +35,17 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-
     if (!response.ok) return res.status(500).json({ error: data.detail || 'Error Replicate' });
 
     const imageUrl = data.output?.[0];
     if (!imageUrl) return res.status(500).json({ error: 'No se generó imagen' });
 
-    return res.status(200).json({ url: imageUrl });
+    const imgResp = await fetch(imageUrl);
+    const buffer = await imgResp.arrayBuffer();
+    const base64 = Buffer.from(buffer).toString('base64');
+    const dataUrl = `data:image/webp;base64,${base64}`;
+
+    return res.status(200).json({ url: dataUrl });
 
   } catch (err) {
     return res.status(500).json({ error: err.message });
