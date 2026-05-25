@@ -935,33 +935,33 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 
           <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
             <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Complexión</div>
-            <div style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="id-multi" onclick="iMulti(this)">Delgada</div>
-              <div class="id-multi" onclick="iMulti(this)">Normal</div>
-              <div class="id-multi" onclick="iMulti(this)">Gordita</div>
-              <div class="id-multi" onclick="iMulti(this)">Atlética</div>
+            <div id="id-complex-wrap" style="display:flex;flex-wrap:wrap;gap:5px;">
+              <div class="id-multi" onclick="iSingle(this,'id-complex-wrap')">Delgada</div>
+              <div class="id-multi" onclick="iSingle(this,'id-complex-wrap')">Normal</div>
+              <div class="id-multi" onclick="iSingle(this,'id-complex-wrap')">Gordita</div>
+              <div class="id-multi" onclick="iSingle(this,'id-complex-wrap')">Atlética</div>
             </div>
           </div>
 
           <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
             <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Apariencia</div>
-            <div style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="id-multi" onclick="iMulti(this)">Con canas</div>
-              <div class="id-multi sel" onclick="iMulti(this)">Natural</div>
-              <div class="id-multi" onclick="iMulti(this)">Arreglada</div>
-              <div class="id-multi" onclick="iMulti(this)">Casual</div>
-              <div class="id-multi" onclick="iMulti(this)">Elegante</div>
+            <div id="id-apari-wrap" style="display:flex;flex-wrap:wrap;gap:5px;">
+              <div class="id-multi" onclick="iSingle(this,'id-apari-wrap')">Con canas</div>
+              <div class="id-multi sel" onclick="iSingle(this,'id-apari-wrap')">Natural</div>
+              <div class="id-multi" onclick="iSingle(this,'id-apari-wrap')">Arreglada</div>
+              <div class="id-multi" onclick="iSingle(this,'id-apari-wrap')">Casual</div>
+              <div class="id-multi" onclick="iSingle(this,'id-apari-wrap')">Elegante</div>
             </div>
           </div>
 
           <div style="display:flex;align-items:flex-start;gap:8px;">
             <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Estado</div>
-            <div style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="id-multi sel" onclick="iMulti(this)">Alegre</div>
-              <div class="id-multi" onclick="iMulti(this)">Serio</div>
-              <div class="id-multi" onclick="iMulti(this)">Sorprendido</div>
-              <div class="id-multi" onclick="iMulti(this)">Relajado</div>
-              <div class="id-multi" onclick="iMulti(this)">Confiado</div>
+            <div id="id-estado-wrap" style="display:flex;flex-wrap:wrap;gap:5px;">
+              <div class="id-multi sel" onclick="iSingle(this,'id-estado-wrap')">Alegre</div>
+              <div class="id-multi" onclick="iSingle(this,'id-estado-wrap')">Serio</div>
+              <div class="id-multi" onclick="iSingle(this,'id-estado-wrap')">Sorprendido</div>
+              <div class="id-multi" onclick="iSingle(this,'id-estado-wrap')">Relajado</div>
+              <div class="id-multi" onclick="iSingle(this,'id-estado-wrap')">Confiado</div>
             </div>
           </div>
         </div>
