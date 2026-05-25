@@ -1214,8 +1214,8 @@ function imgSelGenero(el){
   document.getElementById('img-edad-nino').style.display=isNino?'flex':'none';
 }
 function imgSelSingle(el,sel){
-  document.querySelectorAll(sel).forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');
+  document.querySelectorAll(sel).forEach(c=>{c.classList.remove('on');c.style.border='1px solid #ddd5c0';c.style.background='#faf8f4';});
+  el.classList.add('on');el.style.border='2px solid #e8420a';el.style.background='#fff8f6';
 }
 function imgToggle(el){el.classList.toggle('on');}
 
