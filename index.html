@@ -1590,11 +1590,13 @@ function lGetConfig(){
   const tipo=document.querySelector('#lp-tipo-wrap .lp-tipo.sel div:nth-child(2)')?.textContent.trim()||'Profesional';
   const genero=document.querySelector('#lp-genero-wrap .lp-chip.sel')?.textContent.trim()||'Mujer';
   const edad=document.querySelector('#lp-edad-wrap .lp-chip.sel')?.textContent.trim()||'Adulto (30-50)';
+  const complex=document.querySelector('#lp-complex-wrap .lp-multi.sel')?.textContent.trim()||'';
   const estado=document.querySelector('#lp-estado-wrap .lp-multi.sel')?.textContent.trim()||'Alegre';
   const donde=document.querySelector('#lp-donde-wrap .lp-multi.sel')?.textContent.trim()||'';
   const hace=document.querySelector('#lp-hace-wrap .lp-multi.sel')?.textContent.trim()||'';
   const momento=document.querySelector('#lp-momento-wrap .lp-multi.sel')?.textContent.trim()||'';
-  return {tipo,genero,edad,estado,donde,hace,momento};
+  return {tipo,genero,edad,complex,estado,donde,hace,momento};
+}
 }
 
 const LP_SECCIONES={
