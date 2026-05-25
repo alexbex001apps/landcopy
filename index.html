@@ -1728,7 +1728,7 @@ async function lGenerarSet(btn,promptBase){
     const [key,sec]=secciones[i];
     btn.textContent=`Generando set (${i+1}/8)...`;
     try{
-      const prompt=`${promptBase}. Sección ${sec.label}. Cámara: ${sec.cam}. Iluminación: ${sec.luz}. Composición: ${sec.comp}. Emoción: ${sec.emo}. Fotografía publicitaria profesional realista para landing page latinoamericana. Hyperrealistic 8k.`;
+      const prompt=lConstruirPrompt(key,cfg);
       const resp=await fetch('/api/images',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,destino:'landing'})});
       const data=await resp.json();
       if(!data.error)lAgregarCard(data.url,prompt,sec.label);
