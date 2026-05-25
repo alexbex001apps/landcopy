@@ -922,11 +922,11 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 
           <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
             <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:5px;">Personas</div>
-            <div style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="img-chip on" onclick="imgSelSingle(this,'#img-cant .img-chip')" id="img-cant">1 persona</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'#img-cant .img-chip')">2 personas</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'#img-cant .img-chip')">3 a 5</div>
-              <div class="img-chip" onclick="imgSelSingle(this,'#img-cant .img-chip')">Grupo grande</div>
+            <div id="img-cant-wrap" style="display:flex;flex-wrap:wrap;gap:5px;">
+              <div class="img-chip on" onclick="imgSelSingle(this,'#img-cant-wrap .img-chip')" id="img-cant">1 persona</div>
+              <div class="img-chip" onclick="imgSelSingle(this,'#img-cant-wrap .img-chip')">2 personas</div>
+              <div class="img-chip" onclick="imgSelSingle(this,'#img-cant-wrap .img-chip')">3 a 5</div>
+              <div class="img-chip" onclick="imgSelSingle(this,'#img-cant-wrap .img-chip')">Grupo grande</div>
             </div>
           </div>
 
@@ -1223,7 +1223,7 @@ function imgGetConfig(){
   const dest=document.querySelector('.img-dest.on')?.textContent.trim()||'Instagram';
   const tipo=document.querySelector('.img-tipo.on div:nth-child(2)')?.textContent.trim()||'Pueblo';
   const genero=document.querySelector('#img-paso1 .img-chip.on')?.textContent.trim()||'Mujer';
-  const personas=document.querySelector('#img-cant .img-chip.on')?.textContent.trim()||'1 persona';
+  const personas=document.querySelector('#img-cant-wrap .img-chip.on'))?.textContent.trim()||'1 persona';
   const edad=document.querySelector('#img-edad-adult .img-chip.on, #img-edad-nino .img-chip.on')?.textContent.trim()||'Adulto';
   const donde=document.querySelector('#img-donde .img-chip-opt.on')?.textContent.trim()||'';
   const hace=document.querySelector('#img-hace .img-chip-opt.on')?.textContent.trim()||'';
