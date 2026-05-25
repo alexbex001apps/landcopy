@@ -892,80 +892,82 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
           </div>
         </div>
 
-        <!-- PERSONA -->
-        <div style="background:#fff;border:1px solid #ddd5c0;border-radius:10px;padding:14px;margin-bottom:10px;">
-          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:10px;">¿Cómo es la persona?</div>
+       <!-- GÉNERO Y PERSONAS -->
+<div style="background:#fff;border:1px solid #ddd5c0;border-radius:10px;padding:14px;margin-bottom:10px;">
+  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:10px;">¿Cómo es la persona?</div>
+  <div style="margin-bottom:10px;">
+    <div style="font-size:9px;font-weight:700;color:#666;margin-bottom:6px;">Género</div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;" id="id-genero-wrap">
+      <div class="id-chip sel" onclick="iGenero(this)">Mujer</div>
+      <div class="id-chip" onclick="iGenero(this)">Hombre</div>
+      <div class="id-chip" onclick="iGenero(this)">Niña</div>
+      <div class="id-chip" onclick="iGenero(this)">Niño</div>
+      <div class="id-chip" onclick="iGenero(this)">Bebé</div>
+      <div class="id-chip" onclick="iGenero(this)">Todos</div>
+    </div>
+  </div>
+  <div>
+    <div style="font-size:9px;font-weight:700;color:#666;margin-bottom:6px;">Personas</div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;" id="id-personas-wrap">
+      <div class="id-chip sel" onclick="iSingle(this,'id-personas-wrap')">1 persona</div>
+      <div class="id-chip" onclick="iSingle(this,'id-personas-wrap')">2 personas</div>
+      <div class="id-chip" onclick="iSingle(this,'id-personas-wrap')">3 a 5</div>
+      <div class="id-chip" onclick="iSingle(this,'id-personas-wrap')">Grupo grande</div>
+    </div>
+  </div>
+</div>
 
-          <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
-            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Género</div>
-            <div style="display:flex;flex-wrap:wrap;gap:5px;" id="id-genero-wrap">
-              <div class="id-chip sel" onclick="iGenero(this)">Mujer</div>
-              <div class="id-chip" onclick="iGenero(this)">Hombre</div>
-              <div class="id-chip" onclick="iGenero(this)">Niña</div>
-              <div class="id-chip" onclick="iGenero(this)">Niño</div>
-              <div class="id-chip" onclick="iGenero(this)">Bebé</div>
-              <div class="id-chip" onclick="iGenero(this)">Todos</div>
-            </div>
-          </div>
+<!-- EDAD -->
+<div style="background:#fff;border:1px solid #ddd5c0;border-radius:10px;padding:14px;margin-bottom:10px;">
+  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:10px;">Edad</div>
+  <div id="id-edad-adult-wrap" style="display:flex;flex-wrap:wrap;gap:5px;">
+    <div class="id-chip sel" onclick="iSingle(this,'id-edad-adult-wrap')">Joven (20-30)</div>
+    <div class="id-chip" onclick="iSingle(this,'id-edad-adult-wrap')">Adulto (30-50)</div>
+    <div class="id-chip" onclick="iSingle(this,'id-edad-adult-wrap')">Mayor (50+)</div>
+  </div>
+  <div id="id-edad-nino" style="display:none;flex-wrap:wrap;gap:5px;">
+    <div class="id-chip sel" onclick="iSingle(this,'id-edad-nino')">Bebé (0-2)</div>
+    <div class="id-chip" onclick="iSingle(this,'id-edad-nino')">Infante (3-5)</div>
+    <div class="id-chip" onclick="iSingle(this,'id-edad-nino')">Niño (6-10)</div>
+    <div class="id-chip" onclick="iSingle(this,'id-edad-nino')">Preadolescente (11-14)</div>
+  </div>
+</div>
 
-          <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
-            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Personas</div>
-            <div style="display:flex;flex-wrap:wrap;gap:5px;" id="id-personas-wrap">
-              <div class="id-chip sel" onclick="iSingle(this,'id-personas-wrap')">1 persona</div>
-              <div class="id-chip" onclick="iSingle(this,'id-personas-wrap')">2 personas</div>
-              <div class="id-chip" onclick="iSingle(this,'id-personas-wrap')">3 a 5</div>
-              <div class="id-chip" onclick="iSingle(this,'id-personas-wrap')">Grupo grande</div>
-            </div>
-          </div>
+<!-- COMPLEXIÓN Y APARIENCIA -->
+<div style="background:#fff;border:1px solid #ddd5c0;border-radius:10px;padding:14px;margin-bottom:10px;">
+  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:10px;">Apariencia</div>
+  <div style="margin-bottom:10px;">
+    <div style="font-size:9px;font-weight:700;color:#666;margin-bottom:6px;">Complexión</div>
+    <div id="id-complex-wrap" style="display:flex;flex-wrap:wrap;gap:5px;">
+      <div class="id-multi" onclick="iSingle(this,'id-complex-wrap')">Delgada</div>
+      <div class="id-multi" onclick="iSingle(this,'id-complex-wrap')">Normal</div>
+      <div class="id-multi" onclick="iSingle(this,'id-complex-wrap')">Gordita</div>
+      <div class="id-multi" onclick="iSingle(this,'id-complex-wrap')">Atlética</div>
+    </div>
+  </div>
+  <div>
+    <div style="font-size:9px;font-weight:700;color:#666;margin-bottom:6px;">Estilo</div>
+    <div id="id-apari-wrap" style="display:flex;flex-wrap:wrap;gap:5px;">
+      <div class="id-multi" onclick="iSingle(this,'id-apari-wrap')">Con canas</div>
+      <div class="id-multi sel" onclick="iSingle(this,'id-apari-wrap')">Natural</div>
+      <div class="id-multi" onclick="iSingle(this,'id-apari-wrap')">Arreglada</div>
+      <div class="id-multi" onclick="iSingle(this,'id-apari-wrap')">Casual</div>
+      <div class="id-multi" onclick="iSingle(this,'id-apari-wrap')">Elegante</div>
+    </div>
+  </div>
+</div>
 
-          <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
-            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Edad</div>
-            <div id="id-edad-adult-wrap" style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="id-chip sel" onclick="iSingle(this,'id-edad-adult-wrap')">Joven (20-30)</div>
-              <div class="id-chip" onclick="iSingle(this,'id-edad-adult-wrap')">Adulto (30-50)</div>
-              <div class="id-chip" onclick="iSingle(this,'id-edad-adult-wrap')">Mayor (50+)</div>
-            </div>
-            <div id="id-edad-nino" style="display:none;flex-wrap:wrap;gap:5px;">
-              <div class="id-chip sel" onclick="iSingle(this,'id-edad-nino')">Bebé (0-2)</div>
-              <div class="id-chip" onclick="iSingle(this,'id-edad-nino')">Infante (3-5)</div>
-              <div class="id-chip" onclick="iSingle(this,'id-edad-nino')">Niño (6-10)</div>
-              <div class="id-chip" onclick="iSingle(this,'id-edad-nino')">Preadolescente (11-14)</div>
-            </div>
-          </div>
-
-          <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
-            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Complexión</div>
-            <div id="id-complex-wrap" style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="id-multi" onclick="iSingle(this,'id-complex-wrap')">Delgada</div>
-              <div class="id-multi" onclick="iSingle(this,'id-complex-wrap')">Normal</div>
-              <div class="id-multi" onclick="iSingle(this,'id-complex-wrap')">Gordita</div>
-              <div class="id-multi" onclick="iSingle(this,'id-complex-wrap')">Atlética</div>
-            </div>
-          </div>
-
-          <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
-            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Apariencia</div>
-            <div id="id-apari-wrap" style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="id-multi" onclick="iSingle(this,'id-apari-wrap')">Con canas</div>
-              <div class="id-multi sel" onclick="iSingle(this,'id-apari-wrap')">Natural</div>
-              <div class="id-multi" onclick="iSingle(this,'id-apari-wrap')">Arreglada</div>
-              <div class="id-multi" onclick="iSingle(this,'id-apari-wrap')">Casual</div>
-              <div class="id-multi" onclick="iSingle(this,'id-apari-wrap')">Elegante</div>
-            </div>
-          </div>
-
-          <div style="display:flex;align-items:flex-start;gap:8px;">
-            <div style="font-size:10px;font-weight:700;color:#444;width:80px;flex-shrink:0;padding-top:4px;">Estado</div>
-            <div id="id-estado-wrap" style="display:flex;flex-wrap:wrap;gap:5px;">
-              <div class="id-multi sel" onclick="iSingle(this,'id-estado-wrap')">Alegre</div>
-              <div class="id-multi" onclick="iSingle(this,'id-estado-wrap')">Serio</div>
-              <div class="id-multi" onclick="iSingle(this,'id-estado-wrap')">Sorprendido</div>
-              <div class="id-multi" onclick="iSingle(this,'id-estado-wrap')">Relajado</div>
-              <div class="id-multi" onclick="iSingle(this,'id-estado-wrap')">Confiado</div>
-            </div>
-          </div>
-        </div>
-
+<!-- ESTADO -->
+<div style="background:#fff;border:1px solid #ddd5c0;border-radius:10px;padding:14px;margin-bottom:10px;">
+  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:10px;">Estado emocional</div>
+  <div id="id-estado-wrap" style="display:flex;flex-wrap:wrap;gap:5px;">
+    <div class="id-multi sel" onclick="iSingle(this,'id-estado-wrap')">Alegre</div>
+    <div class="id-multi" onclick="iSingle(this,'id-estado-wrap')">Serio</div>
+    <div class="id-multi" onclick="iSingle(this,'id-estado-wrap')">Sorprendido</div>
+    <div class="id-multi" onclick="iSingle(this,'id-estado-wrap')">Relajado</div>
+    <div class="id-multi" onclick="iSingle(this,'id-estado-wrap')">Confiado</div>
+  </div>
+</div>
         <!-- ESCENA -->
         <div style="background:#fff;border:1px solid #ddd5c0;border-radius:10px;padding:14px;margin-bottom:10px;">
           <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#e8420a;margin-bottom:4px;">Escena <span style="font-size:9px;font-weight:400;color:#999;text-transform:none;">— opcional, si no eliges la IA decide</span></div>
