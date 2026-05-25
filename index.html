@@ -1074,7 +1074,7 @@ function iDest(el,dest){
 }
 
 function iSingle(el,wrapId){
-  document.querySelectorAll('#'+wrapId+' .id-chip, #'+wrapId+' .id-multi').forEach(c=>c.classList.remove('sel'));
+  const w=document.getElementById(wrapId);if(w)w.querySelectorAll('.sel').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
 }
 
