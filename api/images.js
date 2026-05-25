@@ -42,7 +42,7 @@ export default async function handler(req, res) {
   if (!prompt) return res.status(400).json({ error: 'Prompt requerido' });
 
   const size = sizeMap[destino] || '1024x1024';
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.CLAVE_API_DE_OPENAI;
 
   try {
     const result = await callOpenAI(apiKey, {
