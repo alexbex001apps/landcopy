@@ -1186,6 +1186,25 @@ function iCargarProducto(input){
 }
   async function iGenerar(){
   const cfg=iGetConfig();
+    document.getElementById('id-empty-panel').style.display='none';
+  document.getElementById('id-loading-panel').style.display='block';
+  const fills=document.querySelectorAll('.id-ls-fill');
+  const pcts=document.querySelectorAll('.id-ls-pct');
+  fills.forEach(f=>{f.style.width='0%';});
+  pcts.forEach(p=>{p.textContent='0%';});
+  document.getElementById('id-load-bar').style.width='0%';
+  let idLsIdx=0;
+  const idLsSteps=['id-ls-1','id-ls-2','id-ls-3','id-ls-4'];
+  const idLsIv=setInterval(()=>{
+    if(idLsIdx>0){const prev=document.querySelector('#'+idLsSteps[idLsIdx-1]+' .id-ls-fill');const prevPct=document.querySelector('#'+idLsSteps[idLsIdx-1]+' .id-ls-pct');if(prev)prev.style.width='100%';if(prevPct)prevPct.textContent='100%';}
+    if(idLsIdx>=idLsSteps.length){clearInterval(idLsIv);return;}
+    const cur=document.querySelector('#'+idLsSteps[idLsIdx]+' .id-ls-fill');
+    if(cur)cur.style.width='60%';
+    const pct=document.querySelector('#'+idLsSteps[idLsIdx]+' .id-ls-pct');
+    if(pct)pct.textContent='60%';
+    document.getElementById('id-load-bar').style.width=((idLsIdx+1)/idLsSteps.length*100)+'%';
+    idLsIdx++;
+  },700);
   const ctx=document.getElementById('id-ctx');
   ctx.innerHTML=[cfg.tipo,cfg.genero,cfg.personas,cfg.edad,cfg.donde,cfg.hace,cfg.momento,cfg.dest].filter(Boolean)
     .map(t=>`<span style="display:inline-block;background:#fff3ee;color:#e8420a;font-size:9px;padding:2px 8px;border-radius:20px;border:1px solid #ffd0bc;">${t}</span>`).join('');
@@ -1230,7 +1249,10 @@ if(window.iProductoBase64){
       </div>
     </div>`).join('');
   btn.textContent='Generar 4 ideas de imagen';btn.disabled=false;
-  iStep(2);
+  clearInterval(idLsIv);
+  document.getElementById('id-loading-panel').style.display='none';
+  document.getElementById('id-empty-panel').style.display='flex';
+    iStep(2);
   document.getElementById('id-panel-derecho').innerHTML=`
     <div style="padding:16px;">
       <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#1a1a1a;margin-bottom:4px;">4 ideas generadas</div>
