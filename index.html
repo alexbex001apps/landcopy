@@ -1134,9 +1134,8 @@ function iReconfigurar(){
   iStep(1);
   document.getElementById('id-loading-panel').style.display='none';
   document.getElementById('id-empty-panel').style.display='flex';
-  document.getElementById('id-panel-derecho').innerHTML='';
-  document.getElementById('id-panel-derecho').appendChild(document.getElementById('id-loading-panel'));
-  document.getElementById('id-panel-derecho').appendChild(document.getElementById('id-empty-panel'));
+  const panelDer=document.getElementById('id-panel-derecho');
+  panelDer.querySelectorAll('.id-ideas-generadas').forEach(el=>el.remove());
 }
   function iStep(n){
   ['ip1','ip2','ip3'].forEach((id,i)=>{document.getElementById(id).style.display=i+1===n?'block':'none';});
@@ -1262,7 +1261,7 @@ if(window.iProductoBase64){
   document.getElementById('id-empty-panel').style.display='flex';
     iStep(2);
   document.getElementById('id-panel-derecho').innerHTML=`
-    <div style="padding:16px;">
+   <div class="id-ideas-generadas" style="padding:16px;">
       <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#1a1a1a;margin-bottom:4px;">4 ideas generadas</div>
       <div style="font-size:11px;color:#7a7060;margin-bottom:16px;">Elige una y presiona "Generar imagen"</div>
       ${ideas.map((idea,i)=>`
