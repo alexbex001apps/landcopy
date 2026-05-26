@@ -1642,7 +1642,7 @@ function lConstruirPrompt(seccion, cfg){
     .replace('[DONDE]',donde)
     .replace('[QUE_HACE]',hace)
     .replace('[MOMENTO]',momento)
-    +', '+STYLE_APPENDIX;
+    +(chars?', product description: '+chars:'')+', '+STYLE_APPENDIX;
 }
 
 async function lGenerar(){
