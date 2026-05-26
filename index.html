@@ -1631,6 +1631,7 @@ function lConstruirPrompt(seccion, cfg){
   const estado=cfg.estado==='Alegre'?'happy and joyful':cfg.estado==='Serio'?'serious and focused':cfg.estado==='Sorprendido'?'surprised and amazed':cfg.estado==='Relajado'?'relaxed and calm':cfg.estado==='Confiado'?'confident and empowered':'positive and natural';
   const donde=cfg.donde?'a '+cfg.donde.toLowerCase()+' in Latin America':'a typical Latin American home';
   const hace=cfg.hace?cfg.hace.toLowerCase():'using the product';
+  const chars=document.getElementById('lp-product-chars')?.value.trim()||'';
   const momento=cfg.momento==='Mañana'?'early morning':cfg.momento==='Tarde'?'afternoon':cfg.momento==='Noche'?'evening':cfg.momento==='Nublado'?'overcast day':'natural daylight';
 
   return sec.prompt
