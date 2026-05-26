@@ -409,11 +409,51 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 </style>
 </head>
 <body>
-
+<!-- ══════════════════════════
+     PAGE: SPLASH
+══════════════════════════ -->
+<div class="page active" id="page-splash">
+<style>
+.splash-rain{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.splash-rain-col{position:absolute;top:0;display:flex;flex-direction:column;gap:10px;}
+.splash-photo{border-radius:8px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;opacity:0.35;}
+@keyframes splashFall{from{transform:translateY(-110%);}to{transform:translateY(110vh);}}
+@keyframes splashGlow{0%,100%{opacity:0.4;}50%{opacity:0.9;}}
+@keyframes splashSlideL{from{opacity:0;transform:translateX(-30px);}to{opacity:1;transform:translateX(0);}}
+@keyframes splashSlideR{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
+@keyframes splashExpand{from{width:0%;opacity:0;}to{width:100%;opacity:0.4;}}
+@keyframes splashFadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes splashFadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+</style>
+  <div style="background:#000;min-height:100vh;display:flex;flex-direction:column;position:relative;overflow:hidden;">
+    <div class="splash-rain" id="splash-rain"></div>
+    <div style="position:absolute;width:400px;height:400px;background:radial-gradient(ellipse,rgba(232,66,10,0.07) 0%,transparent 70%);left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;animation:splashGlow 4s ease-in-out infinite;border-radius:50%;z-index:5;"></div>
+    <!-- TOP -->
+    <div style="padding:16px 24px;display:flex;align-items:center;justify-content:flex-end;position:relative;z-index:10;gap:10px;opacity:0;animation:splashFadeIn 0.5s ease 3.5s forwards;">
+      <button onclick="goTo('page-login');showLogin();" style="padding:7px 16px;background:transparent;border:1px solid #333;border-radius:4px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#aaa;cursor:pointer;">Iniciar sesión</button>
+      <button onclick="goTo('page-login');showRegister();" style="padding:7px 16px;background:#e8420a;border:none;border-radius:4px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#fff;cursor:pointer;">Crear cuenta</button>
+    </div>
+    <!-- CENTRO -->
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:10;">
+      <div style="text-align:center;margin-bottom:8px;">
+        <span style="font-family:'Syne',sans-serif;font-size:52px;font-weight:800;color:#fff;display:inline-block;opacity:0;animation:splashSlideL 0.8s cubic-bezier(0.22,1,0.36,1) 0.3s forwards;">Land</span><span style="font-family:'Syne',sans-serif;font-size:52px;font-weight:800;color:#e8420a;display:inline-block;opacity:0;animation:splashSlideR 0.8s cubic-bezier(0.22,1,0.36,1) 0.6s forwards;text-shadow:0 0 40px rgba(232,66,10,0.4);">Copy</span>
+      </div>
+      <div style="width:0%;height:1px;background:#e8420a;margin:8px auto;animation:splashExpand 0.6s ease 1.2s forwards;opacity:0;"></div>
+      <div style="font-size:10px;color:#555;letter-spacing:4px;text-transform:uppercase;opacity:0;animation:splashFadeIn 0.8s ease 1.6s forwards;">Genera · Imagina · Vende</div>
+      <div style="display:flex;flex-direction:column;gap:10px;width:280px;opacity:0;animation:splashFadeUp 0.8s ease 2.4s forwards;margin-top:40px;">
+        <button onclick="splashGo('page-main')" style="padding:14px;background:#e8420a;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#fff;cursor:pointer;text-align:center;letter-spacing:1px;">⚡ Generador de Copy</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <button onclick="splashGo('page-imagenes')" style="padding:12px;background:#0a0a0a;border:1px solid rgba(255,34,55,0.4);border-radius:8px;cursor:pointer;text-align:center;"><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:#ff2237;">Redes</span><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:#fff;">Sociales</span></button>
+          <button onclick="splashGo('page-landing')" style="padding:12px;background:#0a0a0a;border:1px solid rgba(26,95,168,0.4);border-radius:8px;cursor:pointer;text-align:center;"><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:#4da6ff;">Landing</span><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:#fff;">Page</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- ══════════════════════════
      PAGE: MAIN — GENERADOR
 ══════════════════════════ -->
-<div class="page active" id="page-main">
+<div class="page" id="page-main">
   <div class="dh" style="display:flex;align-items:center;justify-content:space-between;">
     <div class="dh-logo" onclick="goTo('page-main')"><span class="logo-land">Land</span><span class="logo-copy">Copy</span></div>
     <div style="display:flex;align-items:center;gap:10px;position:absolute;left:50%;transform:translateX(-50%);"><button class="dh-btn" onclick="goTo('page-imagenes')" style="padding:7px 14px;border:1px solid rgba(255,34,55,0.4);border-radius:3px;background:rgba(255,34,55,0.08);cursor:pointer;"><span style="font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:#ff2237;text-shadow:0 0 10px rgba(255,34,55,0.8);">Redes</span><span style="font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:#fff;">Sociales</span></button><button class="dh-btn" onclick="goTo('page-landing')" style="padding:7px 14px;border:1px solid rgba(26,95,168,0.5);border-radius:3px;background:rgba(26,95,168,0.12);cursor:pointer;"><span style="font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:#4da6ff;text-shadow:0 0 10px rgba(77,166,255,0.8);">Landing</span><span style="font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:#fff;">Page</span></button></div>
@@ -1973,7 +2013,51 @@ function goToStudio(view) {
     if(map[view]) document.getElementById(map[view]).classList.add('studio-on');
   }, 50);
 }
-function goTo(pageId) {
+function splashGo(pageId){
+  const token=localStorage.getItem('lc_token');
+  if(token){goTo(pageId);}
+  else{goTo('page-login');}
+}
+  function splashInitRain(){
+  const rain=document.getElementById('splash-rain');
+  if(!rain)return;
+  const products=[
+    {emoji:'🧴',label:'Crema',bg:'#0f1a0f',accent:'#1a3a1a'},
+    {emoji:'🌿',label:'Natural',bg:'#0f1a0f',accent:'#1a3a1a'},
+    {emoji:'💄',label:'Belleza',bg:'#1a0f10',accent:'#3a1a1a'},
+    {emoji:'👗',label:'Ropa',bg:'#1a0f1a',accent:'#2a1a2a'},
+    {emoji:'👠',label:'Calzado',bg:'#1a0f0f',accent:'#3a1a1a'},
+    {emoji:'👜',label:'Bolsos',bg:'#1a1a0f',accent:'#2a2a1a'},
+    {emoji:'💻',label:'Laptop',bg:'#0f0f1a',accent:'#1a1a3a'},
+    {emoji:'🎮',label:'Gaming',bg:'#0f1a1a',accent:'#1a2a2a'},
+    {emoji:'📦',label:'Producto',bg:'#121212',accent:'#222'},
+    {emoji:'⌚',label:'Reloj',bg:'#1a1a0f',accent:'#2a2a1a'},
+    {emoji:'🕶️',label:'Lentes',bg:'#0f0f1a',accent:'#1a1a3a'},
+    {emoji:'🎁',label:'Regalo',bg:'#1a0f1a',accent:'#2a102a'},
+  ];
+  const cols=9;
+  for(let i=0;i<cols;i++){
+    const col=document.createElement('div');
+    col.className='splash-rain-col';
+    const colW=72;
+    const leftPct=(i/cols)*100+1;
+    const speed=Math.random()*12+14;
+    const delay=Math.random()*6-2;
+    col.style.cssText=`left:${leftPct}%;width:${colW}px;animation:splashFall ${speed}s linear ${delay}s infinite;`;
+    for(let j=0;j<5;j++){
+      const p=products[Math.floor(Math.random()*products.length)];
+      const photo=document.createElement('div');
+      photo.className='splash-photo';
+      const h=Math.floor(Math.random()*30)+70;
+      photo.style.cssText=`width:${colW}px;height:${h}px;background:${p.bg};border:1px solid ${p.accent};`;
+      photo.innerHTML=`<span style="font-size:22px;">${p.emoji}</span><span style="font-size:7px;color:#444;letter-spacing:1px;text-transform:uppercase;">${p.label}</span>`;
+      col.appendChild(photo);
+    }
+    rain.appendChild(col);
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>{splashInitRain();});
+  function goTo(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(pageId).classList.add('active');
   currentPage = pageId;
