@@ -4413,7 +4413,7 @@ checkSession();
 const token = localStorage.getItem('lc_token');
 if (!token) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-login').classList.add('active');
+ document.getElementById('page-splash').classList.add('active');
 }
   function volverDesdeLogin() {
   const token = localStorage.getItem('lc_token');
