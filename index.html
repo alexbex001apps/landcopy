@@ -2040,7 +2040,7 @@ function splashGo(pageId){
     const col=document.createElement('div');
     col.className='splash-rain-col';
     const colW=72;
-    const leftPct=(i/cols)*100+1;
+    const leftPct=(i/cols)*100+Math.random()*8-4;
     const speed=Math.random()*12+14;
     const delay=Math.random()*6-2;
     col.style.cssText=`left:${leftPct}%;width:${colW}px;animation:splashFall ${speed}s linear ${delay}s infinite;`;
