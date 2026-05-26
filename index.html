@@ -2043,7 +2043,7 @@ function splashGo(pageId){
     const leftPct=(i/cols)*100+Math.random()*8-4;
     const speed=Math.random()*12+14;
     const delay=Math.random()*6-2;
-    col.style.cssText=`left:${leftPct}%;width:${colW}px;animation:splashFall ${speed}s linear ${delay}s infinite;`;
+   col.style.cssText=`left:${leftPct}%;width:${colW}px;animation:splashFall ${speed}s linear ${delay}s infinite;transform:rotate(${Math.random()*6-3}deg);`;
     for(let j=0;j<5;j++){
       const p=products[Math.floor(Math.random()*products.length)];
       const photo=document.createElement('div');
