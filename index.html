@@ -1270,7 +1270,31 @@ async function iGenerarSetCompleto(btn,promptBase,destino){
   grid.appendChild(zipBtn);
   btn.textContent='Generar imagen';btn.disabled=false;
 }
-
+async function iDescargarFavoritas(){
+  const favs=document.querySelectorAll('#id-grid img');
+  const urls=[];
+  favs.forEach(img=>{
+    const heart=img.closest('div[style]')?.querySelector('div[onclick]');
+    if(heart&&heart.textContent.trim()==='♥')urls.push(img.src);
+  });
+  if(!urls.length){alert('No tienes imágenes favoritas. Marca alguna con ♥ primero.');return;}
+  if(!window.JSZip){
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+    document.head.appendChild(s);
+    await new Promise(r=>s.onload=r);
+  }
+  const zip=new JSZip();
+  const folder=zip.folder('favoritas-landcopy');
+  let n=1;
+  for(const url of urls){
+    try{const resp=await fetch(url);const blob=await resp.blob();folder.file('favorita-'+n+++'.jpg',blob);}catch(e){}
+  }
+  const content=await zip.generateAsync({type:'blob'});
+  const url=URL.createObjectURL(content);
+  const a=document.createElement('a');a.href=url;a.download='favoritas-landcopy.zip';a.click();
+  URL.revokeObjectURL(url);
+}
 async function iDescargarZIP(){
   const imgs=document.querySelectorAll('#id-grid img');
   if(!imgs.length)return;
