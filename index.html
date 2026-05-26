@@ -1070,7 +1070,7 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
       <div id="ip2" style="display:none;">
         <div style="background:#fff8f6;border:1px solid #ffd0bc;border-radius:8px;padding:10px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:5px;" id="id-ctx"></div>
         <div id="id-ideas"></div>
-        <button onclick="iStep(1)" style="width:100%;padding:10px;background:#fff;border:1px solid #ddd5c0;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#444;margin-top:8px;">← Reconfigurar</button>
+        <button onclick="iReconfigurar()" style="width:100%;padding:10px;background:#fff;border:1px solid #ddd5c0;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#444;margin-top:8px;">← Reconfigurar</button>
       </div>
 
       <!-- PASO 3 -->
@@ -1130,7 +1130,15 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 </style>
 
 <script>
-function iStep(n){
+function iReconfigurar(){
+  iStep(1);
+  document.getElementById('id-loading-panel').style.display='none';
+  document.getElementById('id-empty-panel').style.display='flex';
+  document.getElementById('id-panel-derecho').innerHTML='';
+  document.getElementById('id-panel-derecho').appendChild(document.getElementById('id-loading-panel'));
+  document.getElementById('id-panel-derecho').appendChild(document.getElementById('id-empty-panel'));
+}
+  function iStep(n){
   ['ip1','ip2','ip3'].forEach((id,i)=>{document.getElementById(id).style.display=i+1===n?'block':'none';});
   ['isb1','isb2','isb3'].forEach((id,i)=>{
     const el=document.getElementById(id);
