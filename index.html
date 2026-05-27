@@ -1193,7 +1193,8 @@ function iCargarProducto(input){
   reader.readAsDataURL(file);
 }
   async function iGenerar(){
-  const cfg=iGetConfig();
+  document.getElementById('btn-iGenerar').disabled=false;
+    const cfg=iGetConfig();
     document.getElementById('id-empty-panel').style.display='none';
   document.getElementById('id-loading-panel').style.display='block';
   const fills=document.querySelectorAll('.id-ls-fill');
