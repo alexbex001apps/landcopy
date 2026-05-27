@@ -1205,7 +1205,7 @@ function iCargarProducto(input){
   document.getElementById('id-load-bar').style.width='0%';
   let idLsIdx=0;
   const idLsSteps=['id-ls-1','id-ls-2','id-ls-3','id-ls-4'];
-  const idLsIv=setInterval(()=>{
+  window.idLsIv=setInterval(()=>{
     if(idLsIdx>0){const prev=document.querySelector('#'+idLsSteps[idLsIdx-1]+' .id-ls-fill');const prevPct=document.querySelector('#'+idLsSteps[idLsIdx-1]+' .id-ls-pct');if(prev)prev.style.width='100%';if(prevPct)prevPct.textContent='100%';}
     if(idLsIdx>=idLsSteps.length){clearInterval(idLsIv);return;}
     const cur=document.querySelector('#'+idLsSteps[idLsIdx]+' .id-ls-fill');
