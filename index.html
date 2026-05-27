@@ -1195,6 +1195,7 @@ function iCargarProducto(input){
   async function iGenerar(){
   document.getElementById('btn-iGenerar').disabled=false;
     const cfg=iGetConfig();
+   document.querySelectorAll('.id-ideas-generadas').forEach(el=>el.remove());
     document.getElementById('id-empty-panel').style.display='none';
   document.getElementById('id-loading-panel').style.display='block';
   const fills=document.querySelectorAll('.id-ls-fill');
