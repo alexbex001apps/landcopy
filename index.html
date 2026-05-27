@@ -1290,7 +1290,7 @@ async function iGenerarImg(btn,prompt,destino){
   iStep(3);
   const dest=destino.toLowerCase().replace(/[^a-z]/g,'');
   try{
-    const resp=await fetch('/api/images',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,destino:dest})});
+    body:JSON.stringify({prompt,destino:dest,image:window.iProductoBase64||null})
     const data=await resp.json();
     if(data.error)throw new Error(data.error);
     iAgregarCard(data.url,prompt,destino,'');
