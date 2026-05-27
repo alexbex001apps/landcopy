@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     whatsapp:  '1024x1024'
   };
   const size = sizeMap[destino] || '1024x1024';
-  const apiKey = process.env.CLAVE_API_DE_OPENAI;
+  const apiKey = process.env.OPENAI_API_KEY;
 
   try {
     const response = await fetch('https://api.openai.com/v1/images/generations', {
