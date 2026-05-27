@@ -14,33 +14,30 @@ export default async function handler(req, res) {
   const apiKey = process.env.OPENAI_API_KEY;
 
   try {
-    let base64, data;
+    let base64;
 
     if (image) {
-      // Con imagen del producto — usar endpoint de edición
       const imageBuffer = Buffer.from(image.split(',')[1], 'base64');
-      const { FormData, Blob } = await import('node:buffer').catch(() => ({ FormData: global.FormData, Blob: global.Blob }));
-      
+      const { FormData, Blob } = globalThis;
       const form = new FormData();
       form.append('model', 'gpt-image-2');
-      form.append('prompt', `Reproduce the exact product shown in the reference image. Place it in this scene: ${prompt}. Keep the product identical — same colors, same shape, same design, same brand. Do not change the product.`);
+      form.append('prompt', `Reproduce the exact product shown in the reference image. Place it in this scene: ${prompt}. Keep the product identical — same colors, same shape, same design. Do not change the product.`);
       form.append('n', '1');
       form.append('size', size);
       form.append('image[]', new Blob([imageBuffer], { type: 'image/png' }), 'product.png');
 
-      const response = await fetch('https://api.openai.com/v1/images/edits', {
+      const editResp = await fetch('https://api.openai.com/v1/images/edits', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${apiKey}` },
         body: form
       });
 
-      data = await response.json();
-      if (!response.ok) return res.status(500).json({ error: data.error?.message || 'Error GPT Image 2 Edit' });
-      base64 = data.data?.[0]?.b64_json;
+      const editData = await editResp.json();
+      if (!editResp.ok) return res.status(500).json({ error: editData.error?.message || 'Error edición' });
+      base64 = editData.data?.[0]?.b64_json;
 
     } else {
-      // Sin imagen — generación normal
-      const response = await fetch('https://api.openai.com/v1/images/generations', {
+      const genResp = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
@@ -54,9 +51,9 @@ export default async function handler(req, res) {
         })
       });
 
-      data = await response.json();
-      if (!response.ok) return res.status(500).json({ error: data.error?.message || 'Error GPT Image 2' });
-      base64 = data.data?.[0]?.b64_json;
+      const genData = await genResp.json();
+      if (!genResp.ok) return res.status(500).json({ error: genData.error?.message || 'Error generación' });
+      base64 = genData.data?.[0]?.b64_json;
     }
 
     if (!base64) return res.status(500).json({ error: 'No se generó imagen' });
