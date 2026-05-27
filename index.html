@@ -1250,7 +1250,7 @@ if(window.iProductoBase64){
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0;">
           <button onclick="iVerPrompt(this)" style="padding:5px 10px;border:1px solid #ddd5c0;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:#fff;color:#444;">Ver prompt</button>
-          <button onclick="iGenerarImg(this,'${idea.desc} fotografia profesional realista','${cfg.dest}')" style="padding:5px 10px;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:#e8420a;color:#fff;">Generar imagen</button>
+          <button onclick="iGenerarImg(this,'${idea.desc.replace(/'/g,&quot;'&quot;)} fotografia profesional realista','${cfg.dest}')" style="padding:5px 10px;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:#e8420a;color:#fff;">Generar imagen</button>
         </div>
       </div>
       <div style="padding:8px 12px;display:none;" class="i-prompt-body">
