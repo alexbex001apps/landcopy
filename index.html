@@ -1217,7 +1217,7 @@ function iCargarProducto(input){
   const ctx=document.getElementById('id-ctx');
   ctx.innerHTML=[cfg.tipo,cfg.genero,cfg.personas,cfg.edad,cfg.donde,cfg.hace,cfg.momento,cfg.dest].filter(Boolean)
     .map(t=>`<span style="display:inline-block;background:#fff3ee;color:#e8420a;font-size:9px;padding:2px 8px;border-radius:20px;border:1px solid #ffd0bc;">${t}</span>`).join('');
-  const btn=event.target;
+  const btn=document.getElementById('btn-iGenerar');
   btn.textContent='Generando ideas...';btn.disabled=true;
  let ideas;
 if(window.iProductoBase64){
