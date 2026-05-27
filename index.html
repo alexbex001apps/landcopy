@@ -1064,7 +1064,7 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 
 
         <button id="btn-iGenerar" onclick="iGenerar()" style="width:100%;padding:12px;background:#e8420a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Generar 4 ideas de imagen</button>
-        <button onclick="iStep(1);setTimeout(iGenerar,100);" style="width:100%;padding:8px;background:#fff;border:1px solid #ddd5c0;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#e8420a;margin-top:6px;">↺ Generar nuevas ideas</button>
+        <button onclick="iGenerar()" style="width:100%;padding:8px;background:#fff;border:1px solid #ddd5c0;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#e8420a;margin-top:6px;">↺ Generar nuevas ideas</button>
       </div>
 
       <!-- PASO 2 -->
@@ -1195,7 +1195,6 @@ function iCargarProducto(input){
   async function iGenerar(){
   document.getElementById('btn-iGenerar').disabled=false;
     const cfg=iGetConfig();
-   document.querySelectorAll('.id-ideas-generadas').forEach(el=>el.remove());
     document.getElementById('id-empty-panel').style.display='none';
   document.getElementById('id-loading-panel').style.display='block';
   const fills=document.querySelectorAll('.id-ls-fill');
@@ -1203,18 +1202,21 @@ function iCargarProducto(input){
   fills.forEach(f=>{f.style.width='0%';});
   pcts.forEach(p=>{p.textContent='0%';});
   document.getElementById('id-load-bar').style.width='0%';
-  window.idLsIdx=0;
+  let idLsIdx=0;
   const idLsSteps=['id-ls-1','id-ls-2','id-ls-3','id-ls-4'];
- window.idLsIv=setInterval(()=>{
-    if(window.idLsIdx>0){const prev=document.querySelector('#'+idLsSteps[window.idLsIdx-1]+' .id-ls-fill');const prevPct=document.querySelector('#'+idLsSteps[window.idLsIdx-1]+' .id-ls-pct');if(prev)prev.style.width='100%';if(prevPct)prevPct.textContent='100%';}
-    if(window.idLsIdx>=idLsSteps.length){clearInterval(window.idLsIv);return;}
-    const cur=document.querySelector('#'+idLsSteps[window.idLsIdx]+' .id-ls-fill');
+  const idLsIv=setInterval(()=>{
+    if(idLsIdx>0){const prev=document.querySelector('#'+idLsSteps[idLsIdx-1]+' .id-ls-fill');const prevPct=document.querySelector('#'+idLsSteps[idLsIdx-1]+' .id-ls-pct');if(prev)prev.style.width='100%';if(prevPct)prevPct.textContent='100%';}
+    if(idLsIdx>=idLsSteps.length){clearInterval(idLsIv);return;}
+    const cur=document.querySelector('#'+idLsSteps[idLsIdx]+' .id-ls-fill');
     if(cur)cur.style.width='60%';
-    const pct=document.querySelector('#'+idLsSteps[window.idLsIdx]+' .id-ls-pct');
+    const pct=document.querySelector('#'+idLsSteps[idLsIdx]+' .id-ls-pct');
     if(pct)pct.textContent='60%';
-    document.getElementById('id-load-bar').style.width=((window.idLsIdx+1)/idLsSteps.length*100)+'%';
-    window.idLsIdx++;
+    document.getElementById('id-load-bar').style.width=((idLsIdx+1)/idLsSteps.length*100)+'%';
+    idLsIdx++;
   },700);
+  const ctx=document.getElementById('id-ctx');
+  ctx.innerHTML=[cfg.tipo,cfg.genero,cfg.personas,cfg.edad,cfg.donde,cfg.hace,cfg.momento,cfg.dest].filter(Boolean)
+    .map(t=>`<span style="display:inline-block;background:#fff3ee;color:#e8420a;font-size:9px;padding:2px 8px;border-radius:20px;border:1px solid #ffd0bc;">${t}</span>`).join('');
   const btn=event.target;
   btn.textContent='Generando ideas...';btn.disabled=true;
  let ideas;
@@ -1256,7 +1258,7 @@ if(window.iProductoBase64){
       </div>
     </div>`).join('');
   btn.textContent='Generar 4 ideas de imagen';btn.disabled=false;
-  clearInterval(window.idLsIv));
+  clearInterval(idLsIv);
   document.getElementById('id-loading-panel').style.display='none';
   document.getElementById('id-empty-panel').style.display='flex';
     iStep(2);
