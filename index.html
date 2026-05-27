@@ -1293,6 +1293,7 @@ async function iGenerarImg(btn,prompt,destino){
     if(data.error)throw new Error(data.error);
     iAgregarCard(data.url,prompt,destino,'');
     btn.textContent='Generar imagen';btn.disabled=false;
+    document.querySelector('button[onclick="iGenerar()"]') && (document.querySelector('button[onclick="iGenerar()"]').disabled=false);
   }catch(err){alert('Error: '+err.message);btn.textContent='Generar imagen';btn.disabled=false;}
 }
 
