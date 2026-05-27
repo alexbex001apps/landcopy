@@ -1063,7 +1063,7 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
         </div>
 
 
-        <button onclick="iGenerar()" style="width:100%;padding:12px;background:#e8420a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Generar 4 ideas de imagen</button>
+        <button id="btn-iGenerar" onclick="iGenerar()" style="width:100%;padding:12px;background:#e8420a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Generar 4 ideas de imagen</button>
       </div>
 
       <!-- PASO 2 -->
@@ -1293,7 +1293,7 @@ async function iGenerarImg(btn,prompt,destino){
     if(data.error)throw new Error(data.error);
     iAgregarCard(data.url,prompt,destino,'');
     btn.textContent='Generar imagen';btn.disabled=false;
-    document.querySelector('button[onclick="iGenerar()"]') && (document.querySelector('button[onclick="iGenerar()"]').disabled=false);
+    document.getElementById('btn-iGenerar').disabled=false;
   }catch(err){alert('Error: '+err.message);btn.textContent='Generar imagen';btn.disabled=false;}
 }
 
