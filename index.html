@@ -1205,8 +1205,8 @@ function iCargarProducto(input){
   async function iGenerar(){
   document.getElementById('btn-iGenerar').disabled=false;
     const cfg=iGetConfig();
-    document.getElementById('id-empty-panel').style.display='none';
-  document.getElementById('id-loading-panel').style.display='block';
+   const emptyPanel=document.getElementById('id-empty-panel');if(emptyPanel)emptyPanel.style.display='none';
+  const loadingPanel=document.getElementById('id-loading-panel');if(loadingPanel)loadingPanel.style.display='block';
   const fills=document.querySelectorAll('.id-ls-fill');
   const pcts=document.querySelectorAll('.id-ls-pct');
   fills.forEach(f=>{f.style.width='0%';});
