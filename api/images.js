@@ -24,17 +24,15 @@ export default async function handler(req, res) {
         model: 'gpt-image-2',
         prompt: prompt,
         n: 1,
-        size: size
+        size: size,
+        output_format: 'png'
       })
     });
 
     const data = await response.json();
     if (!response.ok) return res.status(500).json({ error: data.error?.message || 'Error GPT Image 2' });
-    const imageUrl = data.data?.[0]?.url;
-    if (!imageUrl) return res.status(500).json({ error: 'No se generó imagen' });
-    const imgResp = await fetch(imageUrl);
-    const buffer = await imgResp.arrayBuffer();
-    const base64 = Buffer.from(buffer).toString('base64');
+    const base64 = data.data?.[0]?.b64_json;
+    if (!base64) return res.status(500).json({ error: 'No se generó imagen' });
     return res.status(200).json({ url: `data:image/png;base64,${base64}` });
 
   } catch (err) {
