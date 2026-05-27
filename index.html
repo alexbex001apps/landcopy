@@ -1300,6 +1300,7 @@ function iAgregarCard(url,prompt,destino,etiqueta){
   const grid=document.getElementById('id-grid');
   const card=document.createElement('div');
   card.style.cssText='border:1px solid #ddd5c0;border-radius:8px;overflow:hidden;background:#fff;';
+  card.id='icard-'+Date.now();
   card.innerHTML=`
     ${etiqueta?`<div style="padding:5px 10px;background:#1a1a1a;color:#fff;font-size:9px;font-weight:700;text-align:center;letter-spacing:1px;">${etiqueta}</div>`:''}
     <div style="height:130px;position:relative;overflow:hidden;">
@@ -1309,7 +1310,7 @@ function iAgregarCard(url,prompt,destino,etiqueta){
     <div style="padding:8px 10px;">
       <div style="font-size:10px;color:#444;margin-bottom:6px;">${prompt.substring(0,50)}...</div>
       <div style="display:flex;gap:4px;">
-        <button onclick="this.closest('div[style*=\"border:1px\"]').remove()" style="padding:4px 7px;border:1px solid #ffb8b8;border-radius:4px;font-size:9px;cursor:pointer;background:#fff;color:#e8420a;">✕</button>
+        <button onclick="document.getElementById(this.closest('[id^=icard]').id).remove()" style="padding:4px 7px;border:1px solid #ffb8b8;border-radius:4px;font-size:9px;cursor:pointer;background:#fff;color:#e8420a;">✕</button>
         <a href="${url}" download style="flex:1;padding:4px 7px;border:none;border-radius:4px;font-size:9px;cursor:pointer;background:#e8420a;color:#fff;font-weight:700;text-align:center;text-decoration:none;">⬇ Descargar</a>
       </div>
     </div>`;
