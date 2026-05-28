@@ -1386,7 +1386,7 @@ function iAgregarCard(url,prompt,destino,etiqueta){
   grid.appendChild(card);
   const gal=document.getElementById('id-galeria');
   const thumb=document.createElement('div');
-  thumb.style.cssText='width:46px;height:46px;border-radius:6px;border:1px solid #ddd5c0;overflow:hidden;cursor:pointer;';thumb.onclick=()=>iVerImagen(url);
+  thumb.style.cssText='width:46px;height:46px;border-radius:6px;border:1px solid #ddd5c0;overflow:hidden;cursor:pointer;';thumb.onclick=()=>window.open(url,'_blank');
   thumb.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;"/>`;
   gal.appendChild(thumb);
 }
