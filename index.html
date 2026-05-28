@@ -1070,9 +1070,43 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
     <button id="btn-modo-manual" onclick="iSetModo('manual')" style="flex:1;padding:7px;border:2px solid #ddd5c0;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;background:#fff;color:#444;">✍️ Manual</button>
   </div>
   <div id="i-manual-form" style="display:none;">
-    <textarea id="i-prompt-manual" style="width:100%;border:1px solid #ddd5c0;border-radius:6px;padding:10px;font-size:11px;color:#444;background:#faf8f4;min-height:80px;resize:none;font-family:'DM Sans',sans-serif;" placeholder="Escribe tu prompt aquí. Ej: Mujer joven usando el producto en una tienda moderna, luz natural, foto profesional..."></textarea>
-    <button onclick="iGenerarManual()" style="width:100%;margin-top:6px;padding:12px;background:#e8420a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">🎯 Generar imagen con mi prompt</button>
-  </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px;">
+      <div class="i-type-btn" onclick="iSetTipo('uso')" style="border:1.5px solid #ddd5c0;border-radius:8px;padding:8px 10px;cursor:pointer;background:#faf8f4;">
+        <div style="font-size:10px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">Producto en uso real</div>
+        <div style="font-size:9px;color:#999;">Persona usando el producto</div>
+        <span style="display:inline-block;background:#fff3ee;color:#e8420a;font-size:8px;padding:1px 5px;border-radius:8px;border:1px solid #ffd0bc;margin-top:3px;">Mayor conversión</span>
+      </div>
+      <div class="i-type-btn" onclick="iSetTipo('lifestyle')" style="border:1.5px solid #ddd5c0;border-radius:8px;padding:8px 10px;cursor:pointer;background:#faf8f4;">
+        <div style="font-size:10px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">Lifestyle</div>
+        <div style="font-size:9px;color:#999;">Vende el estilo de vida</div>
+      </div>
+      <div class="i-type-btn" onclick="iSetTipo('antes')" style="border:1.5px solid #ddd5c0;border-radius:8px;padding:8px 10px;cursor:pointer;background:#faf8f4;">
+        <div style="font-size:10px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">Antes / Después</div>
+        <div style="font-size:9px;color:#999;">Transformación visible</div>
+      </div>
+      <div class="i-type-btn" onclick="iSetTipo('testimonio')" style="border:1.5px solid #ddd5c0;border-radius:8px;padding:8px 10px;cursor:pointer;background:#faf8f4;">
+        <div style="font-size:10px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">Testimonio</div>
+        <div style="font-size:9px;color:#999;">Persona real con el producto</div>
+      </div>
+      <div class="i-type-btn" onclick="iSetTipo('solo')" style="border:1.5px solid #ddd5c0;border-radius:8px;padding:8px 10px;cursor:pointer;background:#faf8f4;">
+        <div style="font-size:10px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">Producto solo</div>
+        <div style="font-size:9px;color:#999;">Fondo limpio, luz profesional</div>
+      </div>
+      <div class="i-type-btn" onclick="iSetTipo('cta')" style="border:1.5px solid #ddd5c0;border-radius:8px;padding:8px 10px;cursor:pointer;background:#faf8f4;">
+        <div style="font-size:10px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">CTA / Urgencia</div>
+        <div style="font-size:9px;color:#999;">Acción inmediata</div>
+      </div>
+      <div class="i-type-btn" onclick="iSetTipo('educativo')" style="border:1.5px solid #ddd5c0;border-radius:8px;padding:8px 10px;cursor:pointer;background:#faf8f4;">
+        <div style="font-size:10px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">Educativo</div>
+        <div style="font-size:9px;color:#999;">Cómo usar, beneficios</div>
+      </div>
+      <div class="i-type-btn" onclick="iSetTipo('bts')" style="border:1.5px solid #ddd5c0;border-radius:8px;padding:8px 10px;cursor:pointer;background:#faf8f4;">
+        <div style="font-size:10px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">Behind the scenes</div>
+        <div style="font-size:9px;color:#999;">Proceso, empaque, equipo</div>
+      </div>
+    </div>
+    <textarea id="i-prompt-manual" style="width:100%;border:1px solid #ddd5c0;border-radius:6px;padding:10px;font-size:11px;color:#444;background:#faf8f4;min-height:80px;resize:none;font-family:'DM Sans',sans-serif;" placeholder="Elige un tipo arriba o escribe tu propio prompt aquí..."></textarea>
+    <button onclick="iGenerarManual()" style="width:100%;margin-top:6px;padding:12px;background:#e8420a;
 </div>
         <button onclick="iGenerar()" style="width:100%;padding:8px;background:#fff;border:1px solid #ddd5c0;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#e8420a;margin-top:6px;">↺ Generar nuevas ideas</button>
       </div>
@@ -1141,6 +1175,25 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 </style>
 
 <script>
+ function iSetTipo(tipo){
+  const prompts={
+    uso:'Young woman using the product in a cozy home setting, natural morning light, genuine smile, product clearly visible, lifestyle photography, Latin American aesthetic, realistic skin texture, professional composition, no text, no watermark.',
+    lifestyle:'Aspirational lifestyle scene showing the result of using the product, happy confident person, beautiful environment, product subtly present, emotional connection, premium photography, Latin American market, no text.',
+    antes:'Split scene showing before and after using the product, left side shows the problem, right side shows the positive transformation, same person, consistent lighting, commercial photography, no text.',
+    testimonio:'Real person holding the product and smiling directly at camera, authentic expression of satisfaction, natural indoor environment, trust-building portrait, Latin American aesthetic, no text, no watermark.',
+    solo:'Product alone on clean white background, professional studio lighting, sharp focus, premium commercial photography, showing all product details clearly, elegant composition, no people, no text.',
+    cta:'Person pointing at the product with an inviting gesture, excited expression, bold composition, action-oriented scene, sense of urgency, Latin American market, vibrant colors, no text.',
+    educativo:'Person demonstrating how to use the product step by step, clear instructional composition, natural lighting, educational aesthetic, product prominently visible, Latin American setting, no text.',
+    bts:'Behind the scenes of the product, packaging process or team working, authentic candid moment, natural lighting, humanizing brand photography, warm atmosphere, no text.'
+  };
+  document.querySelectorAll('.i-type-btn').forEach(b=>{
+    b.style.borderColor='#ddd5c0';
+    b.style.background='#faf8f4';
+  });
+  event.currentTarget.style.borderColor='#e8420a';
+  event.currentTarget.style.background='#fff8f6';
+  document.getElementById('i-prompt-manual').value=prompts[tipo]||'';
+}
   function iSetModo(modo){
   const isManual=modo==='manual';
   document.getElementById('i-manual-form').style.display=isManual?'block':'none';
