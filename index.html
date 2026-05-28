@@ -1386,7 +1386,7 @@ function iAgregarCard(url,prompt,destino,etiqueta){
   grid.appendChild(card);
   const gal=document.getElementById('id-galeria');
   const thumb=document.createElement('div');
-  thumb.style.cssText='width:46px;height:46px;border-radius:6px;border:1px solid #ddd5c0;overflow:hidden;cursor:pointer;';
+  thumb.style.cssText='width:46px;height:46px;border-radius:6px;border:1px solid #ddd5c0;overflow:hidden;cursor:pointer;';thumb.onclick=()=>iVerImagen(url);
   thumb.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;"/>`;
   gal.appendChild(thumb);
 }
@@ -1417,6 +1417,29 @@ async function iGenerarSetCompleto(btn,promptBase,destino){
     await new Promise(r=>setTimeout(r,2000));
   }
   const grid=document.getElementById('id-grid');
+  function iVerImagen(url){
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;';
+  overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};
+  const img=document.createElement('img');
+  img.src=url;
+  img.style.cssText='max-width:90vw;max-height:80vh;border-radius:8px;object-fit:contain;';
+  const btnRow=document.createElement('div');
+  btnRow.style.cssText='display:flex;gap:10px;';
+  const btnDesc=document.createElement('a');
+  btnDesc.href=url;btnDesc.download='imagen-landcopy.png';
+  btnDesc.style.cssText='padding:10px 20px;background:#e8420a;color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;';
+  btnDesc.textContent='⬇ Descargar';
+  const btnCerrar=document.createElement('button');
+  btnCerrar.style.cssText='padding:10px 20px;background:#fff;color:#1a1a1a;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;';
+  btnCerrar.textContent='✕ Cerrar';
+  btnCerrar.onclick=()=>overlay.remove();
+  btnRow.appendChild(btnDesc);
+  btnRow.appendChild(btnCerrar);
+  overlay.appendChild(img);
+  overlay.appendChild(btnRow);
+  document.body.appendChild(overlay);
+}
   const zipBtn=document.createElement('div');
   zipBtn.style.cssText='grid-column:1/-1;padding:10px;background:#1a1a1a;border-radius:8px;text-align:center;cursor:pointer;color:#fff;font-size:11px;font-weight:700;margin-top:4px;';
   zipBtn.textContent='⬇ Descargar las 8 imágenes como ZIP';
