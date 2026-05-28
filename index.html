@@ -1064,6 +1064,16 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 
 
         <button id="btn-iGenerar" onclick="iGenerar()" style="width:100%;padding:12px;background:#e8420a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Generar 4 ideas de imagen</button>
+        <div style="margin-top:10px;border-top:1px solid #ddd5c0;padding-top:10px;">
+  <div style="display:flex;gap:6px;margin-bottom:8px;">
+    <button id="btn-modo-auto" onclick="iSetModo('auto')" style="flex:1;padding:7px;border:2px solid #e8420a;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;background:#e8420a;color:#fff;">⚡ Automático</button>
+    <button id="btn-modo-manual" onclick="iSetModo('manual')" style="flex:1;padding:7px;border:2px solid #ddd5c0;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;background:#fff;color:#444;">✍️ Manual</button>
+  </div>
+  <div id="i-manual-form" style="display:none;">
+    <textarea id="i-prompt-manual" style="width:100%;border:1px solid #ddd5c0;border-radius:6px;padding:10px;font-size:11px;color:#444;background:#faf8f4;min-height:80px;resize:none;font-family:'DM Sans',sans-serif;" placeholder="Escribe tu prompt aquí. Ej: Mujer joven usando el producto en una tienda moderna, luz natural, foto profesional..."></textarea>
+    <button onclick="iGenerarManual()" style="width:100%;margin-top:6px;padding:12px;background:#e8420a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">🎯 Generar imagen con mi prompt</button>
+  </div>
+</div>
         <button onclick="iGenerar()" style="width:100%;padding:8px;background:#fff;border:1px solid #ddd5c0;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#e8420a;margin-top:6px;">↺ Generar nuevas ideas</button>
       </div>
 
@@ -1131,7 +1141,35 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 </style>
 
 <script>
-function iReconfigurar(){
+  function iSetModo(modo){
+  const isManual=modo==='manual';
+  document.getElementById('i-manual-form').style.display=isManual?'block':'none';
+  document.getElementById('btn-modo-auto').style.background=isManual?'#fff':'#e8420a';
+  document.getElementById('btn-modo-auto').style.color=isManual?'#444':'#fff';
+  document.getElementById('btn-modo-auto').style.borderColor=isManual?'#ddd5c0':'#e8420a';
+  document.getElementById('btn-modo-manual').style.background=isManual?'#e8420a':'#fff';
+  document.getElementById('btn-modo-manual').style.color=isManual?'#fff':'#444';
+  document.getElementById('btn-modo-manual').style.borderColor=isManual?'#e8420a':'#ddd5c0';
+}
+async function iGenerarManual(){
+  const prompt=document.getElementById('i-prompt-manual').value.trim();
+  if(!prompt){alert('Escribe un prompt primero');return;}
+  const dest=document.querySelector('.id-dest.sel')?.textContent.trim().split(' ').filter(t=>!t.includes(':'))[1]||'Instagram';
+  const btn=event.target;
+  btn.textContent='Generando...';btn.disabled=true;
+  iStep(3);
+  try{
+    const resp=await fetch('/api/images',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,destino:dest.toLowerCase(),image:window.iProductoBase64||null})});
+    const data=await resp.json();
+    if(data.error)throw new Error(data.error);
+    iAgregarCard(data.url,prompt,dest,'Manual');
+    btn.textContent='🎯 Generar imagen con mi prompt';btn.disabled=false;
+  }catch(err){
+    alert('Error: '+err.message);
+    btn.textContent='🎯 Generar imagen con mi prompt';btn.disabled=false;
+  }
+}
+  function iReconfigurar(){
   iStep(1);
   document.getElementById('id-loading-panel').style.display='none';
   document.getElementById('id-empty-panel').style.display='flex';
