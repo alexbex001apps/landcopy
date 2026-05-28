@@ -1086,6 +1086,11 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);overf
 
       <!-- PASO 3 -->
       <div id="ip3" style="display:none;">
+       <div id="id-ai-loading" style="display:none;background:#fff;border:1px solid #ddd5c0;border-radius:10px;padding:20px;margin-bottom:10px;text-align:center;">
+  <div style="width:48px;height:48px;border:3px solid #f5f0e8;border-top:3px solid #e8420a;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 14px;"></div>
+  <div id="id-ai-msg" style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">Analizando el producto...</div>
+  <div style="font-size:10px;color:#aaa;letter-spacing:1px;">IA generando tu imagen</div>
+</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;" id="id-grid"></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
           <button onclick="iDescargarZIP()" style="padding:10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #ddd5c0;background:#fff;color:#444;">⬇ Descargar todas</button>
@@ -1158,13 +1163,24 @@ async function iGenerarManual(){
   const btn=event.target;
   btn.textContent='Generando...';btn.disabled=true;
   iStep(3);
+  const msgs=['Analizando el producto...','Construyendo la escena...','Aplicando luz profesional...','Generando imagen final...'];
+  let mi=0;
+  const loading=document.getElementById('id-ai-loading');
+  const msgEl=document.getElementById('id-ai-msg');
+  if(loading)loading.style.display='block';
+  if(msgEl)msgEl.textContent=msgs[0];
+  const iv=setInterval(()=>{mi=(mi+1)%msgs.length;if(msgEl)msgEl.textContent=msgs[mi];},2000);
   try{
     const resp=await fetch('/api/images',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,destino:dest.toLowerCase(),image:window.iProductoBase64||null})});
     const data=await resp.json();
     if(data.error)throw new Error(data.error);
+    clearInterval(iv);
+    if(loading)loading.style.display='none';
     iAgregarCard(data.url,prompt,dest,'Manual');
     btn.textContent='🎯 Generar imagen con mi prompt';btn.disabled=false;
   }catch(err){
+    clearInterval(iv);
+    if(loading)loading.style.display='none';
     alert('Error: '+err.message);
     btn.textContent='🎯 Generar imagen con mi prompt';btn.disabled=false;
   }
